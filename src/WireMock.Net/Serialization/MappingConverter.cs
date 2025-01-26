@@ -379,7 +379,7 @@ internal class MappingConverter(MatcherMapper mapper)
         }
 
         var bodyMatchers =
-            protoBufMatcher?.Matcher != null ? new[] { protoBufMatcher.Matcher } : null ??
+            protoBufMatcher?.Matcher != null ? [protoBufMatcher.Matcher] : null ??
             multiPartMatcher?.Matchers ??
             graphQLMatcher?.Matchers ??
             bodyMatcher?.Matchers;

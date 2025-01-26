@@ -2,19 +2,24 @@
 
 #if PROTOBUF
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Greet;
 using Grpc.Net.Client;
 using NarrowIntegrationTest.Lookup;
+using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Settings;
+using WireMock.Util;
 using Xunit;
 
 // ReSharper disable once CheckNamespace
@@ -486,20 +491,17 @@ message Other {
             );
 
         // Act
-        var channel = GrpcChannel.ForAddress(server.Url!);
-        var client = new Greeter.GreeterClient(channel);
-
-        var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Url!);
 
         // Assert
-        reply.Message.Should().Be("hello stef POST");
+        Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
     [Fact]
     public async Task WireMockServer_WithBodyAsProtoBuf_WithWellKnownTypes_Empty_UsingGrpcGeneratedClient()
     {
         // Arrange
-        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+        var definition = await File.ReadAllTextAsync("./Grpc/greet.proto");
 
         using var server = WireMockServer.Start(useHttp2: true);
 
@@ -532,7 +534,7 @@ message Other {
         // Arrange
         const int seconds = 1722301323;
         const int nanos = 12300;
-        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+        var definition = await File.ReadAllTextAsync("./Grpc/greet.proto");
 
         using var server = WireMockServer.Start(useHttp2: true);
 
@@ -573,7 +575,7 @@ message Other {
         // Arrange
         const int seconds = 1722301323;
         const int nanos = 12300;
-        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+        var definition = await File.ReadAllTextAsync("./Grpc/greet.proto");
 
         using var server = WireMockServer.Start(useHttp2: true);
 
@@ -612,7 +614,7 @@ message Other {
     public async Task WireMockServer_WithBodyAsProtoBuf_Enum_UsingGrpcGeneratedClient()
     {
         // Arrange
-        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/greet.proto");
+        var definition = await File.ReadAllTextAsync("./Grpc/greet.proto");
 
         using var server = WireMockServer.Start(useHttp2: true);
 
@@ -653,7 +655,7 @@ message Other {
         const int nanos = 12300;
         const string version = "test";
         const string correlationId = "correlation";
-        var definition = await System.IO.File.ReadAllTextAsync("./Grpc/policy.proto");
+        var definition = await File.ReadAllTextAsync("./Grpc/policy.proto");
 
         using var server = WireMockServer.Start(useHttp2: true);
 
@@ -695,6 +697,69 @@ message Other {
         reply.DateHired.Should().Be(new Timestamp { Seconds = seconds, Nanos = nanos });
         reply.Client.ClientName.Should().Be(NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter);
         reply.Client.CorrelationId.Should().Be(correlationId);
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    {
+        var server = Given_When_ServerStartedUsingHttp2();
+        Given_ProtoDefinition_IsAddedOnServerLevel(server);
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server);
+
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
+
+        Then_ReplyMessage_Should_BeCorrect(reply);
+    }
+
+    private static WireMockServer Given_When_ServerStartedUsingHttp2()
+    {
+        var ports = PortUtils.FindFreeTcpPorts(2);
+
+        var settings = new WireMockServerSettings
+        {
+            Urls = [$"http://*:{ports[0]}/", $"grpc://*:{ports[1]}/"],
+            StartAdminInterface = true
+        };
+        return WireMockServer.Start(settings);
+    }
+
+    private static void Given_ProtoDefinition_IsAddedOnServerLevel(WireMockServer server)
+    {
+        server.AddProtoDefinition("my-greeter", ReadProtoFile("greet.proto"));
+    }
+
+    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server)
+    {
+        var mappingsJson = ReadMappingFile("protobuf-mapping-3.json");
+
+        using var httpClient = server.CreateClient();
+
+        var result = await httpClient.PostAsync("/__admin/mappings", new StringContent(mappingsJson, Encoding.UTF8, WireMockConstants.ContentTypeJson));
+        result.EnsureSuccessStatusCode();
+    }
+
+    private static async Task<HelloReply> When_GrpcClient_Calls_SayHelloAsync(string address)
+    {
+        var channel = GrpcChannel.ForAddress(address);
+
+        var client = new Greeter.GreeterClient(channel);
+
+        return await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+    }
+
+    private static void Then_ReplyMessage_Should_BeCorrect(HelloReply reply)
+    {
+        reply.Message.Should().Be("hello stef POST");
+    }
+
+    private static string ReadMappingFile(string filename)
+    {
+        return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", filename));
+    }
+
+    private static string ReadProtoFile(string filename)
+    {
+        return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Grpc", filename));
     }
 }
 #endif

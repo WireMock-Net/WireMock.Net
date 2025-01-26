@@ -42,9 +42,9 @@ public partial class WireMockServer
         Guard.NotNull(mappingModel.Request);
         Guard.NotNull(mappingModel.Response);
 
-        var requestBuilder = InitRequestBuilder(mappingModel.Request);
+        var request = (Request)InitRequestBuilder(mappingModel.Request, mappingModel);
 
-        var respondProvider = Given(requestBuilder, mappingModel.SaveToFile == true);
+        var respondProvider = Given(request, mappingModel.SaveToFile == true);
 
         if (guid != null)
         {
@@ -116,13 +116,23 @@ public partial class WireMockServer
             respondProvider.WithProbability(mappingModel.Probability.Value);
         }
 
+        // ProtoDefinition is defined at Mapping level
+        if (mappingModel.ProtoDefinition != null)
+        {
+            respondProvider.WithProtoDefinition(mappingModel.ProtoDefinition);
+        }
+        else if (mappingModel.ProtoDefinitions != null)
+        {
+            respondProvider.WithProtoDefinition(mappingModel.ProtoDefinitions);
+        }
+
         var responseBuilder = InitResponseBuilder(mappingModel.Response);
         respondProvider.RespondWith(responseBuilder);
 
         return respondProvider.Guid;
     }
 
-    private IRequestBuilder InitRequestBuilder(RequestModel requestModel)
+    private IRequestBuilder InitRequestBuilder(RequestModel requestModel, MappingModel? mappingModel = null)
     {
         var requestBuilder = Request.Create();
 
@@ -216,7 +226,7 @@ public partial class WireMockServer
 
         if (requestModel.Params != null)
         {
-            foreach (var paramModel in requestModel.Params.Where(p => p is { Matchers: { } }))
+            foreach (var paramModel in requestModel.Params.Where(p => p is { Matchers: not null }))
             {
                 var ignoreCase = paramModel.IgnoreCase == true;
                 requestBuilder = requestBuilder.WithParam(paramModel.Name, ignoreCase, paramModel.Matchers!.Select(_matcherMapper.Map).OfType<IStringMatcher>().ToArray());
@@ -225,7 +235,15 @@ public partial class WireMockServer
 
         if (requestModel.Body?.Matcher != null)
         {
-            requestBuilder = requestBuilder.WithBody(_matcherMapper.Map(requestModel.Body.Matcher)!);
+            var bodyMatcher = _matcherMapper.Map(requestModel.Body.Matcher)!;
+#if PROTOBUF
+            // If the BodyMatcher is a ProtoBufMatcher, and if ProtoDefinition is defined on Mapping-level, set the ProtoDefinition from that Mapping.
+            if (bodyMatcher is ProtoBufMatcher protoBufMatcher && mappingModel?.ProtoDefinition != null)
+            {
+                protoBufMatcher.ProtoDefinition = () => ProtoDefinitionHelper.GetIdOrTexts(_settings, mappingModel.ProtoDefinition);
+            }
+#endif
+            requestBuilder = requestBuilder.WithBody(bodyMatcher);
         }
         else if (requestModel.Body?.Matchers != null)
         {
@@ -308,12 +326,28 @@ public partial class WireMockServer
         }
         else if (responseModel.HeadersRaw != null)
         {
-            foreach (string headerLine in responseModel.HeadersRaw.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries))
+            foreach (var headerLine in responseModel.HeadersRaw.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries))
             {
                 int indexColon = headerLine.IndexOf(":", StringComparison.Ordinal);
                 string key = headerLine.Substring(0, indexColon).TrimStart(' ', '\t');
                 string value = headerLine.Substring(indexColon + 1).TrimStart(' ', '\t');
                 responseBuilder = responseBuilder.WithHeader(key, value);
+            }
+        }
+
+        if (responseModel.TrailingHeaders != null)
+        {
+            foreach (var entry in responseModel.TrailingHeaders)
+            {
+                if (entry.Value is string value)
+                {
+                    responseBuilder.WithTrailingHeader(entry.Key, value);
+                }
+                else
+                {
+                    var headers = JsonUtils.ParseJTokenToObject<string[]>(entry.Value);
+                    responseBuilder.WithTrailingHeader(entry.Key, headers);
+                }
             }
         }
 
@@ -327,7 +361,26 @@ public partial class WireMockServer
         }
         else if (responseModel.BodyAsJson != null)
         {
-            responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
+            if (responseModel.ProtoBufMessageType != null)
+            {
+                if (responseModel.ProtoDefinition != null)
+                {
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoDefinition, responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+                else if (responseModel.ProtoDefinitions != null)
+                {
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoDefinitions, responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+                else
+                {
+                    // ProtoDefinition(s) is/are defined at Mapping/Server level
+                    responseBuilder = responseBuilder.WithBodyAsProtoBuf(responseModel.ProtoBufMessageType, responseModel.BodyAsJson);
+                }
+            }
+            else
+            {
+                responseBuilder = responseBuilder.WithBodyAsJson(responseModel.BodyAsJson, ToEncoding(responseModel.BodyEncoding), responseModel.BodyAsJsonIndented == true);
+            }
         }
         else if (responseModel.BodyAsFile != null)
         {

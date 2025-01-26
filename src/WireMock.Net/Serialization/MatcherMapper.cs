@@ -220,7 +220,7 @@ internal class MatcherMapper
                     {
                         model.Pattern = texts[0];
                     }
-                    else
+                    else if (texts.Count > 1)
                     {
                         model.Patterns = texts.Cast<object>().ToArray();
                     }
@@ -296,27 +296,9 @@ internal class MatcherMapper
     {
         var objectMatcher = Map(matcher.ContentMatcher) as IObjectMatcher;
 
-        IdOrTexts protoDefinitionAsIdOrTexts;
-        if (protoDefinitions.Count == 1)
-        {
-            var idOrText = protoDefinitions[0];
-            if (_settings.ProtoDefinitions?.TryGetValue(idOrText, out var protoDefinitionFromSettings) == true)
-            {
-                protoDefinitionAsIdOrTexts = new(idOrText, protoDefinitionFromSettings);
-            }
-            else
-            {
-                protoDefinitionAsIdOrTexts = new(null, protoDefinitions);
-            }
-        }
-        else
-        {
-            protoDefinitionAsIdOrTexts = new(null, protoDefinitions);
-        }
-
         return new ProtoBufMatcher(
-            () => protoDefinitionAsIdOrTexts,
-            matcher!.ProtoBufMessageType!,
+            () => ProtoDefinitionHelper.GetIdOrTexts(_settings, protoDefinitions.ToArray()),
+            matcher.ProtoBufMessageType!,
             matchBehaviour ?? MatchBehaviour.AcceptOnMatch,
             objectMatcher
         );

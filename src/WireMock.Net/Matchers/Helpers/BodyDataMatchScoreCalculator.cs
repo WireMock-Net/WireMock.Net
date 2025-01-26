@@ -66,6 +66,12 @@ internal static class BodyDataMatchScoreCalculator
             return stringMatcher.IsMatch(requestMessage.BodyAsString);
         }
 
+        // In case the matcher is a IProtoBufMatcher, use the BodyAsBytes to match on.
+        if (matcher is IProtoBufMatcher protoBufMatcher)
+        {
+            return protoBufMatcher.IsMatchAsync(requestMessage.BodyAsBytes).GetAwaiter().GetResult();
+        }
+
         return default;
     }
 }
