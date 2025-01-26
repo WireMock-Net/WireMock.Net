@@ -2,7 +2,6 @@
 
 #if PROTOBUF
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ProtoBufJsonConverter;
@@ -28,7 +27,7 @@ public class ProtoBufMatcher : IProtoBufMatcher
     /// <summary>
     /// The Func to define the proto definition as id or texts.
     /// </summary>
-    public Func<IdOrTexts> ProtoDefinition { get; }
+    public Func<IdOrTexts> ProtoDefinition { get; internal set; }
 
     /// <summary>
     /// The full type of the protobuf (request/response) message object. Format is "{package-name}.{type-name}".

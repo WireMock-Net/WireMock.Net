@@ -1,3 +1,8 @@
+# 1.7.1 (26 January 2025)
+- [#1236](https://github.com/WireMock-Net/WireMock.Net/pull/1236) - Fix ProtoBuf mapping.json [bug] contributed by [StefH](https://github.com/StefH)
+- [#1245](https://github.com/WireMock-Net/WireMock.Net/pull/1245) - Use Handlebars.Net.Helpers to version 2.4.10 [feature] contributed by [StefH](https://github.com/StefH)
+- [#1233](https://github.com/WireMock-Net/WireMock.Net/issues/1233) - GRPC mappings are not created correctly when created through Admin API [bug]
+
 # 1.7.0 (22 January 2025)
 - [#1242](https://github.com/WireMock-Net/WireMock.Net/pull/1242) - Disable DynamicLinq to fix CVE [bug] contributed by [StefH](https://github.com/StefH)
 

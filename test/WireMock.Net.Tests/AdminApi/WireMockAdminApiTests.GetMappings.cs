@@ -37,7 +37,32 @@ message HelloReply {
     public async Task IWireMockAdminApi_GetMappingsAsync_WithBodyAsProtoBuf_ShouldReturnCorrectMappingModels()
     {
         // Arrange
-        using var server = WireMockServer.StartWithAdminInterface();
+        using var server = Given_WithBodyAsProtoBuf_AddedToServer();
+
+        // Act
+        var api = RestClient.For<IWireMockAdminApi>(server.Url);
+        var getMappingsResult = await api.GetMappingsAsync().ConfigureAwait(false);
+
+        await Verifier.Verify(getMappingsResult, VerifySettings);
+    }
+
+    [Fact]
+    public async Task HttpClient_GetMappingsAsync_WithBodyAsProtoBuf_ShouldReturnCorrectMappingModels()
+    {
+        // Arrange
+        using var server = Given_WithBodyAsProtoBuf_AddedToServer();
+
+        // Act
+        var client = server.CreateClient();
+        var getMappingsResult = await client.GetStringAsync("/__admin/mappings").ConfigureAwait(false);
+
+        await Verifier.VerifyJson(getMappingsResult, VerifySettings);
+    }
+
+    public WireMockServer Given_WithBodyAsProtoBuf_AddedToServer()
+    {
+        // Arrange
+        var server = WireMockServer.StartWithAdminInterface();
 
         var protoBufJsonMatcher = new JsonPartialWildcardMatcher(new { name = "*" });
 
@@ -122,13 +147,7 @@ message HelloReply {
                 .WithTransformer()
             );
 
-        // Act
-        var api = RestClient.For<IWireMockAdminApi>(server.Url);
-        var getMappingsResult = await api.GetMappingsAsync().ConfigureAwait(false);
-
-        await Verifier.Verify(getMappingsResult, VerifySettings);
-
-        server.Stop();
+        return server;
     }
 }
 #endif

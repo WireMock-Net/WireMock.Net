@@ -130,13 +130,22 @@ public interface IWireMockAdminApi
     Task<StatusModel> ReloadStaticMappingsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Get a mapping based on the guid
+    /// Get a mapping based on the guid.
     /// </summary>
     /// <param name="guid">The Guid</param>
     /// <returns>MappingModel</returns>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Get("mappings/{guid}")]
     Task<MappingModel> GetMappingAsync([Path] Guid guid, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get a mapping based on the guid.
+    /// </summary>
+    /// <param name="guid">The Guid</param>
+    /// <returns>MappingModel</returns>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Get("mappings/{guid}")]
+    Task<MappingModel> GetMappingAsync([Path] string guid, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get the C# code from a mapping based on the guid

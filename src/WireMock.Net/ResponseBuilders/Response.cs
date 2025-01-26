@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Stef.Validation;
-using WireMock.Matchers.Request;
 using WireMock.Proxy;
 using WireMock.RequestBuilders;
 using WireMock.Settings;
@@ -264,16 +263,15 @@ public partial class Response : IResponseBuilder
 
         if (UseTransformer)
         {
-            // Check if the body matcher is a RequestMessageProtoBufMatcher and try to decode the byte-array to a BodyAsJson.
-            if (mapping.RequestMatcher is Request requestMatcher && requestMessage is RequestMessage request)
+            // If the body matcher is a RequestMessageProtoBufMatcher or BodyMatcher with a ProtoBufMatcher then try to decode the byte-array to a BodyAsJson.
+            if (mapping.RequestMatcher is Request request && requestMessage is RequestMessage requestMessageImplementation)
             {
-                var protoBufMatcher = requestMatcher.GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
-                if (protoBufMatcher != null)
+                if (request.TryGetProtoBufMatcher(out var protoBufMatcher))
                 {
-                    var decoded = await protoBufMatcher.DecodeAsync(request.BodyData?.BodyAsBytes).ConfigureAwait(false);
+                    var decoded = await protoBufMatcher.DecodeAsync(requestMessage.BodyData?.BodyAsBytes).ConfigureAwait(false);
                     if (decoded != null)
                     {
-                        request.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
+                        requestMessageImplementation.BodyAsJson = JsonUtils.ConvertValueToJToken(decoded);
                     }
                 }
             }

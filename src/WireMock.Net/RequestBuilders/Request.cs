@@ -5,8 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Stef.Validation;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 
 namespace WireMock.RequestBuilders;
@@ -69,6 +71,19 @@ public partial class Request : RequestMessageCompositeMatcher, IRequestBuilder
     public T? GetRequestMessageMatcher<T>(Func<T, bool> func) where T : IRequestMatcher
     {
         return _requestMatchers.OfType<T>().FirstOrDefault(func);
+    }
+
+    internal bool TryGetProtoBufMatcher([NotNullWhen(true)] out IProtoBufMatcher? protoBufMatcher)
+    {
+        protoBufMatcher = GetRequestMessageMatcher<RequestMessageProtoBufMatcher>()?.Matcher;
+        if (protoBufMatcher != null)
+        {
+            return true;
+        }
+
+        var bodyMatcher = GetRequestMessageMatcher<RequestMessageBodyMatcher>();
+        protoBufMatcher = bodyMatcher?.Matchers?.OfType<IProtoBufMatcher>().FirstOrDefault();
+        return protoBufMatcher != null;
     }
 
     private IRequestBuilder Add<T>(T requestMatcher) where T : IRequestMatcher

@@ -123,14 +123,14 @@ public interface IRespondWithAProvider
     void ThenRespondWithStatusCode(HttpStatusCode code);
 
     /// <summary>
-    /// Sets the the scenario.
+    /// Sets the scenario.
     /// </summary>
     /// <param name="scenario">The scenario.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
     IRespondWithAProvider InScenario(string scenario);
 
     /// <summary>
-    /// Sets the the scenario with an integer value.
+    /// Sets the scenario with an integer value.
     /// </summary>
     /// <param name="scenario">The scenario.</param>
     /// <returns>The <see cref="IRespondWithAProvider"/>.</returns>
@@ -220,7 +220,7 @@ public interface IRespondWithAProvider
 
     /// <summary>
     /// Data Object which can be used when WithTransformer is used.
-    /// e.g. lookup an path in this object using
+    /// e.g. lookup a path in this object using
     /// <param name="data">The data dictionary object.</param>
     /// <example>
     /// lookup data "1"

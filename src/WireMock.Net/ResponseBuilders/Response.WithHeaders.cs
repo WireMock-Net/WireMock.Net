@@ -49,7 +49,7 @@ public partial class Response
     public IResponseBuilder WithTrailingHeader(string name, params string[] values)
     {
 #if !TRAILINGHEADERS
-        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+        throw new System.NotSupportedException("The WithTrailingHeader method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
 
         Guard.NotNull(name);
@@ -63,7 +63,7 @@ public partial class Response
     public IResponseBuilder WithTrailingHeaders(IDictionary<string, string> headers)
     {
 #if !TRAILINGHEADERS
-        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+        throw new System.NotSupportedException("The WithTrailingHeaders method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
 
         Guard.NotNull(headers);
@@ -77,7 +77,7 @@ public partial class Response
     public IResponseBuilder WithTrailingHeaders(IDictionary<string, string[]> headers)
     {
 #if !TRAILINGHEADERS
-        throw new System.NotSupportedException("The WithBodyAsProtoBuf method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+        throw new System.NotSupportedException("The WithTrailingHeaders method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
 #else
 
         Guard.NotNull(headers);
