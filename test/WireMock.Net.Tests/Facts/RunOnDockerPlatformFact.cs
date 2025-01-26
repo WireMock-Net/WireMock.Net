@@ -12,7 +12,7 @@ public sealed class RunOnDockerPlatformFact : FactAttribute
 {
     public RunOnDockerPlatformFact(string platform)
     {
-        if (TestcontainersUtils.GetImageOSAsync.Value.Result != OSPlatform.Create(platform))
+        if (TestcontainersUtils.GetDockerImageOSAsync.Value.Result != OSPlatform.Create(platform))
         {
             Skip = $"Only run test when Docker OS Platform {platform} is used.";
         }
