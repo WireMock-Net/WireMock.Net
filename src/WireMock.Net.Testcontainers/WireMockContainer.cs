@@ -206,7 +206,14 @@ public sealed class WireMockContainer : DockerContainer
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
     {
-        await ReloadStaticMappingsAsync(args.FullPath);
+        try
+        {
+            await ReloadStaticMappingsAsync(args.FullPath);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Error reloading static mappings from '{FullPath}'.", args.FullPath);
+        }
     }
 
     private async Task ReloadStaticMappingsAsync(string path, CancellationToken cancellationToken = default)

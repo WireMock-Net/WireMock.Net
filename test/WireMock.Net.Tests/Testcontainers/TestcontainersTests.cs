@@ -8,6 +8,7 @@ using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
+using WireMock.Net.Testcontainers.Utils;
 using WireMock.Net.Tests.Facts;
 using Xunit;
 
@@ -26,7 +27,7 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .WithCommand("--UseHttp2")
-            .WithEntrypoint("./wiremock-net", "--Urls", "http://*:80", "grpc://*:9090")
+            .WithCommand("--Urls", "http://*:80 grpc://*:9090")
             .WithPortBinding(9090, true)
             .Build();
 
@@ -164,7 +165,8 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;
+        if (imageOS == OSPlatform.Windows)
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithWindowsImage();
         }
@@ -189,7 +191,8 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;
+        if (imageOS == OSPlatform.Windows)
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithImage("sheyenrath/wiremock.net-windows");
         }
