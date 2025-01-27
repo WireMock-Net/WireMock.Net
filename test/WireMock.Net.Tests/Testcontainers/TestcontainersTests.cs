@@ -44,7 +44,6 @@ public class TestcontainersTests
                 url.Should().NotBeNullOrWhiteSpace();
 
                 var urls = wireMockContainer.GetPublicUrls();
-                urls.Should().BeNullOrEmpty();
                 urls.Should().HaveCount(2);
 
                 var httpPort = wireMockContainer.GetMappedPublicPort(80);

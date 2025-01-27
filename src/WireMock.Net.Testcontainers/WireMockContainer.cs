@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
@@ -220,19 +219,24 @@ public sealed class WireMockContainer : DockerContainer
 
     private Uri[] GetPublicUris()
     {
-        var list = new List<Uri>
+        var dict = new Dictionary<int, Uri>
         {
-            new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri
+            {ContainerPort, new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri}
         };
+
+        foreach (var port in _configuration.ExposedPorts.Keys.Select(int.Parse).Where(p => p != ContainerPort).OrderBy(p => p))
+        {
+            dict[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
+        }
 
         foreach (var url in _configuration.AdditionalUrls)
         {
-            if (PortUtils.TryExtract(url, out var https, out var isGrpc, out var protocol, out var host, out var port))
+            if (PortUtils.TryExtract(url, out _, out _, out var protocol, out _, out var port))
             {
-                list.Add(new UriBuilder(protocol, Hostname, GetMappedPublicPort(port)).Uri);
+                dict[port] = new UriBuilder(protocol, Hostname, GetMappedPublicPort(port)).Uri;
             }
         }
 
-        return list.ToArray();
+        return dict.Values.ToArray();
     }
 }
