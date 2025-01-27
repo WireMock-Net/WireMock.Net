@@ -99,7 +99,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithReadStaticMappings()
     {
-        return WithCommand("--ReadStaticMappings", true);
+        return WithCommand("--ReadStaticMappings true");
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     {
         DockerResourceConfiguration.WithWatchStaticMappings(includeSubDirectories);
         return
-            WithCommand("--WatchStaticMappings", true).
+            WithCommand("--WatchStaticMappings true").
             WithCommand("--WatchStaticMappingsInSubdirectories", includeSubDirectories);
     }
 
@@ -141,7 +141,7 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder WithHttp2()
     {
-        return WithCommand("--UseHttp2", true);
+        return WithCommand("--UseHttp2 true");
     }
 
     /// <summary>
@@ -154,17 +154,12 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
     [PublicAPI]
     public WireMockContainerBuilder AddUrl(string url)
     {
-        if (!PortUtils.TryExtract(Guard.NotNullOrEmpty(url), out _, out var isGrpc, out _, out _, out var port))
+        if (!PortUtils.TryExtract(Guard.NotNullOrEmpty(url), out _, out _, out _, out _, out var port))
         {
             throw new ArgumentException("The URL is not valid.", nameof(url));
         }
 
         DockerResourceConfiguration.WithAdditionalUrl(url);
-
-        if (isGrpc)
-        {
-            WithHttp2();
-        }
 
         return WithPortBinding(port, true);
     }
@@ -212,6 +207,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         if (builder.DockerResourceConfiguration.AdditionalUrls.Any())
         {
             builder = builder.WithCommand($"--Urls http://*:80 {string.Join(" ", builder.DockerResourceConfiguration.AdditionalUrls)}");
+
+            if (builder.DockerResourceConfiguration.AdditionalUrls.Any(u => u.IndexOf("grpc", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                // builder = builder.WithHttp2();
+            }
         }
 
         builder.Validate();

@@ -700,18 +700,29 @@ message Other {
     }
 
     [Fact]
-    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    public async Task WireMockServer_WithBodyAsProtoBuf_FromJson_UsingGrpcGeneratedClient()
     {
-        var server = Given_When_ServerStartedUsingHttp2();
-        Given_ProtoDefinition_IsAddedOnServerLevel(server);
-        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server);
+        var server = Given_When_ServerStarted_And_RunningOnHttpAndGrpc();
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server, "protobuf-mapping-1.json");
 
         var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
 
         Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
-    private static WireMockServer Given_When_ServerStartedUsingHttp2()
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    {
+        var server = Given_When_ServerStarted_And_RunningOnHttpAndGrpc();
+        Given_ProtoDefinition_IsAddedOnServerLevel(server);
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server, "protobuf-mapping-3.json");
+
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
+
+        Then_ReplyMessage_Should_BeCorrect(reply);
+    }
+
+    private static WireMockServer Given_When_ServerStarted_And_RunningOnHttpAndGrpc()
     {
         var ports = PortUtils.FindFreeTcpPorts(2);
 
@@ -728,9 +739,9 @@ message Other {
         server.AddProtoDefinition("my-greeter", ReadProtoFile("greet.proto"));
     }
 
-    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server)
+    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server, string filename)
     {
-        var mappingsJson = ReadMappingFile("protobuf-mapping-3.json");
+        var mappingsJson = ReadMappingFile(filename);
 
         using var httpClient = server.CreateClient();
 

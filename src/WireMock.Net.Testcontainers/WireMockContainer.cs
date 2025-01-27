@@ -54,7 +54,7 @@ public sealed class WireMockContainer : DockerContainer
     /// Gets the public Url.
     /// </summary>
     [PublicAPI]
-    public string[] GetPublicUrls() => GetPublicUris().Select(u => u.ToString()).ToArray();
+    public IDictionary<int, string> GetPublicUrls() => GetPublicUris().ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
 
     /// <summary>
     /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
@@ -222,13 +222,13 @@ public sealed class WireMockContainer : DockerContainer
         await ReloadStaticMappingsAsync(cancellationToken);
     }
 
-    private Uri GetPublicUri() => GetPublicUris().First();
+    private Uri GetPublicUri() => GetPublicUris()[ContainerPort];
 
-    private Uri[] GetPublicUris()
+    private IDictionary<int, Uri> GetPublicUris()
     {
         var dict = new Dictionary<int, Uri>
         {
-            {ContainerPort, new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri}
+            { ContainerPort, new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri }
         };
 
         foreach (var port in _configuration.ExposedPorts.Keys.Select(int.Parse).Where(p => p != ContainerPort).OrderBy(p => p))
@@ -238,12 +238,12 @@ public sealed class WireMockContainer : DockerContainer
 
         foreach (var url in _configuration.AdditionalUrls)
         {
-            if (PortUtils.TryExtract(url, out _, out _, out var protocol, out _, out var port))
+            if (PortUtils.TryExtract(url, out _, out _, out _, out _, out var port))
             {
-                dict[port] = new UriBuilder(protocol, Hostname, GetMappedPublicPort(port)).Uri;
+                dict[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
             }
         }
 
-        return dict.Values.ToArray();
+        return dict;
     }
 }

@@ -14,10 +14,10 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Testcontainers;
 
-public class TestcontainersTests
+public partial class TestcontainersTests
 {
     [Fact]
-    public async Task WireMockContainer_Build_WithNoImage_TestGrpc1()
+    public async Task WireMockContainer_Build_TestGrpc1()
     {
         // Act
         var adminUsername = $"username_{Guid.NewGuid()}";
@@ -66,7 +66,7 @@ public class TestcontainersTests
     }
 
     [Fact]
-    public async Task WireMockContainer_Build_WithNoImage_TestGrpc2()
+    public async Task WireMockContainer_Build_TestGrpc2()
     {
         // Act
         var adminUsername = $"username_{Guid.NewGuid()}";
@@ -95,16 +95,16 @@ public class TestcontainersTests
 
                 var urls = wireMockContainer.GetPublicUrls();
                 urls.Should().HaveCount(4);
-                var urlHttp80 = urls[0];
+                var urlHttp80 = urls[80];
                 urlHttp80.Should().StartWith("http://");
 
-                var urlHttp8080 = urls[1];
+                var urlHttp8080 = urls[8080];
                 urlHttp8080.Should().StartWith("http://");
 
-                var urlGrpc9090 = urls[2];
+                var urlGrpc9090 = urls[9090];
                 urlGrpc9090.Should().StartWith("grpc://");
 
-                var urlGrpc9091 = urls[3];
+                var urlGrpc9091 = urls[9091];
                 urlGrpc9091.Should().StartWith("grpc://");
 
                 var adminClient = wireMockContainer.CreateWireMockAdminClient();
@@ -120,7 +120,7 @@ public class TestcontainersTests
     }
 
     [Fact]
-    public async Task WireMockContainer_Build_WithNoImage_And_StartAsync_and_StopAsync()
+    public async Task WireMockContainer_Build_And_StartAsync_and_StopAsync()
     {
         // Act
         var adminUsername = $"username_{Guid.NewGuid()}";
@@ -136,7 +136,7 @@ public class TestcontainersTests
 
     // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
     [RunOnDockerPlatformFact("Linux")]
-    public async Task WireMockContainer_Build_WithNoImageAndNetwork_And_StartAsync_and_StopAsync()
+    public async Task WireMockContainer_Build_WithNetwork_And_StartAsync_and_StopAsync()
     {
         // Act
         var dummyNetwork = new NetworkBuilder()
