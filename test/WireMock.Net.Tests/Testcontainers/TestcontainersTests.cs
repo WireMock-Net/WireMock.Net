@@ -16,6 +16,110 @@ namespace WireMock.Net.Tests.Testcontainers;
 public class TestcontainersTests
 {
     [Fact]
+    public async Task WireMockContainer_Build_WithNoImage_TestGrpc1()
+    {
+        // Act
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .WithAdminUserNameAndPassword(adminUsername, adminPassword)
+            .WithCommand("--UseHttp2")
+            .WithEntrypoint("./wiremock-net", "--Urls", "http://*:80", "grpc://*:9090")
+            .WithPortBinding(9090, true)
+            .Build();
+
+        try
+        {
+            await wireMockContainer.StartAsync().ConfigureAwait(false);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                var logs = await wireMockContainer.GetLogsAsync(DateTime.MinValue);
+                logs.Should().NotBeNull();
+
+                var url = wireMockContainer.GetPublicUrl();
+                url.Should().NotBeNullOrWhiteSpace();
+
+                var urls = wireMockContainer.GetPublicUrls();
+                urls.Should().BeNullOrEmpty();
+                urls.Should().HaveCount(2);
+
+                var httpPort = wireMockContainer.GetMappedPublicPort(80);
+                httpPort.Should().BeGreaterThan(0);
+
+                var grpcPort = wireMockContainer.GetMappedPublicPort(9090);
+                grpcPort.Should().BeGreaterThan(0);
+
+                var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+                var settings = await adminClient.GetSettingsAsync();
+                settings.Should().NotBeNull();
+            }
+        }
+        finally
+        {
+            await wireMockContainer.StopAsync();
+        }
+    }
+
+    [Fact]
+    public async Task WireMockContainer_Build_WithNoImage_TestGrpc2()
+    {
+        // Act
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .WithAdminUserNameAndPassword(adminUsername, adminPassword)
+            .AddUrl("http://*:8080")
+            .AddUrl("grpc://*:9090")
+            .AddUrl("grpc://*:9091")
+            .Build();
+
+        try
+        {
+            await wireMockContainer.StartAsync().ConfigureAwait(false);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                var logs = await wireMockContainer.GetLogsAsync(DateTime.MinValue);
+                logs.Should().NotBeNull();
+
+                var url = wireMockContainer.GetPublicUrl();
+                url.Should().NotBeNullOrWhiteSpace();
+
+                var urls = wireMockContainer.GetPublicUrls();
+                urls.Should().HaveCount(4);
+                var urlHttp80 = urls[0];
+                urlHttp80.Should().StartWith("http://");
+
+                var urlHttp8080 = urls[1];
+                urlHttp8080.Should().StartWith("http://");
+
+                var urlGrpc9090 = urls[2];
+                urlGrpc9090.Should().StartWith("grpc://");
+
+                var urlGrpc9091 = urls[3];
+                urlGrpc9091.Should().StartWith("grpc://");
+
+                var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+                var settings = await adminClient.GetSettingsAsync();
+                settings.Should().NotBeNull();
+            }
+        }
+        finally
+        {
+            await wireMockContainer.StopAsync();
+        }
+    }
+
+    [Fact]
     public async Task WireMockContainer_Build_WithNoImage_And_StartAsync_and_StopAsync()
     {
         // Act

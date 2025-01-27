@@ -1,10 +1,13 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
@@ -47,6 +50,12 @@ public sealed class WireMockContainer : DockerContainer
     /// </summary>
     [PublicAPI]
     public string GetPublicUrl() => GetPublicUri().ToString();
+
+    /// <summary>
+    /// Gets the public Url.
+    /// </summary>
+    [PublicAPI]
+    public string[] GetPublicUrls() => GetPublicUris().Select(u => u.ToString()).ToArray();
 
     /// <summary>
     /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
@@ -121,7 +130,7 @@ public sealed class WireMockContainer : DockerContainer
             await ReloadStaticMappingsAsync(target, ct);
         }
     }
-    
+
     /// <summary>
     /// Reload the static mappings.
     /// </summary>
@@ -207,5 +216,23 @@ public sealed class WireMockContainer : DockerContainer
         await ReloadStaticMappingsAsync(cancellationToken);
     }
 
-    private Uri GetPublicUri() => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri;
+    private Uri GetPublicUri() => GetPublicUris().First();
+
+    private Uri[] GetPublicUris()
+    {
+        var list = new List<Uri>
+        {
+            new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri
+        };
+
+        foreach (var url in _configuration.AdditionalUrls)
+        {
+            if (PortUtils.TryExtract(url, out var https, out var isGrpc, out var protocol, out var host, out var port))
+            {
+                list.Add(new UriBuilder(protocol, Hostname, GetMappedPublicPort(port)).Uri);
+            }
+        }
+
+        return list.ToArray();
+    }
 }

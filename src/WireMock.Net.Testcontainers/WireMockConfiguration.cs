@@ -1,5 +1,7 @@
 // Copyright © WireMock.Net
 
+using System.Collections.Generic;
+using System.Linq;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -23,6 +25,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     public bool WatchStaticMappingsInSubdirectories { get; private set; }
 
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
+
+    public List<string> AdditionalUrls { get; private set; } = [];
 
     public WireMockConfiguration(string? username = null, string? password = null)
     {
@@ -70,6 +74,7 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         StaticMappingsPath = BuildConfiguration.Combine(oldValue.StaticMappingsPath, newValue.StaticMappingsPath);
         WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
         WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
+        AdditionalUrls = BuildConfiguration.Combine(oldValue.AdditionalUrls.AsEnumerable(), newValue.AdditionalUrls.AsEnumerable()).ToList();
     }
 
     /// <summary>
@@ -92,6 +97,17 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     {
         WatchStaticMappings = true;
         WatchStaticMappingsInSubdirectories = includeSubDirectories;
+        return this;
+    }
+
+    /// <summary>
+    /// An additional Url on which WireMock listens.
+    /// </summary>
+    /// <param name="url">The url to add.</param>
+    /// <returns><see cref="WireMockConfiguration"/></returns>
+    public WireMockConfiguration WithAdditionalUrl(string url)
+    {
+        AdditionalUrls.Add(url);
         return this;
     }
 }
