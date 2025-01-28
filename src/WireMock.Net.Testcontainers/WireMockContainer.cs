@@ -32,6 +32,7 @@ public sealed class WireMockContainer : DockerContainer
 
     private IWireMockAdminApi? _adminApi;
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
+    private IDictionary<int, Uri>? _publicUris;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainer" /> class.
@@ -51,10 +52,19 @@ public sealed class WireMockContainer : DockerContainer
     public string GetPublicUrl() => GetPublicUri().ToString();
 
     /// <summary>
-    /// Gets the public Url.
+    /// Gets the public Urls as a dictionary with the internal port as the key.
     /// </summary>
     [PublicAPI]
     public IDictionary<int, string> GetPublicUrls() => GetPublicUris().ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+
+    /// <summary>
+    /// Gets the mapped public port for the given container port.
+    /// </summary>
+    [PublicAPI]
+    public string GetMappedPublicUrl(int containerPort)
+    {
+        return GetPublicUris()[containerPort].ToString();
+    }
 
     /// <summary>
     /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
@@ -226,24 +236,23 @@ public sealed class WireMockContainer : DockerContainer
 
     private IDictionary<int, Uri> GetPublicUris()
     {
-        var dict = new Dictionary<int, Uri>
+        if (_publicUris != null)
         {
-            { ContainerPort, new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri }
-        };
-
-        foreach (var port in _configuration.ExposedPorts.Keys.Select(int.Parse).Where(p => p != ContainerPort).OrderBy(p => p))
-        {
-            dict[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
+            return _publicUris;
         }
+
+        _publicUris = _configuration.ExposedPorts.Keys
+            .Select(int.Parse)
+            .ToDictionary(port => port, port => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri);
 
         foreach (var url in _configuration.AdditionalUrls)
         {
             if (PortUtils.TryExtract(url, out _, out _, out _, out _, out var port))
             {
-                dict[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
+                _publicUris[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
             }
         }
 
-        return dict;
+        return _publicUris;
     }
 }

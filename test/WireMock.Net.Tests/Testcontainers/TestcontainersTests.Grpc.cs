@@ -3,10 +3,12 @@
 #if NET6_0_OR_GREATER
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Greet;
 using Grpc.Net.Client;
 using WireMock.Constants;
@@ -18,28 +20,118 @@ namespace WireMock.Net.Tests.Testcontainers;
 public partial class TestcontainersTests
 {
     [Fact]
-    public async Task WireMockContainer_Build_TestGrpc_ProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    public async Task WireMockContainer_Build_Grpc_TestPortsAndUrls1()
+    {
+        // Act
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .WithAdminUserNameAndPassword(adminUsername, adminPassword)
+            .WithCommand("--UseHttp2")
+            .WithCommand("--Urls", "http://*:80 grpc://*:9090")
+            .WithPortBinding(9090, true)
+            .Build();
+
+        try
+        {
+            await wireMockContainer.StartAsync().ConfigureAwait(false);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                var logs = await wireMockContainer.GetLogsAsync(DateTime.MinValue);
+                logs.Should().NotBeNull();
+
+                var url = wireMockContainer.GetPublicUrl();
+                url.Should().NotBeNullOrWhiteSpace();
+
+                var urls = wireMockContainer.GetPublicUrls();
+                urls.Should().HaveCount(2);
+
+                var httpPort = wireMockContainer.GetMappedPublicPort(80);
+                httpPort.Should().BeGreaterThan(0);
+
+                var httpUrl = wireMockContainer.GetMappedPublicUrl(80);
+                httpUrl.Should().StartWith("http://");
+
+                var grpcPort = wireMockContainer.GetMappedPublicPort(9090);
+                grpcPort.Should().BeGreaterThan(0);
+
+                var grpcUrl = wireMockContainer.GetMappedPublicUrl(80);
+                grpcUrl.Should().StartWith("http://");
+
+                var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+                var settings = await adminClient.GetSettingsAsync();
+                settings.Should().NotBeNull();
+            }
+        }
+        finally
+        {
+            await wireMockContainer.StopAsync();
+        }
+    }
+
+    [Fact]
+    public async Task WireMockContainer_Build_Grpc_TestPortsAndUrls2()
+    {
+        // Act
+        var adminUsername = $"username_{Guid.NewGuid()}";
+        var adminPassword = $"password_{Guid.NewGuid()}";
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .WithAdminUserNameAndPassword(adminUsername, adminPassword)
+            .AddUrl("http://*:8080")
+            .AddUrl("grpc://*:9090")
+            .AddUrl("grpc://*:9091")
+            .Build();
+
+        try
+        {
+            await wireMockContainer.StartAsync().ConfigureAwait(false);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                var logs = await wireMockContainer.GetLogsAsync(DateTime.MinValue);
+                logs.Should().NotBeNull();
+
+                var url = wireMockContainer.GetPublicUrl();
+                url.Should().NotBeNullOrWhiteSpace();
+
+                var urls = wireMockContainer.GetPublicUrls();
+                urls.Should().HaveCount(4);
+
+                foreach (var internalPort in new[] { 80, 8080, 9090, 9091 })
+                {
+                    var publicPort = wireMockContainer.GetMappedPublicPort(internalPort);
+                    publicPort.Should().BeGreaterThan(0);
+
+                    var publicUrl = wireMockContainer.GetMappedPublicUrl(internalPort);
+                    publicUrl.Should().StartWith("http://");
+                }
+
+                var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+                var settings = await adminClient.GetSettingsAsync();
+                settings.Should().NotBeNull();
+            }
+        }
+        finally
+        {
+            await wireMockContainer.StopAsync();
+        }
+    }
+
+    [Fact]
+    public async Task WireMockContainer_Build_Grpc_ProtoDefinitionFromJson_UsingGrpcGeneratedClient()
     {
         var wireMockContainer = await Given_WireMockContainerIsStartedForHttpAndGrpc();
 
         await Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(wireMockContainer);
-
-        var adminClient = wireMockContainer.CreateWireMockAdminClient();
-
-        var mappingModels = await adminClient.GetMappingsAsync();
-        mappingModels.Should().NotBeNull().And.HaveCount(1);
-
-        try
-        {
-            var x = await When_GrpcClient_Calls_SayHelloAsync(wireMockContainer);
-        }
-        catch (Exception e)
-        {
-            var logs = await wireMockContainer.GetLogsAsync(DateTime.MinValue);
-
-            int tttt = 9;
-            throw;
-        }
 
         var reply = await When_GrpcClient_Calls_SayHelloAsync(wireMockContainer);
 

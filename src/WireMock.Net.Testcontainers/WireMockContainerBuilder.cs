@@ -207,11 +207,6 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         if (builder.DockerResourceConfiguration.AdditionalUrls.Any())
         {
             builder = builder.WithCommand($"--Urls http://*:80 {string.Join(" ", builder.DockerResourceConfiguration.AdditionalUrls)}");
-
-            if (builder.DockerResourceConfiguration.AdditionalUrls.Any(u => u.IndexOf("grpc", StringComparison.OrdinalIgnoreCase) >= 0))
-            {
-                // builder = builder.WithHttp2();
-            }
         }
 
         builder.Validate();
