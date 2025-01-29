@@ -12,7 +12,7 @@ using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Greet;
 using Grpc.Net.Client;
-using NarrowIntegrationTest.Lookup;
+using ExampleIntegrationTest.Lookup;
 using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -668,7 +668,7 @@ message Other {
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithTrailingHeader("grpc-status", "0")
-                .WithBodyAsProtoBuf(definition, "NarrowIntegrationTest.Lookup.GetVersionResponse",
+                .WithBodyAsProtoBuf(definition, "ExampleIntegrationTest.Lookup.GetVersionResponse",
                     new GetVersionResponse
                     {
                         Version = version,
@@ -677,9 +677,9 @@ message Other {
                             Seconds = seconds,
                             Nanos = nanos
                         },
-                        Client = new NarrowIntegrationTest.Lookup.Client
+                        Client = new ExampleIntegrationTest.Lookup.Client
                         {
-                            ClientName = NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter,
+                            ClientName = ExampleIntegrationTest.Lookup.Client.Types.Clients.Test,
                             CorrelationId = correlationId
                         }
                     }
@@ -695,7 +695,7 @@ message Other {
         // Assert
         reply.Version.Should().Be(version);
         reply.DateHired.Should().Be(new Timestamp { Seconds = seconds, Nanos = nanos });
-        reply.Client.ClientName.Should().Be(NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter);
+        reply.Client.ClientName.Should().Be(ExampleIntegrationTest.Lookup.Client.Types.Clients.Test);
         reply.Client.CorrelationId.Should().Be(correlationId);
     }
 
