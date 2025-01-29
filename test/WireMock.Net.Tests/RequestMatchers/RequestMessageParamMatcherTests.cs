@@ -44,6 +44,21 @@ public class RequestMessageParamMatcherTests
     }
 
     [Fact]
+    public void RequestMessageParamMatcher_GetMatchingScore_KeyWithNoValuePresentInUrl_Returns1_0()
+    {
+        // Assign
+        var requestMessage = new RequestMessage(new UrlDetails("http://localhost?key="), "GET", "127.0.0.1");
+        var matcher = new RequestMessageParamMatcher(MatchBehaviour.AcceptOnMatch, "key", false, "");
+
+        // Act
+        var result = new RequestMatchResult();
+        var score = matcher.GetMatchingScore(requestMessage, result);
+
+        // Assert
+        Check.That(score).IsEqualTo(1.0d);
+    }
+
+    [Fact]
     public void RequestMessageParamMatcher_GetMatchingScore_KeyWith3ValuesPresentInUrl_And_With1ExactStringWith2Patterns_Returns0_66()
     {
         // Assign
