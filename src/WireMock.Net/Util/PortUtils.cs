@@ -83,32 +83,6 @@ internal static class PortUtils
         }
     }
 
-    ///// <summary>
-    ///// Finds free TCP ports.
-    ///// </summary>
-    //public static IReadOnlyList<int> FindFreeTcpPorts(int numPorts)
-    //{
-    //    var freePorts = new List<int>();
-
-    //    TcpListener? tcpListener = null;
-    //    try
-    //    {
-    //        for (var i = 0; i < numPorts; i++)
-    //        {
-    //            tcpListener = new TcpListener(IPAddress.Loopback, 0);
-    //            tcpListener.Start();
-
-    //            freePorts.Add(((IPEndPoint)tcpListener.LocalEndpoint).Port);
-    //        }
-    //    }
-    //    finally
-    //    {
-    //        tcpListener?.Stop();
-    //    }
-
-    //    return freePorts;
-    //}
-
     /// <summary>
     /// Extract the isHttps, isHttp2, protocol, host and port from a URL.
     /// </summary>
@@ -118,7 +92,7 @@ internal static class PortUtils
         isHttp2 = false;
         protocol = null;
         host = null;
-        port = default;
+        port = 0;
 
         var match = UrlDetailsRegex.Match(url);
         if (match.Success)

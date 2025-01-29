@@ -32,7 +32,7 @@
   },
   "Response": {
     "BodyAsJson": {
-      "message": "hello {{request.BodyAsJson.name}}"
+      "message": "hello {{request.BodyAsJson.name}} {{request.method}}"
     },
     "UseTransformer": true,
     "TransformerType": "Handlebars",
