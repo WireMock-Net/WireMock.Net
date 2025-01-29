@@ -224,7 +224,7 @@ namespace WireMock.Owin
                 }
                 catch (Exception ex)
                 {
-                    _options.Logger.Error("HttpStatusCode set to 404 : No matching mapping found", ex);
+                    _options.Logger.Error("HttpStatusCode set to 404 : 'No matching mapping found', due to exception '{0}'", ex);
 
                     var notFoundResponse = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
                     await _responseMapper.MapAsync(notFoundResponse, ctx.Response).ConfigureAwait(false);
