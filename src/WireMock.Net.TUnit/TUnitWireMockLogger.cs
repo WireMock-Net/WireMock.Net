@@ -51,9 +51,9 @@ public sealed class TUnitWireMockLogger : IWireMockLogger
     }
 
     /// <inheritdoc />
-    public void Error(string formatString, Exception exception)
+    public void Error(string message, Exception exception)
     {
-        _tUnitLogger.LogError(Format("Error", formatString, exception.Message), exception);
+        _tUnitLogger.LogError(Format("Error", $"{message} {{0}}", exception));
 
         if (exception is AggregateException ae)
         {
