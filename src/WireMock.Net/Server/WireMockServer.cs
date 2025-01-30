@@ -602,7 +602,8 @@ public partial class WireMockServer : IWireMockServer
 
         _settings.ProtoDefinitions ??= new Dictionary<string, string[]>();
 
-        _settings.ProtoDefinitions[id] = protoDefinition;
+        // _settings.ProtoDefinitions[id] = protoDefinition;
+        _settings.ProtoDefinitions[id] = _settings.ProtoDefinitions[id].Union(protoDefinition).ToArray();
 
         return this;
     }

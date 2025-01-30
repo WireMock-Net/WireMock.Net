@@ -29,6 +29,7 @@ public sealed class WireMockContainer : DockerContainer
     internal const int ContainerPort = 80;
 
     private readonly WireMockConfiguration _configuration;
+    private readonly EventHandler _startedHandler = async (sender, eventArgs) => await WireMockContainerStartedAsync(sender, eventArgs);
 
     private IWireMockAdminApi? _adminApi;
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
@@ -42,7 +43,7 @@ public sealed class WireMockContainer : DockerContainer
     {
         _configuration = Stef.Validation.Guard.NotNull(configuration);
 
-        Started += WireMockContainer_Started;
+        Started += _startedHandler;
     }
 
     /// <summary>
@@ -175,7 +176,7 @@ public sealed class WireMockContainer : DockerContainer
             _enhancedFileSystemWatcher = null;
         }
 
-        Started -= WireMockContainer_Started;
+        Started -= _startedHandler;
 
         return base.DisposeAsyncCore();
     }
@@ -195,7 +196,7 @@ public sealed class WireMockContainer : DockerContainer
         }
     }
 
-    private void WireMockContainer_Started(object sender, EventArgs e)
+    private async Task WireMockContainerStartedAsync(object sender, EventArgs e)
     {
         _adminApi = CreateWireMockAdminClient();
 
@@ -212,6 +213,19 @@ public sealed class WireMockContainer : DockerContainer
         _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+
+        await CallAdditionalActionsAfterStartedAsync();
+    }
+
+    private Task CallAdditionalActionsAfterStartedAsync()
+    {
+        foreach (var kvp in _configuration.ProtoDefinitions)
+        {
+            foreach (var protoDefinition in kvp.Value)
+            {
+                await _adminApi!.AddProtoDefinitionAsync(kvp.Key, protoDefinition);
+            }
+        }
     }
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)

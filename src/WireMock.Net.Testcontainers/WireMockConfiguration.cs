@@ -28,6 +28,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
 
     public List<string> AdditionalUrls { get; private set; } = [];
 
+    public Dictionary<string, string[]> ProtoDefinitions { get; set; } = new ();
+
     public WireMockConfiguration(string? username = null, string? password = null)
     {
         Username = username;
@@ -75,6 +77,7 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
         WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
         AdditionalUrls = BuildConfiguration.Combine(oldValue.AdditionalUrls.AsEnumerable(), newValue.AdditionalUrls.AsEnumerable()).ToList();
+        ProtoDefinitions = BuildConfiguration.Combine(oldValue.ProtoDefinitions, newValue.ProtoDefinitions);
     }
 
     /// <summary>
@@ -107,7 +110,23 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     /// <returns><see cref="WireMockConfiguration"/></returns>
     public WireMockConfiguration WithAdditionalUrl(string url)
     {
-        AdditionalUrls.Add(url);
+        AdditionalUrls.Add(Guard.NotNullOrWhiteSpace(url));
+        return this;
+    }
+
+    /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <returns><see cref="WireMockConfiguration"/></returns>
+    public WireMockConfiguration AddProtoDefinition(string id, params string[] protoDefinition)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrEmpty(protoDefinition);
+
+        ProtoDefinitions[id] = protoDefinition;
+
         return this;
     }
 }
