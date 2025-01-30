@@ -13,6 +13,22 @@ public partial class WireMockServer
 {
     private static readonly Encoding[] FileBodyIsString = [Encoding.UTF8, Encoding.ASCII];
 
+    #region ProtoDefinitions/{id}
+    private IResponseMessage ProtoDefinitionAdd(IRequestMessage requestMessage)
+    {
+        if (requestMessage.BodyAsString is null)
+        {
+            return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Body is null");
+        }
+
+        var id = requestMessage.Path.Split('/').Last();
+
+        AddProtoDefinition(id, requestMessage.BodyAsString);
+
+        return ResponseMessageBuilder.Create(HttpStatusCode.OK, "ProtoDefinition added");
+    }
+    #endregion
+
     #region Files/{filename}
     private IResponseMessage FilePost(IRequestMessage requestMessage)
     {

@@ -68,6 +68,7 @@ public partial class WireMockServer
         public RegexMatcher ScenariosNameMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+$");
         public RegexMatcher ScenariosNameWithResetMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+\\/reset$");
         public RegexMatcher FilesFilenamePathMatcher => new($"^{_prefixEscaped}\\/files\\/.+$");
+        public RegexMatcher ProtoDefinitionsIdPathMatcher => new($"^{_prefixEscaped}\\/protodefinitions\\/.+$");
     }
 
     #region InitAdmin
@@ -147,6 +148,9 @@ public partial class WireMockServer
         // __admin/openapi
         Given(Request.Create().WithPath($"{_adminPaths.OpenApi}/convert").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(OpenApiConvertToMappings));
         Given(Request.Create().WithPath($"{_adminPaths.OpenApi}/save").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(OpenApiSaveToMappings));
+
+        // __admin/protodefinitions/{id}
+        Given(Request.Create().WithPath(_adminPaths.ProtoDefinitionsIdPathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ProtoDefinitionAdd));
     }
     #endregion
 
@@ -369,7 +373,7 @@ public partial class WireMockServer
     {
         if (TryParseGuidFromRequestMessage(requestMessage, out var guid))
         {
-            var code = _mappingBuilder.ToCSharpCode(guid, GetMappingConverterType(requestMessage));
+            var code = _mappingBuilder.ToCSharpCode(guid, GetEnumFromQuery(requestMessage, MappingConverterType.Server));
             if (code is null)
             {
                 _settings.Logger.Warn("HttpStatusCode set to 404 : Mapping not found");
@@ -383,15 +387,16 @@ public partial class WireMockServer
         return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "GUID is missing");
     }
 
-    private static MappingConverterType GetMappingConverterType(IRequestMessage requestMessage)
+    private static TEnum GetEnumFromQuery<TEnum>(IRequestMessage requestMessage, TEnum defaultValue)
+        where TEnum : struct
     {
-        if (requestMessage.QueryIgnoreCase?.TryGetValue(nameof(MappingConverterType), out var values) == true &&
-            Enum.TryParse(values.FirstOrDefault(), true, out MappingConverterType parsed))
+        if (requestMessage.QueryIgnoreCase?.TryGetValue(typeof(TEnum).Name, out var values) == true &&
+            Enum.TryParse<TEnum>(values.FirstOrDefault(), true, out var parsed))
         {
             return parsed;
         }
 
-        return MappingConverterType.Server;
+        return defaultValue;
     }
 
     private IMapping? FindMappingByGuid(IRequestMessage requestMessage)
@@ -465,7 +470,7 @@ public partial class WireMockServer
 
     private IResponseMessage MappingsCodeGet(IRequestMessage requestMessage)
     {
-        var converterType = GetMappingConverterType(requestMessage);
+        var converterType = GetEnumFromQuery(requestMessage, MappingConverterType.Server);
 
         var code = _mappingBuilder.ToCSharpCode(converterType);
 
