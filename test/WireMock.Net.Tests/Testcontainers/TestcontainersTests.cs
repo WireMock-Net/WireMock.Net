@@ -8,15 +8,16 @@ using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using WireMock.Net.Testcontainers;
+using WireMock.Net.Testcontainers.Utils;
 using WireMock.Net.Tests.Facts;
 using Xunit;
 
 namespace WireMock.Net.Tests.Testcontainers;
 
-public class TestcontainersTests
+public partial class TestcontainersTests
 {
     [Fact]
-    public async Task WireMockContainer_Build_WithNoImage_And_StartAsync_and_StopAsync()
+    public async Task WireMockContainer_Build_And_StartAsync_and_StopAsync()
     {
         // Act
         var adminUsername = $"username_{Guid.NewGuid()}";
@@ -32,7 +33,7 @@ public class TestcontainersTests
 
     // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
     [RunOnDockerPlatformFact("Linux")]
-    public async Task WireMockContainer_Build_WithNoImageAndNetwork_And_StartAsync_and_StopAsync()
+    public async Task WireMockContainer_Build_WithNetwork_And_StartAsync_and_StopAsync()
     {
         // Act
         var dummyNetwork = new NetworkBuilder()
@@ -61,7 +62,8 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;
+        if (imageOS == OSPlatform.Windows)
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithWindowsImage();
         }
@@ -86,7 +88,8 @@ public class TestcontainersTests
             .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;
+        if (imageOS == OSPlatform.Windows)
         {
             wireMockContainerBuilder = wireMockContainerBuilder.WithImage("sheyenrath/wiremock.net-windows");
         }

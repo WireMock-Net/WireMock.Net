@@ -12,7 +12,7 @@ using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Greet;
 using Grpc.Net.Client;
-using NarrowIntegrationTest.Lookup;
+using ExampleIntegrationTest.Lookup;
 using WireMock.Constants;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -668,7 +668,7 @@ message Other {
             .RespondWith(Response.Create()
                 .WithHeader("Content-Type", "application/grpc")
                 .WithTrailingHeader("grpc-status", "0")
-                .WithBodyAsProtoBuf(definition, "NarrowIntegrationTest.Lookup.GetVersionResponse",
+                .WithBodyAsProtoBuf(definition, "ExampleIntegrationTest.Lookup.GetVersionResponse",
                     new GetVersionResponse
                     {
                         Version = version,
@@ -677,9 +677,9 @@ message Other {
                             Seconds = seconds,
                             Nanos = nanos
                         },
-                        Client = new NarrowIntegrationTest.Lookup.Client
+                        Client = new ExampleIntegrationTest.Lookup.Client
                         {
-                            ClientName = NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter,
+                            ClientName = ExampleIntegrationTest.Lookup.Client.Types.Clients.Test,
                             CorrelationId = correlationId
                         }
                     }
@@ -695,23 +695,34 @@ message Other {
         // Assert
         reply.Version.Should().Be(version);
         reply.DateHired.Should().Be(new Timestamp { Seconds = seconds, Nanos = nanos });
-        reply.Client.ClientName.Should().Be(NarrowIntegrationTest.Lookup.Client.Types.Clients.BillingCenter);
+        reply.Client.ClientName.Should().Be(ExampleIntegrationTest.Lookup.Client.Types.Clients.Test);
         reply.Client.CorrelationId.Should().Be(correlationId);
     }
 
     [Fact]
-    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    public async Task WireMockServer_WithBodyAsProtoBuf_FromJson_UsingGrpcGeneratedClient()
     {
-        var server = Given_When_ServerStartedUsingHttp2();
-        Given_ProtoDefinition_IsAddedOnServerLevel(server);
-        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server);
+        var server = Given_When_ServerStarted_And_RunningOnHttpAndGrpc();
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server, "protobuf-mapping-1.json");
 
         var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
 
         Then_ReplyMessage_Should_BeCorrect(reply);
     }
 
-    private static WireMockServer Given_When_ServerStartedUsingHttp2()
+    [Fact]
+    public async Task WireMockServer_WithBodyAsProtoBuf_ServerProtoDefinitionFromJson_UsingGrpcGeneratedClient()
+    {
+        var server = Given_When_ServerStarted_And_RunningOnHttpAndGrpc();
+        Given_ProtoDefinition_IsAddedOnServerLevel(server);
+        await Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(server, "protobuf-mapping-3.json");
+
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(server.Urls[1]);
+
+        Then_ReplyMessage_Should_BeCorrect(reply);
+    }
+
+    private static WireMockServer Given_When_ServerStarted_And_RunningOnHttpAndGrpc()
     {
         var ports = PortUtils.FindFreeTcpPorts(2);
 
@@ -728,9 +739,9 @@ message Other {
         server.AddProtoDefinition("my-greeter", ReadProtoFile("greet.proto"));
     }
 
-    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server)
+    private static async Task Given_When_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockServer server, string filename)
     {
-        var mappingsJson = ReadMappingFile("protobuf-mapping-3.json");
+        var mappingsJson = ReadMappingFile(filename);
 
         using var httpClient = server.CreateClient();
 

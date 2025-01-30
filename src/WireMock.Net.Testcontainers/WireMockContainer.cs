@@ -1,7 +1,9 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,6 +32,7 @@ public sealed class WireMockContainer : DockerContainer
 
     private IWireMockAdminApi? _adminApi;
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
+    private IDictionary<int, Uri>? _publicUris;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WireMockContainer" /> class.
@@ -47,6 +50,21 @@ public sealed class WireMockContainer : DockerContainer
     /// </summary>
     [PublicAPI]
     public string GetPublicUrl() => GetPublicUri().ToString();
+
+    /// <summary>
+    /// Gets the public Urls as a dictionary with the internal port as the key.
+    /// </summary>
+    [PublicAPI]
+    public IDictionary<int, string> GetPublicUrls() => GetPublicUris().ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+
+    /// <summary>
+    /// Gets the mapped public port for the given container port.
+    /// </summary>
+    [PublicAPI]
+    public string GetMappedPublicUrl(int containerPort)
+    {
+        return GetPublicUris()[containerPort].ToString();
+    }
 
     /// <summary>
     /// Create a RestEase Admin client which can be used to call the admin REST endpoint.
@@ -121,7 +139,7 @@ public sealed class WireMockContainer : DockerContainer
             await ReloadStaticMappingsAsync(target, ct);
         }
     }
-    
+
     /// <summary>
     /// Reload the static mappings.
     /// </summary>
@@ -198,7 +216,14 @@ public sealed class WireMockContainer : DockerContainer
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
     {
-        await ReloadStaticMappingsAsync(args.FullPath);
+        try
+        {
+            await ReloadStaticMappingsAsync(args.FullPath);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Error reloading static mappings from '{FullPath}'.", args.FullPath);
+        }
     }
 
     private async Task ReloadStaticMappingsAsync(string path, CancellationToken cancellationToken = default)
@@ -207,5 +232,27 @@ public sealed class WireMockContainer : DockerContainer
         await ReloadStaticMappingsAsync(cancellationToken);
     }
 
-    private Uri GetPublicUri() => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(ContainerPort)).Uri;
+    private Uri GetPublicUri() => GetPublicUris()[ContainerPort];
+
+    private IDictionary<int, Uri> GetPublicUris()
+    {
+        if (_publicUris != null)
+        {
+            return _publicUris;
+        }
+
+        _publicUris = _configuration.ExposedPorts.Keys
+            .Select(int.Parse)
+            .ToDictionary(port => port, port => new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri);
+
+        foreach (var url in _configuration.AdditionalUrls)
+        {
+            if (PortUtils.TryExtract(url, out _, out _, out _, out _, out var port))
+            {
+                _publicUris[port] = new UriBuilder(Uri.UriSchemeHttp, Hostname, GetMappedPublicPort(port)).Uri;
+            }
+        }
+
+        return _publicUris;
+    }
 }

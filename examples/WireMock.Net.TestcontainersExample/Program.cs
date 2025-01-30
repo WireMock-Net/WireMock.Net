@@ -198,7 +198,7 @@ internal class Program
         var dummyNetwork = new NetworkBuilder()
             .WithName($"Dummy Network for {image ?? "null"}")
             .WithReuse(true)
-            .WithCleanUp(true)
+            // .WithCleanUp(true)
             .Build();
 
         var builder = new WireMockContainerBuilder()

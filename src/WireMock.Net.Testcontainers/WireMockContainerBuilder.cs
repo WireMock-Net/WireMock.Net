@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
@@ -8,6 +9,7 @@ using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
 using Stef.Validation;
 using WireMock.Net.Testcontainers.Utils;
+using WireMock.Util;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -132,6 +134,36 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
             WithCommand("--WatchStaticMappingsInSubdirectories", includeSubDirectories);
     }
 
+    /// <summary>
+    /// Use Http version 2.
+    /// </summary>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder WithHttp2()
+    {
+        return WithCommand("--UseHttp2 true");
+    }
+
+    /// <summary>
+    /// Adds another URL to the WireMock container. By default, the WireMock container will listen on <c>http://*:80</c>.
+    ///
+    /// This method can be used to also host the WireMock container on another port or protocol (like grpc).
+    /// </summary>
+    /// <example>grpc://*:9090</example>
+    /// <returns>A configured instance of <see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder AddUrl(string url)
+    {
+        if (!PortUtils.TryExtract(Guard.NotNullOrEmpty(url), out _, out _, out _, out _, out var port))
+        {
+            throw new ArgumentException("The URL is not valid.", nameof(url));
+        }
+
+        DockerResourceConfiguration.WithAdditionalUrl(url);
+
+        return WithPortBinding(port, true);
+    }
+
     private WireMockContainerBuilder WithCommand(string param, bool value)
     {
         return !value ? this : WithCommand($"{param} true");
@@ -170,6 +202,11 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         if (!string.IsNullOrEmpty(builder.DockerResourceConfiguration.StaticMappingsPath))
         {
             builder = builder.WithBindMount(builder.DockerResourceConfiguration.StaticMappingsPath, ContainerInfoProvider.Info[_imageOS.Value].MappingsPath);
+        }
+
+        if (builder.DockerResourceConfiguration.AdditionalUrls.Any())
+        {
+            builder = builder.WithCommand($"--Urls http://*:80 {string.Join(" ", builder.DockerResourceConfiguration.AdditionalUrls)}");
         }
 
         builder.Validate();
