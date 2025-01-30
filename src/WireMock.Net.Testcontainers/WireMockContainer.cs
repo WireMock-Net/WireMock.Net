@@ -17,6 +17,7 @@ using WireMock.Client.Extensions;
 using WireMock.Http;
 using WireMock.Net.Testcontainers.Utils;
 using WireMock.Util;
+using Stef.Validation;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -29,7 +30,6 @@ public sealed class WireMockContainer : DockerContainer
     internal const int ContainerPort = 80;
 
     private readonly WireMockConfiguration _configuration;
-    private readonly EventHandler _startedHandler = async (sender, eventArgs) => await WireMockContainerStartedAsync(sender, eventArgs);
 
     private IWireMockAdminApi? _adminApi;
     private EnhancedFileSystemWatcher? _enhancedFileSystemWatcher;
@@ -41,9 +41,9 @@ public sealed class WireMockContainer : DockerContainer
     /// <param name="configuration">The container configuration.</param>
     public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
-        _configuration = Stef.Validation.Guard.NotNull(configuration);
+        _configuration = Guard.NotNull(configuration);
 
-        Started += _startedHandler;
+        Started += async (sender, eventArgs) => await WireMockContainerStartedAsync(sender, eventArgs);
     }
 
     /// <summary>
@@ -176,8 +176,6 @@ public sealed class WireMockContainer : DockerContainer
             _enhancedFileSystemWatcher = null;
         }
 
-        Started -= _startedHandler;
-
         return base.DisposeAsyncCore();
     }
 
@@ -217,7 +215,7 @@ public sealed class WireMockContainer : DockerContainer
         await CallAdditionalActionsAfterStartedAsync();
     }
 
-    private Task CallAdditionalActionsAfterStartedAsync()
+    private async Task CallAdditionalActionsAfterStartedAsync()
     {
         foreach (var kvp in _configuration.ProtoDefinitions)
         {

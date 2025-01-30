@@ -6,6 +6,7 @@ using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
+using Stef.Validation;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -28,7 +29,7 @@ public sealed class WireMockConfiguration : ContainerConfiguration
 
     public List<string> AdditionalUrls { get; private set; } = [];
 
-    public Dictionary<string, string[]> ProtoDefinitions { get; set; } = new ();
+    public Dictionary<string, string[]> ProtoDefinitions { get; set; } = new();
 
     public WireMockConfiguration(string? username = null, string? password = null)
     {
