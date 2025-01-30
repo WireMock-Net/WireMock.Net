@@ -52,9 +52,9 @@ public class WireMockService : IWireMockService
             _logger.LogDebug("Admin[{0}] {1}", isAdminrequest, message);
         }
 
-        public void Error(string formatString, Exception exception)
+        public void Error(string message, Exception exception)
         {
-            _logger.LogError(formatString, exception.Message);
+            _logger.LogError(exception, message);
         }
     }
 
