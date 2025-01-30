@@ -16,14 +16,14 @@ public partial class WireMockServer
     #region ProtoDefinitions/{id}
     private IResponseMessage ProtoDefinitionAdd(IRequestMessage requestMessage)
     {
-        if (requestMessage.BodyAsString is null)
+        if (requestMessage.Body is null)
         {
             return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Body is null");
         }
 
         var id = requestMessage.Path.Split('/').Last();
 
-        AddProtoDefinition(id, requestMessage.BodyAsString);
+        AddProtoDefinition(id, requestMessage.Body);
 
         return ResponseMessageBuilder.Create(HttpStatusCode.OK, "ProtoDefinition added");
     }
