@@ -221,7 +221,7 @@ public sealed class WireMockContainer : DockerContainer
     {
         foreach (var kvp in _configuration.ProtoDefinitions)
         {
-            Logger.LogInformation("Adding ProtoDefinition {Id}', kvp.Key);
+            Logger.LogInformation("Adding ProtoDefinition {Id}", kvp.Key);
             foreach (var protoDefinition in kvp.Value)
             {
                 await _adminApi!.AddProtoDefinitionAsync(kvp.Key, protoDefinition);
