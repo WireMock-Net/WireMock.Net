@@ -129,9 +129,9 @@ public partial class TestcontainersTests
     [Fact]
     public async Task WireMockContainer_Build_Grpc_ProtoDefinitionFromJson_UsingGrpcGeneratedClient()
     {
-        var wireMockContainer = await Given_WireMockContainerIsStartedForHttpAndGrpc();
+        var wireMockContainer = await Given_WireMockContainerIsStartedForHttpAndGrpcAsync();
 
-        await Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(wireMockContainer);
+        await Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(wireMockContainer, "protobuf-mapping-1.json");
 
         var reply = await When_GrpcClient_Calls_SayHelloAsync(wireMockContainer);
 
@@ -140,7 +140,21 @@ public partial class TestcontainersTests
         await wireMockContainer.StopAsync();
     }
 
-    private static async Task<WireMockContainer> Given_WireMockContainerIsStartedForHttpAndGrpc()
+    [Fact]
+    public async Task WireMockContainer_Build_Grpc_ProtoDefinitionAtServerLevel_UsingGrpcGeneratedClient()
+    {
+        var wireMockContainer = await Given_WireMockContainerWithProtodefinitionAtServerLevelIsStartedForHttpAndGrpcAsync();
+
+        await Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(wireMockContainer, "protobuf-mapping-4.json");
+
+        var reply = await When_GrpcClient_Calls_SayHelloAsync(wireMockContainer);
+
+        Then_ReplyMessage_Should_BeCorrect(reply);
+
+        await wireMockContainer.StopAsync();
+    }
+
+    private static async Task<WireMockContainer> Given_WireMockContainerIsStartedForHttpAndGrpcAsync()
     {
         var wireMockContainer = new WireMockContainerBuilder()
             .WithAutoRemove(true)
@@ -153,9 +167,23 @@ public partial class TestcontainersTests
         return wireMockContainer;
     }
 
-    private static async Task Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockContainer wireMockContainer)
+    private static async Task<WireMockContainer> Given_WireMockContainerWithProtodefinitionAtServerLevelIsStartedForHttpAndGrpcAsync()
     {
-        var mappingsJson = ReadMappingFile("protobuf-mapping-1.json");
+        var wireMockContainer = new WireMockContainerBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .AddUrl("grpc://*:9090")
+            .AddProtoDefinition("my-greeter", ReadFile("greet.proto"))
+            .Build();
+
+        await wireMockContainer.StartAsync();
+
+        return wireMockContainer;
+    }
+
+    private static async Task Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(WireMockContainer wireMockContainer, string filename)
+    {
+        var mappingsJson = ReadFile(filename);
 
         using var httpClient = wireMockContainer.CreateClient();
 
@@ -178,7 +206,7 @@ public partial class TestcontainersTests
         reply.Message.Should().Be("hello stef POST");
     }
 
-    private static string ReadMappingFile(string filename)
+    private static string ReadFile(string filename)
     {
         return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "__admin", "mappings", filename));
     }

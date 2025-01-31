@@ -119,7 +119,7 @@ public class WireMockServerProxyTests
         }
 
         // Assert
-        server.Mappings.Should().HaveCount(37);
+        server.Mappings.Should().HaveCount(Constants.NumAdminMappings + 2);
     }
 
     [Fact]

@@ -164,6 +164,23 @@ public sealed class WireMockContainerBuilder : ContainerBuilder<WireMockContaine
         return WithPortBinding(port, true);
     }
 
+    /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <returns><see cref="WireMockContainerBuilder"/></returns>
+    [PublicAPI]
+    public WireMockContainerBuilder AddProtoDefinition(string id, params string[] protoDefinition)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrEmpty(protoDefinition);
+
+        DockerResourceConfiguration.AddProtoDefinition(id, protoDefinition);
+
+        return this;
+    }
+
     private WireMockContainerBuilder WithCommand(string param, bool value)
     {
         return !value ? this : WithCommand($"{param} true");

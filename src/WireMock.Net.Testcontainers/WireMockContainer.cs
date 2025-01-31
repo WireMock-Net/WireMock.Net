@@ -12,12 +12,12 @@ using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using RestEase;
+using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
 using WireMock.Net.Testcontainers.Utils;
 using WireMock.Util;
-using Stef.Validation;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -222,7 +222,14 @@ public sealed class WireMockContainer : DockerContainer
             Logger.LogInformation("Adding ProtoDefinition {Id}", kvp.Key);
             foreach (var protoDefinition in kvp.Value)
             {
-                await _adminApi!.AddProtoDefinitionAsync(kvp.Key, protoDefinition);
+                try
+                {
+                    await _adminApi!.AddProtoDefinitionAsync(kvp.Key, protoDefinition);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning(ex, "Error adding ProtoDefinition '{Id}'.", kvp.Key);
+                }
             }
         }
     }
