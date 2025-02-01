@@ -16,7 +16,7 @@ public readonly struct IdOrTexts
     public string? Id { get; }
 
     /// <summary>
-    /// The Text.
+    /// The Texts.
     /// </summary>
     public IReadOnlyList<string> Texts { get; }
 
@@ -41,7 +41,7 @@ public readonly struct IdOrTexts
     }
 
     /// <summary>
-    /// When Id is defined, return process the Id, else process the Texts.
+    /// When Id is defined, process the Id, else process the Texts.
     /// </summary>
     /// <param name="id">Callback to process the id.</param>
     /// <param name="texts">Callback to process the texts.</param>

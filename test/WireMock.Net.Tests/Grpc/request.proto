@@ -1,0 +1,8 @@
+// request.proto
+syntax = "proto3";
+
+package greet;
+
+message HelloRequest {
+  string name = 1;
+}
