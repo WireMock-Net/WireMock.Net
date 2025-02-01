@@ -30,7 +30,7 @@ internal class WireMockProtoFileResolver : IProtoFileResolver
         foreach (var extraProtoDefinition in protoDefinitions.Skip(1))
         {
             var firstNonEmptyLine = extraProtoDefinition.Split(['\r', '\n']).FirstOrDefault(l => !string.IsNullOrEmpty(l));
-            if (firstNonEmptyLine != null && TryGetValidFileName(firstNonEmptyLine.TrimStart(['\r', '\n', '/', ' ']), out var validFileName))
+            if (firstNonEmptyLine != null && TryGetValidFileName(firstNonEmptyLine.TrimStart(['/', ' ']), out var validFileName))
             {
                 _files.Add(validFileName, extraProtoDefinition);
             }
