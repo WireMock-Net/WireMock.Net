@@ -77,8 +77,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         StaticMappingsPath = BuildConfiguration.Combine(oldValue.StaticMappingsPath, newValue.StaticMappingsPath);
         WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
         WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
-        AdditionalUrls = BuildConfiguration.Combine(oldValue.AdditionalUrls.AsEnumerable(), newValue.AdditionalUrls.AsEnumerable()).ToList();
-        ProtoDefinitions = BuildConfiguration.Combine(oldValue.ProtoDefinitions, newValue.ProtoDefinitions);
+        AdditionalUrls = Combine(oldValue.AdditionalUrls, newValue.AdditionalUrls);
+        ProtoDefinitions = Combine(oldValue.ProtoDefinitions, newValue.ProtoDefinitions);
     }
 
     /// <summary>
@@ -129,5 +129,17 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         ProtoDefinitions[id] = protoDefinition;
 
         return this;
+    }
+
+    private static List<T> Combine<T>(List<T> oldValue, List<T> newValue)
+    {
+        return oldValue.Concat(newValue).ToList();
+    }
+
+    private static Dictionary<TKey, TValue> Combine<TKey, TValue>(Dictionary<TKey, TValue> oldValue, Dictionary<TKey, TValue> newValue)
+    {
+        return newValue
+            .Concat(oldValue.Where(item => !newValue.Keys.Contains(item.Key)))
+            .ToDictionary(item => item.Key, item => item.Value);
     }
 }

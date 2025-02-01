@@ -198,6 +198,13 @@ public sealed class WireMockContainer : DockerContainer
     {
         _adminApi = CreateWireMockAdminClient();
 
+        RegisterEnhancedFileSystemWatcher();
+
+        await CallAdditionalActionsAfterStartedAsync();
+    }
+
+    private void RegisterEnhancedFileSystemWatcher()
+    {
         if (!_configuration.WatchStaticMappings || string.IsNullOrEmpty(_configuration.StaticMappingsPath))
         {
             return;
@@ -211,8 +218,6 @@ public sealed class WireMockContainer : DockerContainer
         _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.EnableRaisingEvents = true;
-
-        await CallAdditionalActionsAfterStartedAsync();
     }
 
     private async Task CallAdditionalActionsAfterStartedAsync()
