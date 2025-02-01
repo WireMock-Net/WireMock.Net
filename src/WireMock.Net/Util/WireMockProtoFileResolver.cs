@@ -2,6 +2,7 @@
 
 #if PROTOBUF
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using ProtoBufJsonConverter;
@@ -9,21 +10,29 @@ using Stef.Validation;
 
 namespace WireMock.Util;
 
+/// <summary>
+/// This resolver is used to resolve the extra ProtoDefinition files.
+/// It assumes that:
+/// - the first ProtoDefinition file is the main ProtoDefinition file.
+/// - the first commented line of each extra ProtoDefinition file is the filename which is used in the import of the other ProtoDefinition file(s).
+/// </summary>
 internal class WireMockProtoFileResolver : IProtoFileResolver
 {
     private readonly Dictionary<string, string> _files = new();
 
     public WireMockProtoFileResolver(IReadOnlyCollection<string> protoDefinitions)
     {
-        if (Guard.NotNullOrEmpty(protoDefinitions).Count() > 1)
+        if (Guard.NotNullOrEmpty(protoDefinitions).Count() <= 1)
         {
-            foreach (var extraProtoDefinition in protoDefinitions.Skip(1))
+            return;
+        }
+
+        foreach (var extraProtoDefinition in protoDefinitions.Skip(1))
+        {
+            var firstNonEmptyLine = extraProtoDefinition.Split(['\r', '\n']).FirstOrDefault(l => !string.IsNullOrEmpty(l));
+            if (firstNonEmptyLine != null && TryGetValidFileName(firstNonEmptyLine.TrimStart(['\r', '\n', '/', ' ']), out var validFileName))
             {
-                var firstNonEmptyLine = extraProtoDefinition.Split(['\r', '\n']).FirstOrDefault(l => !string.IsNullOrEmpty(l));
-                if (firstNonEmptyLine != null)
-                {
-                    _files.Add(firstNonEmptyLine.TrimStart(['\r', '\n', '/', ' ']), extraProtoDefinition);
-                }
+                _files.Add(validFileName, extraProtoDefinition);
             }
         }
     }
@@ -41,6 +50,18 @@ internal class WireMockProtoFileResolver : IProtoFileResolver
         }
 
         throw new FileNotFoundException($"The ProtoDefinition '{path}' was not found.");
+    }
+
+    private static bool TryGetValidFileName(string fileName, [NotNullWhen(true)] out string? validFileName)
+    {
+        if (!fileName.Any(c => Path.GetInvalidFileNameChars().Contains(c)))
+        {
+            validFileName = fileName;
+            return true;
+        }
+
+        validFileName = null;
+        return false;
     }
 }
 #endif
