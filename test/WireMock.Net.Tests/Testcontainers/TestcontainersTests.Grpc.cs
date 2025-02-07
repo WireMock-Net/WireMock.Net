@@ -140,7 +140,7 @@ public partial class TestcontainersTests
         await wireMockContainer.StopAsync();
     }
 
-    [Fact]
+    [Fact(Skip = "new docker is needed")]
     public async Task WireMockContainer_Build_Grpc_ProtoDefinitionAtServerLevel_UsingGrpcGeneratedClient()
     {
         var wireMockContainer = await Given_WireMockContainerWithProtodefinitionAtServerLevelIsStartedForHttpAndGrpcAsync();
