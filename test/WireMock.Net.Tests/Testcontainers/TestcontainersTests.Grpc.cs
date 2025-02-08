@@ -3,7 +3,6 @@
 #if NET6_0_OR_GREATER
 using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -140,10 +139,10 @@ public partial class TestcontainersTests
         await wireMockContainer.StopAsync();
     }
 
-    [Fact(Skip = "new docker is needed")]
+    [Fact]
     public async Task WireMockContainer_Build_Grpc_ProtoDefinitionAtServerLevel_UsingGrpcGeneratedClient()
     {
-        var wireMockContainer = await Given_WireMockContainerWithProtodefinitionAtServerLevelIsStartedForHttpAndGrpcAsync();
+        var wireMockContainer = await Given_WireMockContainerWithProtoDefinitionAtServerLevelIsStartedForHttpAndGrpcAsync();
 
         await Given_ProtoBufMappingIsAddedViaAdminInterfaceAsync(wireMockContainer, "protobuf-mapping-4.json");
 
@@ -167,7 +166,7 @@ public partial class TestcontainersTests
         return wireMockContainer;
     }
 
-    private static async Task<WireMockContainer> Given_WireMockContainerWithProtodefinitionAtServerLevelIsStartedForHttpAndGrpcAsync()
+    private static async Task<WireMockContainer> Given_WireMockContainerWithProtoDefinitionAtServerLevelIsStartedForHttpAndGrpcAsync()
     {
         var wireMockContainer = new WireMockContainerBuilder()
             .WithAutoRemove(true)
