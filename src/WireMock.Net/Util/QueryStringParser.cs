@@ -50,18 +50,6 @@ internal static class QueryStringParser
 
         var queryParameterMultipleValueSupport = support ?? QueryParameterMultipleValueSupport.All;
 
-        string[] JoinParts(string[] parts)
-        {
-            if (parts.Length > 1)
-            {
-                return queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Comma) ?
-                    parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries) : // Support "?key=1,2"
-                    new[] { parts[1] };
-            }
-
-            return new string[0];
-        }
-
         var splitOn = new List<string>();
         if (queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Ampersand))
         {
@@ -74,8 +62,24 @@ internal static class QueryStringParser
 
         return queryString!.TrimStart('?')
             .Split(splitOn.ToArray(), StringSplitOptions.RemoveEmptyEntries)
-            .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
+            .Select(parameter => parameter.Split(['='], 2, StringSplitOptions.RemoveEmptyEntries))
             .GroupBy(parts => parts[0], JoinParts)
-            .ToDictionary(grouping => grouping.Key, grouping => new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode)));
+            .ToDictionary
+            (
+                grouping => grouping.Key,
+                grouping => grouping.Any() ? new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode)) : new WireMockList<string>(string.Empty)
+            );
+
+        string[] JoinParts(string[] parts)
+        {
+            if (parts.Length > 1)
+            {
+                return queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Comma) ?
+                    parts[1].Split([","], StringSplitOptions.RemoveEmptyEntries) : // Support "?key=1,2"
+                    [parts[1]];
+            }
+
+            return [];
+        }
     }
 }
