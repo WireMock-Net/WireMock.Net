@@ -26,8 +26,6 @@ namespace WireMock.Net.Tests;
 
 public class WireMockServerAdminTests
 {
-    private const int NumStaticMappings = 10;
-
     private static string GetCurrentFolder()
     {
         return Directory.GetCurrentDirectory();
@@ -40,8 +38,8 @@ public class WireMockServerAdminTests
         string folder = Path.Combine(GetCurrentFolder(), "__admin", "mappings");
         server.ReadStaticMappings(folder);
 
-        Check.That(server.Mappings).HasSize(NumStaticMappings);
-        Check.That(server.MappingModels).HasSize(NumStaticMappings);
+        Check.That(server.Mappings).HasSize(Constants.NumStaticMappings);
+        Check.That(server.MappingModels).HasSize(Constants.NumStaticMappings);
 
         // Act
         server.ResetMappings();
@@ -220,7 +218,7 @@ public class WireMockServerAdminTests
         server.ReadStaticMappings(folder);
 
         var mappings = server.Mappings.ToArray();
-        Check.That(mappings).HasSize(NumStaticMappings);
+        Check.That(mappings).HasSize(Constants.NumStaticMappings);
 
         server.Stop();
     }

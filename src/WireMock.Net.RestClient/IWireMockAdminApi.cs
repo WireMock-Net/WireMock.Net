@@ -312,6 +312,15 @@ public interface IWireMockAdminApi
     Task<StatusModel> DeleteFileAsync([Path] string filename, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Post("protodefinitions/{id}")]
+    Task<StatusModel> AddProtoDefinitionAsync([Path] string id, [Body] string body, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Check if a file exists
     /// </summary>
     /// <param name="filename">The filename</param>

@@ -6,6 +6,7 @@ using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using JetBrains.Annotations;
+using Stef.Validation;
 
 namespace WireMock.Net.Testcontainers;
 
@@ -27,6 +28,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     public bool HasBasicAuthentication => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 
     public List<string> AdditionalUrls { get; private set; } = [];
+
+    public Dictionary<string, string[]> ProtoDefinitions { get; set; } = new();
 
     public WireMockConfiguration(string? username = null, string? password = null)
     {
@@ -74,7 +77,8 @@ public sealed class WireMockConfiguration : ContainerConfiguration
         StaticMappingsPath = BuildConfiguration.Combine(oldValue.StaticMappingsPath, newValue.StaticMappingsPath);
         WatchStaticMappings = BuildConfiguration.Combine(oldValue.WatchStaticMappings, newValue.WatchStaticMappings);
         WatchStaticMappingsInSubdirectories = BuildConfiguration.Combine(oldValue.WatchStaticMappingsInSubdirectories, newValue.WatchStaticMappingsInSubdirectories);
-        AdditionalUrls = BuildConfiguration.Combine(oldValue.AdditionalUrls.AsEnumerable(), newValue.AdditionalUrls.AsEnumerable()).ToList();
+        AdditionalUrls = Combine(oldValue.AdditionalUrls, newValue.AdditionalUrls);
+        ProtoDefinitions = Combine(oldValue.ProtoDefinitions, newValue.ProtoDefinitions);
     }
 
     /// <summary>
@@ -107,7 +111,35 @@ public sealed class WireMockConfiguration : ContainerConfiguration
     /// <returns><see cref="WireMockConfiguration"/></returns>
     public WireMockConfiguration WithAdditionalUrl(string url)
     {
-        AdditionalUrls.Add(url);
+        AdditionalUrls.Add(Guard.NotNullOrWhiteSpace(url));
         return this;
+    }
+
+    /// <summary>
+    /// Add a Grpc ProtoDefinition at server-level.
+    /// </summary>
+    /// <param name="id">Unique identifier for the ProtoDefinition.</param>
+    /// <param name="protoDefinition">The ProtoDefinition as text.</param>
+    /// <returns><see cref="WireMockConfiguration"/></returns>
+    public WireMockConfiguration AddProtoDefinition(string id, params string[] protoDefinition)
+    {
+        Guard.NotNullOrWhiteSpace(id);
+        Guard.NotNullOrEmpty(protoDefinition);
+
+        ProtoDefinitions[id] = protoDefinition;
+
+        return this;
+    }
+
+    private static List<T> Combine<T>(List<T> oldValue, List<T> newValue)
+    {
+        return oldValue.Concat(newValue).ToList();
+    }
+
+    private static Dictionary<TKey, TValue> Combine<TKey, TValue>(Dictionary<TKey, TValue> oldValue, Dictionary<TKey, TValue> newValue)
+    {
+        return newValue
+            .Concat(oldValue.Where(item => !newValue.Keys.Contains(item.Key)))
+            .ToDictionary(item => item.Key, item => item.Value);
     }
 }
