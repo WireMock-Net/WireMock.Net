@@ -62,15 +62,15 @@ internal static class QueryStringParser
 
         return queryString!.TrimStart('?')
             .Split(splitOn.ToArray(), StringSplitOptions.RemoveEmptyEntries)
-            .Select(parameter => parameter.Split(['='], 2, StringSplitOptions.RemoveEmptyEntries))
-            .GroupBy(parts => parts[0], JoinParts)
+            .Select(parameter => new { hasEqualSign = parameter.Contains('='), parts = parameter.Split(['='], 2, StringSplitOptions.RemoveEmptyEntries) })
+            .GroupBy(x => x.parts[0], y => JoinParts(y.hasEqualSign, y.parts))
             .ToDictionary
             (
                 grouping => grouping.Key,
-                grouping => grouping.Any() ? new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode)) : new WireMockList<string>(string.Empty)
+                grouping => new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode).OfType<string>())
             );
 
-        string[] JoinParts(string[] parts)
+        string[] JoinParts(bool hasEqualSign, string[] parts)
         {
             if (parts.Length > 1)
             {
@@ -79,7 +79,7 @@ internal static class QueryStringParser
                     [parts[1]];
             }
 
-            return [];
+            return hasEqualSign ? [string.Empty] : []; // Return empty string if no value (#1247)
         }
     }
 }

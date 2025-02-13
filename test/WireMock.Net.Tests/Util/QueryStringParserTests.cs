@@ -148,7 +148,7 @@ public class QueryStringParserTests
 
         // Assert
         result.Count.Should().Be(1);
-        result["empty"].Should().Equal(new WireMockList<string>());
+        result["empty"].Should().Equal(new WireMockList<string>(""));
     }
 
     [Fact]
@@ -354,18 +354,19 @@ public class QueryStringParserTests
     public void Parse_WithComplex()
     {
         // Assign
-        string query = "?q=energy+edge&rls=com.microsoft:en-au&ie=UTF-8&oe=UTF-8&startIndex=&startPage=1%22";
+        string query = "?q=energy+edge&rls=com.microsoft:en-au&ie=UTF-8&oe=UTF-8&startIndex=&startPage=1%22&x";
 
         // Act
         var result = QueryStringParser.Parse(query);
 
         // Assert
-        result.Count.Should().Be(6);
+        result.Count.Should().Be(7);
         result["q"].Should().Equal(new WireMockList<string>("energy edge"));
         result["rls"].Should().Equal(new WireMockList<string>("com.microsoft:en-au"));
         result["ie"].Should().Equal(new WireMockList<string>("UTF-8"));
         result["oe"].Should().Equal(new WireMockList<string>("UTF-8"));
-        result["startIndex"].Should().Equal(new WireMockList<string>());
+        result["startIndex"].Should().Equal(new WireMockList<string>(""));
         result["startPage"].Should().Equal(new WireMockList<string>("1\""));
+        result["x"].Should().Equal(new WireMockList<string>());
     }
 }
