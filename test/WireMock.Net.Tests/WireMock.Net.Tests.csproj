@@ -134,6 +134,14 @@
         <None Update="cert.pem">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Grpc\request.proto">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <!--<GrpcServices>Client</GrpcServices>-->
+        </None>
+        <None Update="Grpc\greet1.proto">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <!--<GrpcServices>Client</GrpcServices>-->
+        </None>
         <None Update="Grpc\policy.proto">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <GrpcServices>Client</GrpcServices>
@@ -152,6 +160,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="__admin\mappings\*.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="__admin\mappings\*.proto">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="__admin\mappings\subdirectory\*.xml">

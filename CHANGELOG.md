@@ -1,3 +1,10 @@
+# 1.7.2 (12 February 2025)
+- [#1246](https://github.com/WireMock-Net/WireMock.Net/pull/1246) - Add &quot;AddUrl&quot; to WireMockContainerBuilder to support grpc [feature] contributed by [StefH](https://github.com/StefH)
+- [#1248](https://github.com/WireMock-Net/WireMock.Net/pull/1248) - Add exception message to logging when mapping fails due to an exception. contributed by [JvE-iO](https://github.com/JvE-iO)
+- [#1250](https://github.com/WireMock-Net/WireMock.Net/pull/1250) - Add ProtoDefinition to WireMockContainer [feature] contributed by [StefH](https://github.com/StefH)
+- [#1239](https://github.com/WireMock-Net/WireMock.Net/issues/1239) - How to use WiremockContainerBuilder for grpc using http2 [feature]
+- [#1249](https://github.com/WireMock-Net/WireMock.Net/issues/1249) - Add protodefinition and refer it from mapping [feature]
+
 # 1.7.1 (26 January 2025)
 - [#1236](https://github.com/WireMock-Net/WireMock.Net/pull/1236) - Fix ProtoBuf mapping.json [bug] contributed by [StefH](https://github.com/StefH)
 - [#1245](https://github.com/WireMock-Net/WireMock.Net/pull/1245) - Use Handlebars.Net.Helpers to version 2.4.10 [feature] contributed by [StefH](https://github.com/StefH)

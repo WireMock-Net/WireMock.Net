@@ -12,6 +12,7 @@ using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using RestEase;
+using Stef.Validation;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Http;
@@ -40,9 +41,9 @@ public sealed class WireMockContainer : DockerContainer
     /// <param name="configuration">The container configuration.</param>
     public WireMockContainer(WireMockConfiguration configuration) : base(configuration)
     {
-        _configuration = Stef.Validation.Guard.NotNull(configuration);
+        _configuration = Guard.NotNull(configuration);
 
-        Started += WireMockContainer_Started;
+        Started += async (sender, eventArgs) => await WireMockContainerStartedAsync(sender, eventArgs);
     }
 
     /// <summary>
@@ -175,8 +176,6 @@ public sealed class WireMockContainer : DockerContainer
             _enhancedFileSystemWatcher = null;
         }
 
-        Started -= WireMockContainer_Started;
-
         return base.DisposeAsyncCore();
     }
 
@@ -195,10 +194,17 @@ public sealed class WireMockContainer : DockerContainer
         }
     }
 
-    private void WireMockContainer_Started(object sender, EventArgs e)
+    private async Task WireMockContainerStartedAsync(object sender, EventArgs e)
     {
         _adminApi = CreateWireMockAdminClient();
 
+        RegisterEnhancedFileSystemWatcher();
+
+        await CallAdditionalActionsAfterStartedAsync();
+    }
+
+    private void RegisterEnhancedFileSystemWatcher()
+    {
         if (!_configuration.WatchStaticMappings || string.IsNullOrEmpty(_configuration.StaticMappingsPath))
         {
             return;
@@ -212,6 +218,25 @@ public sealed class WireMockContainer : DockerContainer
         _enhancedFileSystemWatcher.Changed += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.Deleted += FileCreatedChangedOrDeleted;
         _enhancedFileSystemWatcher.EnableRaisingEvents = true;
+    }
+
+    private async Task CallAdditionalActionsAfterStartedAsync()
+    {
+        foreach (var kvp in _configuration.ProtoDefinitions)
+        {
+            Logger.LogInformation("Adding ProtoDefinition {Id}", kvp.Key);
+            foreach (var protoDefinition in kvp.Value)
+            {
+                try
+                {
+                    await _adminApi!.AddProtoDefinitionAsync(kvp.Key, protoDefinition);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning(ex, "Error adding ProtoDefinition '{Id}'.", kvp.Key);
+                }
+            }
+        }
     }
 
     private async void FileCreatedChangedOrDeleted(object sender, FileSystemEventArgs args)
