@@ -142,6 +142,6 @@ public class RequestMessageParamMatcher : IRequestMatcher
             }
         }
 
-        return total.Any() ? MatchScores.ToScore(total, MatchOperator.Average) : default;
+        return total.Any() ? MatchScores.ToScore(total, MatchOperator.Average) : 0;
     }
 }

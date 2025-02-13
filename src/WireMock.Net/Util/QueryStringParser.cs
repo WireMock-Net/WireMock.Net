@@ -20,12 +20,12 @@ internal static class QueryStringParser
     {
         if (queryString is null)
         {
-            nameValueCollection = default;
+            nameValueCollection = null;
             return false;
         }
 
         var parts = queryString!
-            .Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(["&"], StringSplitOptions.RemoveEmptyEntries)
             .Select(parameter => parameter.Split('='))
             .Distinct();
 
@@ -50,18 +50,6 @@ internal static class QueryStringParser
 
         var queryParameterMultipleValueSupport = support ?? QueryParameterMultipleValueSupport.All;
 
-        string[] JoinParts(string[] parts)
-        {
-            if (parts.Length > 1)
-            {
-                return queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Comma) ?
-                    parts[1].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries) : // Support "?key=1,2"
-                    new[] { parts[1] };
-            }
-
-            return new string[0];
-        }
-
         var splitOn = new List<string>();
         if (queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Ampersand))
         {
@@ -74,8 +62,24 @@ internal static class QueryStringParser
 
         return queryString!.TrimStart('?')
             .Split(splitOn.ToArray(), StringSplitOptions.RemoveEmptyEntries)
-            .Select(parameter => parameter.Split(new[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries))
-            .GroupBy(parts => parts[0], JoinParts)
-            .ToDictionary(grouping => grouping.Key, grouping => new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode)));
+            .Select(parameter => new { hasEqualSign = parameter.Contains('='), parts = parameter.Split(['='], 2, StringSplitOptions.RemoveEmptyEntries) })
+            .GroupBy(x => x.parts[0], y => JoinParts(y.hasEqualSign, y.parts))
+            .ToDictionary
+            (
+                grouping => grouping.Key,
+                grouping => new WireMockList<string>(grouping.SelectMany(x => x).Select(WebUtility.UrlDecode).OfType<string>())
+            );
+
+        string[] JoinParts(bool hasEqualSign, string[] parts)
+        {
+            if (parts.Length > 1)
+            {
+                return queryParameterMultipleValueSupport.HasFlag(QueryParameterMultipleValueSupport.Comma) ?
+                    parts[1].Split([","], StringSplitOptions.RemoveEmptyEntries) : // Support "?key=1,2"
+                    [parts[1]];
+            }
+
+            return hasEqualSign ? [string.Empty] : []; // Return empty string if equal sign with no value (#1247)
+        }
     }
 }
