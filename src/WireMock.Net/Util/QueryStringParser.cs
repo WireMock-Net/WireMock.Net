@@ -20,12 +20,12 @@ internal static class QueryStringParser
     {
         if (queryString is null)
         {
-            nameValueCollection = default;
+            nameValueCollection = null;
             return false;
         }
 
         var parts = queryString!
-            .Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(["&"], StringSplitOptions.RemoveEmptyEntries)
             .Select(parameter => parameter.Split('='))
             .Distinct();
 
@@ -79,7 +79,7 @@ internal static class QueryStringParser
                     [parts[1]];
             }
 
-            return hasEqualSign ? [string.Empty] : []; // Return empty string if no value (#1247)
+            return hasEqualSign ? [string.Empty] : []; // Return empty string if equal sign with no value (#1247)
         }
     }
 }
