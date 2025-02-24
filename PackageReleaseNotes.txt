@@ -1,8 +1,5 @@
-# 1.7.2 (12 February 2025)
-- #1246 Add &quot;AddUrl&quot; to WireMockContainerBuilder to support grpc [feature]
-- #1248 Add exception message to logging when mapping fails due to an exception.
-- #1250 Add ProtoDefinition to WireMockContainer [feature]
-- #1239 How to use WiremockContainerBuilder for grpc using http2 [feature]
-- #1249 Add protodefinition and refer it from mapping [feature]
+# 1.7.3 (24 February 2025)
+- #1253 Update QueryStringParser to support param with equal but no value [bug]
+- #1247 API call isn't matched when using an empty query string parameter [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

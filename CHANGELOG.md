@@ -1,3 +1,7 @@
+# 1.7.3 (24 February 2025)
+- [#1253](https://github.com/WireMock-Net/WireMock.Net/pull/1253) - Update QueryStringParser to support param with equal but no value [bug] contributed by [StefH](https://github.com/StefH)
+- [#1247](https://github.com/WireMock-Net/WireMock.Net/issues/1247) - API call isn't matched when using an empty query string parameter [bug]
+
 # 1.7.2 (12 February 2025)
 - [#1246](https://github.com/WireMock-Net/WireMock.Net/pull/1246) - Add &quot;AddUrl&quot; to WireMockContainerBuilder to support grpc [feature] contributed by [StefH](https://github.com/StefH)
 - [#1248](https://github.com/WireMock-Net/WireMock.Net/pull/1248) - Add exception message to logging when mapping fails due to an exception. contributed by [JvE-iO](https://github.com/JvE-iO)
