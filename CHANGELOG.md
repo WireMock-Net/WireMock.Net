@@ -1,3 +1,7 @@
+# 1.7.4 (27 February 2025)
+- [#1256](https://github.com/WireMock-Net/WireMock.Net/pull/1256) - Add ToArray() to ConcurrentObservableCollection [bug] contributed by [StefH](https://github.com/StefH)
+- [#1254](https://github.com/WireMock-Net/WireMock.Net/issues/1254) - FindLogEntries exception 'Destination array was not long enough' [bug]
+
 # 1.7.3 (24 February 2025)
 - [#1253](https://github.com/WireMock-Net/WireMock.Net/pull/1253) - Update QueryStringParser to support param with equal but no value [bug] contributed by [StefH](https://github.com/StefH)
 - [#1247](https://github.com/WireMock-Net/WireMock.Net/issues/1247) - API call isn't matched when using an empty query string parameter [bug]
