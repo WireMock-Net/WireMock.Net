@@ -84,4 +84,12 @@ internal class ConcurrentObservableCollection<T> : ObservableCollection<T>
             return Items.ToList();
         }
     }
+
+    public T[] ToArray()
+    {
+        lock (_lockObject)
+        {
+            return Items.ToArray();
+        }
+    }
 }

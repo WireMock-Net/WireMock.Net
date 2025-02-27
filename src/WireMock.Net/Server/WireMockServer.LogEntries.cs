@@ -26,7 +26,6 @@ public partial class WireMockServer
     [PublicAPI]
     public IReadOnlyList<ILogEntry> LogEntries => _options.LogEntries.ToArray();
 
-
     /// <inheritdoc />
     [PublicAPI]
     public IReadOnlyList<ILogEntry> FindLogEntries(params IRequestMatcher[] matchers)
