@@ -2,21 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
 using HandlebarsDotNet.Helpers.Helpers;
-using WireMock.Handlers;
+using WireMock.Settings;
+using WireMock.Types;
 
 namespace WireMock.Transformers.Handlebars;
 
 internal static class WireMockHandlebarsHelpers
 {
-    public static void Register(IHandlebars handlebarsContext, IFileSystemHandler fileSystemHandler)
+    internal static void Register(IHandlebars handlebarsContext, WireMockServerSettings settings)
     {
-        // Register https://github.com/StefH/Handlebars.Net.Helpers
+        // Register https://github.com/Handlebars.Net/Handlebars.Net.Helpers
         HandlebarsHelpers.Register(handlebarsContext, o =>
         {
             var paths = new List<string>
@@ -33,17 +32,18 @@ internal static class WireMockHandlebarsHelpers
                     customHelperPaths.Add(path!);
                 }
             }
-            Add(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), paths);
-            Add(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), paths);
-            Add(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), paths);
-            Add(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName), paths);
+            Add(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location), paths);
+            Add(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), paths);
+            Add(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), paths);
+            Add(Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName), paths);
 #endif
             o.CustomHelperPaths = paths;
 
-            o.CustomHelpers = new Dictionary<string, IHelpers>
+            o.CustomHelpers = new Dictionary<string, IHelpers>();
+            if (settings.AllowedCustomHandlebarHelpers.HasFlag(CustomHandlebarHelpers.File))
             {
-                { "File", new FileHelpers(handlebarsContext, fileSystemHandler) }
-            };
+                o.CustomHelpers.Add(FileHelpers.Name, new FileHelpers(handlebarsContext, settings.FileSystemHandler));
+            }
         });
     }
 
