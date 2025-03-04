@@ -64,11 +64,6 @@ A breaking change is introduced which is related to System.Linq.Dynamic.Core Dyn
 - The `LinqMatcher` is not allowed.
 - The [Handlebars.Net.Helpers.DynamicLinq](https://www.nuget.org/packages/Handlebars.Net.Helpers.DynamicLinq) package is not included anymore.
 
-### 1.8.0
-A breaking change is introduced which is related to the usage of the custom Handlebars.Net `File`-helper.
-By default this is not allowed anymore because of security reasons (insecure server-side template injection).
-To still enable this feature, you need to set the `AllowedCustomHandlebarHelpers` property to `File` in the `WireMockServerSettings` class.
-
 ---
 
 ## :memo: Development
