@@ -54,7 +54,7 @@ internal class WireMockProtoFileResolver : IProtoFileResolver
 
     private static bool TryGetValidFileName(string fileName, [NotNullWhen(true)] out string? validFileName)
     {
-        if (!fileName.Any(c => Path.GetInvalidFileNameChars().Contains(c)))
+        if (!fileName.Any(c => Path.GetInvalidPathChars().Contains(c)))
         {
             validFileName = fileName;
             return true;
