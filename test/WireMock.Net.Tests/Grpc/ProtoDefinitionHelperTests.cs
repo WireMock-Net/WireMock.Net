@@ -3,7 +3,7 @@ using FluentAssertions;
 using WireMock.Util;
 using Xunit;
 
-namespace WireMock.Net.Tests.Util;
+namespace WireMock.Net.Tests.Grpc;
 
 public class ProtoDefinitionHelperTests
 {
