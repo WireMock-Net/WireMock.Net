@@ -30,7 +30,6 @@ public static class ProtoDefinitionHelper
 
             // Only add the comment if it's not already there.
             var modifiedContent = !content.StartsWith(comment) ? $"{comment}\n{content}" : content;
-
             modifiedFiles.Add(modifiedContent);
         }
 
