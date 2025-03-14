@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Stef.Validation;
 using WireMock.Models;
 using WireMock.Settings;
 
@@ -17,24 +19,26 @@ public static class ProtoDefinitionHelper
     /// And adds a comment with the relative path to each <c>.proto</c> file so it can be used by the WireMockProtoFileResolver.
     /// </summary>
     /// <param name="directory">The directory to start from.</param>
-    public static IReadOnlyList<string> FromDirectory(string directory)
+    public static ProtoDefinitionData FromDirectory(string directory)
     {
-        var modifiedFiles = new List<string>();
-        var files = Directory.EnumerateFiles(directory, "*.proto", SearchOption.AllDirectories);
+        Guard.NotNullOrEmpty(directory);
 
-        foreach (var file in files)
+        var dictionary = new Dictionary<string, string>();
+        var filePaths = Directory.EnumerateFiles(directory, "*.proto", SearchOption.AllDirectories);
+
+        foreach (var filePath in filePaths)
         {
-            var relativePath = PathUtils.GetRelativePath(directory, file);
-            var relativeProtoImportPath = relativePath.Replace(Path.DirectorySeparatorChar, '/');
-            var comment = $"// {relativeProtoImportPath}";
-            var content = File.ReadAllText(file);
+            var relativePath = PathUtils.GetRelativePath(directory, filePath);
+            var comment = $"// {relativePath}";
+            var content = File.ReadAllText(filePath);
 
             // Only add the comment if it's not already there.
             var modifiedContent = !content.StartsWith(comment) ? $"{comment}\n{content}" : content;
-            modifiedFiles.Add(modifiedContent);
+            var key = Path.GetFileNameWithoutExtension(filePath);
+            dictionary.Add(key, modifiedContent);
         }
 
-        return modifiedFiles;
+        return new ProtoDefinitionData(dictionary);
     }
 
     internal static IdOrTexts GetIdOrTexts(WireMockServerSettings settings, params string[] protoDefinitionOrId)
@@ -53,5 +57,29 @@ public static class ProtoDefinitionHelper
             default:
                 return new(null, protoDefinitionOrId);
         }
+    }
+}
+
+public class ProtoDefinitionData
+{
+    private readonly IDictionary<string, string> _dictionary;
+
+    internal ProtoDefinitionData(IDictionary<string, string> dictionary)
+    {
+        _dictionary = dictionary;
+    }
+
+    public IReadOnlyList<string> ToList(string mainProtoFilename)
+    {
+        Guard.NotNullOrEmpty(mainProtoFilename);
+
+        if (!_dictionary.TryGetValue(mainProtoFilename, out var mainProtoDefinition))
+        {
+            throw new KeyNotFoundException($"The ProtoDefinition with filename '{mainProtoFilename}' was not found.");
+        }
+
+        var list = new List<string> { mainProtoDefinition };
+        list.AddRange(_dictionary.Where(kvp => kvp.Key != mainProtoFilename).Select(kvp => kvp.Value));
+        return list;
     }
 }

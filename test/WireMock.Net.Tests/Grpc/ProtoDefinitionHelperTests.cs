@@ -12,11 +12,12 @@ public class ProtoDefinitionHelperTests
     {
         // Arrange
         var directory = Path.Combine(Directory.GetCurrentDirectory(), "Grpc", "Test");
-        var expectedFilename = "SubFolder/request.proto";
+        var expectedFilename = $"SubFolder{Path.DirectorySeparatorChar}request.proto";
         var expectedComment = $"// {expectedFilename}";
 
         // Act
-        var protoDefinitions = ProtoDefinitionHelper.FromDirectory(directory);
+        var protoDefinitionData = ProtoDefinitionHelper.FromDirectory(directory);
+        var protoDefinitions = protoDefinitionData.ToList("greet");
 
         // Assert
         protoDefinitions.Should().HaveCount(2);
