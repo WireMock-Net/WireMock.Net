@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Stef.Validation;
 using WireMock.Models;
 using WireMock.Settings;
@@ -15,8 +14,9 @@ namespace WireMock.Util;
 public static class ProtoDefinitionHelper
 {
     /// <summary>
-    /// Builds a list of proto definitions from a directory.
-    /// And adds a comment with the relative path to each <c>.proto</c> file so it can be used by the WireMockProtoFileResolver.
+    /// Builds a dictionary of ProtoDefinitions from a directory.
+    /// - The key will be the filename without extension.
+    /// - The value will be the ProtoDefinition with an extra comment with the relative path to each <c>.proto</c> file so it can be used by the WireMockProtoFileResolver.
     /// </summary>
     /// <param name="directory">The directory to start from.</param>
     public static ProtoDefinitionData FromDirectory(string directory)
@@ -28,13 +28,17 @@ public static class ProtoDefinitionHelper
 
         foreach (var filePath in filePaths)
         {
+            // Get the relative path to the directory (note that this will be OS specific).
             var relativePath = PathUtils.GetRelativePath(directory, filePath);
+
+            // Build comment and get content from file.
             var comment = $"// {relativePath}";
             var content = File.ReadAllText(filePath);
 
-            // Only add the comment if it's not already there.
+            // Only add the comment if it's not already defined.
             var modifiedContent = !content.StartsWith(comment) ? $"{comment}\n{content}" : content;
             var key = Path.GetFileNameWithoutExtension(filePath);
+
             dictionary.Add(key, modifiedContent);
         }
 
@@ -57,29 +61,5 @@ public static class ProtoDefinitionHelper
             default:
                 return new(null, protoDefinitionOrId);
         }
-    }
-}
-
-public class ProtoDefinitionData
-{
-    private readonly IDictionary<string, string> _dictionary;
-
-    internal ProtoDefinitionData(IDictionary<string, string> dictionary)
-    {
-        _dictionary = dictionary;
-    }
-
-    public IReadOnlyList<string> ToList(string mainProtoFilename)
-    {
-        Guard.NotNullOrEmpty(mainProtoFilename);
-
-        if (!_dictionary.TryGetValue(mainProtoFilename, out var mainProtoDefinition))
-        {
-            throw new KeyNotFoundException($"The ProtoDefinition with filename '{mainProtoFilename}' was not found.");
-        }
-
-        var list = new List<string> { mainProtoDefinition };
-        list.AddRange(_dictionary.Where(kvp => kvp.Key != mainProtoFilename).Select(kvp => kvp.Value));
-        return list;
     }
 }
