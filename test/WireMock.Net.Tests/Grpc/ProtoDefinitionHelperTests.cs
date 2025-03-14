@@ -12,7 +12,7 @@ public class ProtoDefinitionHelperTests
     {
         // Arrange
         var directory = Path.Combine(Directory.GetCurrentDirectory(), "Grpc", "Test");
-        var expectedFilename = $"SubFolder{Path.DirectorySeparatorChar}request.proto";
+        var expectedFilename = "SubFolder/request.proto";
         var expectedComment = $"// {expectedFilename}";
 
         // Act

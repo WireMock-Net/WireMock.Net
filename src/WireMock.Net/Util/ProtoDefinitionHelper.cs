@@ -14,7 +14,7 @@ public static class ProtoDefinitionHelper
 {
     /// <summary>
     /// Builds a list of proto definitions from a directory.
-    /// And adds a comment with the relative path to each <c>.proto</c> file so it can be used by the <see cref="WireMockProtoFileResolver"/>
+    /// And adds a comment with the relative path to each <c>.proto</c> file so it can be used by the WireMockProtoFileResolver.
     /// </summary>
     /// <param name="directory">The directory to start from.</param>
     public static IReadOnlyList<string> FromDirectory(string directory)
@@ -25,7 +25,8 @@ public static class ProtoDefinitionHelper
         foreach (var file in files)
         {
             var relativePath = PathUtils.GetRelativePath(directory, file);
-            var comment = $"// {relativePath}";
+            var relativeProtoImportPath = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+            var comment = $"// {relativeProtoImportPath}";
             var content = File.ReadAllText(file);
 
             // Only add the comment if it's not already there.
