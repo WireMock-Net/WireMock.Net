@@ -11,11 +11,11 @@ namespace WireMock.Models;
 /// </summary>
 public class ProtoDefinitionData
 {
-    private readonly IDictionary<string, string> _dictionary;
+    private readonly IDictionary<string, string> _filenameMappedToProtoDefinition;
 
-    internal ProtoDefinitionData(IDictionary<string, string> dictionary)
+    internal ProtoDefinitionData(IDictionary<string, string> filenameMappedToProtoDefinition)
     {
-        _dictionary = dictionary;
+        _filenameMappedToProtoDefinition = filenameMappedToProtoDefinition;
     }
 
     /// <summary>
@@ -27,13 +27,13 @@ public class ProtoDefinitionData
     {
         Guard.NotNullOrEmpty(mainProtoFilename);
 
-        if (!_dictionary.TryGetValue(mainProtoFilename, out var mainProtoDefinition))
+        if (!_filenameMappedToProtoDefinition.TryGetValue(mainProtoFilename, out var mainProtoDefinition))
         {
             throw new KeyNotFoundException($"The ProtoDefinition with filename '{mainProtoFilename}' was not found.");
         }
 
         var list = new List<string> { mainProtoDefinition };
-        list.AddRange(_dictionary.Where(kvp => kvp.Key != mainProtoFilename).Select(kvp => kvp.Value));
+        list.AddRange(_filenameMappedToProtoDefinition.Where(kvp => kvp.Key != mainProtoFilename).Select(kvp => kvp.Value));
         return list;
     }
 }

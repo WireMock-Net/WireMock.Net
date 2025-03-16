@@ -356,9 +356,12 @@ internal class RespondWithAProvider : IRespondWithAProvider
     {
         Guard.NotNull(protoDefinitionOrId);
 
+#if PROTOBUF
         ProtoDefinition = ProtoDefinitionHelper.GetIdOrTexts(_settings, protoDefinitionOrId);
-
         return this;
+#else
+        throw new NotSupportedException("The WithProtoDefinition method can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
+#endif
     }
 
     /// <inheritdoc />

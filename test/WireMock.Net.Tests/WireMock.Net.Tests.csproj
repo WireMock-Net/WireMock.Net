@@ -156,6 +156,9 @@
         <None Update="Grpc\Test\SubFolder\request.proto">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Grpc\ot\opentelemetry\proto\**\*.proto">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="responsebody.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
