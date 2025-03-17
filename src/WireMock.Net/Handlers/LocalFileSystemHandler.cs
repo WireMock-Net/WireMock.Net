@@ -84,20 +84,20 @@ public class LocalFileSystemHandler : IFileSystemHandler
     public virtual byte[] ReadResponseBodyAsFile(string path)
     {
         Guard.NotNullOrEmpty(path);
-        path = PathUtils.CleanPath(path)!;
+        path = FilePathUtils.CleanPath(path)!;
         // If the file exists at the given path relative to the MappingsFolder, then return that.
         // Else the path will just be as-is.
-        return File.ReadAllBytes(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
+        return File.ReadAllBytes(File.Exists(FilePathUtils.Combine(GetMappingFolder(), path)) ? FilePathUtils.Combine(GetMappingFolder(), path) : path);
     }
 
     /// <inheritdoc cref="IFileSystemHandler.ReadResponseBodyAsString"/>
     public virtual string ReadResponseBodyAsString(string path)
     {
         Guard.NotNullOrEmpty(path);
-        path = PathUtils.CleanPath(path)!;
+        path = FilePathUtils.CleanPath(path)!;
         // In case the path is a filename, the path will be adjusted to the MappingFolder.
         // Else the path will just be as-is.
-        return File.ReadAllText(File.Exists(PathUtils.Combine(GetMappingFolder(), path)) ? PathUtils.Combine(GetMappingFolder(), path) : path);
+        return File.ReadAllText(File.Exists(FilePathUtils.Combine(GetMappingFolder(), path)) ? FilePathUtils.Combine(GetMappingFolder(), path) : path);
     }
 
     /// <inheritdoc cref="IFileSystemHandler.FileExists"/>
@@ -124,7 +124,7 @@ public class LocalFileSystemHandler : IFileSystemHandler
         Guard.NotNullOrEmpty(filename);
         Guard.NotNull(bytes);
 
-        File.WriteAllBytes(PathUtils.Combine(folder, filename), bytes);
+        File.WriteAllBytes(FilePathUtils.Combine(folder, filename), bytes);
     }
 
     /// <inheritdoc cref="IFileSystemHandler.DeleteFile"/>
