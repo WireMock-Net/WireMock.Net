@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WireMock.Net.Tests.Util;
 
-public class PathUtilsTests
+public class FilePathUtilsTests
 {
     [Theory]
     [InlineData(@"subdirectory/MyXmlResponse.xml")]
@@ -15,7 +15,7 @@ public class PathUtilsTests
     public void PathUtils_CleanPath(string path)
     {
         // Act
-        var cleanPath = PathUtils.CleanPath(path);
+        var cleanPath = FilePathUtils.CleanPath(path);
 
         // Assert
         Check.That(cleanPath).Equals("subdirectory" + Path.DirectorySeparatorChar + "MyXmlResponse.xml");
@@ -34,10 +34,10 @@ public class PathUtilsTests
     public void PathUtils_CleanPath_RemoveLeadingDirectorySeparators(string path, string expected)
     {
         // Arrange
-        var cleanPath = PathUtils.CleanPath(path);
+        var cleanPath = FilePathUtils.CleanPath(path);
 
         // Act
-        var withoutDirectorySeparators = PathUtils.RemoveLeadingDirectorySeparators(cleanPath);
+        var withoutDirectorySeparators = FilePathUtils.RemoveLeadingDirectorySeparators(cleanPath);
 
         // Assert
         Check.That(withoutDirectorySeparators).Equals(expected);
