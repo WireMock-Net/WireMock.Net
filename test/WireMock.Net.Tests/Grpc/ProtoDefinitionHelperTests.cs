@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 #if PROTOBUF
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -27,7 +28,7 @@ public class ProtoDefinitionHelperTests
         protoDefinitions.Should().HaveCount(2);
         protoDefinitions[0].Should().StartWith("// greet.proto");
         protoDefinitions[1].Should().StartWith(expectedComment);
-        
+
         // Arrange
         var resolver = new WireMockProtoFileResolver(protoDefinitions);
 
@@ -54,6 +55,19 @@ public class ProtoDefinitionHelperTests
 
         // Assert
         protoDefinitions.Should().HaveCount(10);
+
+        var responseBytes = await ProtoBufUtils.GetProtoBufMessageWithHeaderAsync(
+            protoDefinitions,
+            "OpenTelemetry.Proto.Collector.Trace.V1.ExportTracePartialSuccess",
+            new
+            {
+                rejected_spans = 1,
+                error_message = "abc"
+            }
+        );
+
+        // Assert
+        Convert.ToBase64String(responseBytes).Should().Be("AAAAAAcIARIDYWJj");
     }
 }
 #endif
