@@ -35,7 +35,7 @@ public class ResponseWithHandlebarsFileTests
         {
             HandlebarsSettings = new HandlebarsSettings
             {
-                AllowedCustomHandlebarHelpers = CustomHandlebarHelpers.File
+                AllowedCustomHandlebarsHelpers = CustomHandlebarsHelpers.File
             },
             FileSystemHandler = _filesystemHandlerMock.Object
         };

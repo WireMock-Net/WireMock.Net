@@ -176,11 +176,12 @@ public static class WireMockServerSettingsParser
 
     private static void ParseHandlebarsSettings(WireMockServerSettings settings, SimpleSettingsParser parser)
     {
-        if (parser.Contains(nameof(HandlebarsSettings.AllowedCustomHandlebarHelpers)))
+        if (parser.ContainsAny(nameof(HandlebarsSettings.AllowedCustomHandlebarsHelpers), nameof(HandlebarsSettings.AllowedHandlebarsHelpers)))
         {
             settings.HandlebarsSettings = new HandlebarsSettings
             {
-                AllowedCustomHandlebarHelpers = parser.GetEnumValue(nameof(HandlebarsSettings.AllowedCustomHandlebarHelpers), CustomHandlebarHelpers.None)
+                AllowedCustomHandlebarsHelpers = parser.GetEnumValue(nameof(HandlebarsSettings.AllowedCustomHandlebarsHelpers), CustomHandlebarsHelpers.None),
+                AllowedHandlebarsHelpers = parser.GetEnumValues(nameof(HandlebarsSettings.AllowedHandlebarsHelpers), HandlebarsSettings.DefaultAllowedHandlebarsHelpers)
             };
         }
     }

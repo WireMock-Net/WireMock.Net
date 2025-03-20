@@ -70,6 +70,11 @@ internal class SimpleSettingsParser
         return Arguments.ContainsKey(name);
     }
 
+    public bool ContainsAny(params string[] names)
+    {
+        return names.Any(Arguments.ContainsKey);
+    }
+
     public string[] GetValues(string name, string[] defaultValue)
     {
         return Contains(name) ? Arguments[name] : defaultValue;
@@ -140,6 +145,28 @@ internal class SimpleSettingsParser
             var value = values.FirstOrDefault();
             return Enum.TryParse<TEnum>(value, true, out var enumValue) ? enumValue : defaultValue;
         }, defaultValue);
+    }
+
+    public TEnum[] GetEnumValues<TEnum>(string name, TEnum[] defaultValues)
+        where TEnum : struct
+    {
+        var values = GetValues(name);
+        if (values == null)
+        {
+            return defaultValues;
+        }
+
+        var enums = new List<TEnum>();
+
+        foreach (var value in values)
+        {
+            if (Enum.TryParse<TEnum>(value, true, out var enumValue))
+            {
+                enums.Add(enumValue);
+            }
+        }
+
+        return enums.ToArray();
     }
 
     public string GetStringValue(string name, string defaultValue)
