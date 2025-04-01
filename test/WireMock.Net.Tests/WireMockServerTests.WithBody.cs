@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using WireMock.Matchers;
@@ -164,6 +166,40 @@ public partial class WireMockServerTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithBodyAsJson_Using_PostAsync_And_JsonPartialWildcardMatcher_ShouldMatch()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+
+        var matcher = new JsonPartialWildcardMatcher(new { method = "initialize", id = "^[a-f0-9]{32}-[0-9]$" }, ignoreCase: true, regex: true);
+        server.Given(Request.Create()
+            .WithHeader("Content-Type", "application/json*")
+            .UsingPost()
+            .WithPath("/foo")
+            .WithBody(matcher)
+        )
+        .RespondWith(Response.Create()
+            .WithHeader("Content-Type", "application/json")
+            .WithBody("""
+                      {"jsonrpc":"2.0","id":"{{request.bodyAsJson.id}}","result":{"protocolVersion":"2024-11-05","capabilities":{"logging":{},"prompts":{"listChanged":true},"resources":{"subscribe":true,"listChanged":true},"tools":{"listChanged":true}},"serverInfo":{"name":"ExampleServer","version":"1.0.0"}}}
+                      """)
+            .WithStatusCode(200)
+        );
+
+        // Act
+        var content = "{\"jsonrpc\":\"2.0\",\"id\":\"ec475f56d4694b48bc737500ba575b35-1\",\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"GitHub Test\",\"version\":\"1.0.0\"}}}";
+        var response = await new HttpClient()
+            .PostAsync($"{server.Url}/foo", new StringContent(content, Encoding.UTF8, "application/json"))
+            .ConfigureAwait(false);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var responseText = await response.RequestMessage!.Content!.ReadAsStringAsync();
+        responseText.Should().Be("");
     }
 
     [Fact]
