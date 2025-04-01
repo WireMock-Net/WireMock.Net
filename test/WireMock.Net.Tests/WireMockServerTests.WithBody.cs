@@ -199,7 +199,7 @@ public partial class WireMockServerTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var responseText = await response.RequestMessage!.Content!.ReadAsStringAsync();
-        responseText.Should().Be("");
+        responseText.Should().Contain("ec475f56d4694b48bc737500ba575b35-1");
     }
 
     [Fact]
