@@ -47,5 +47,8 @@ public enum BodyType
     /// </summary>
     ProtoBuf,
 
+    /// <summary>
+    /// Use Server-Sent Events (string)
+    /// </summary>
     SseString
 }

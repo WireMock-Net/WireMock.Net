@@ -97,7 +97,7 @@ message HelloReply {
    fullName:String 
   }";
 
-        private static void RunStreaming()
+        private static void RunSse()
         {
             var server = WireMockServer.Start(new WireMockServerSettings
             {
@@ -109,7 +109,6 @@ message HelloReply {
                 .WhenRequest(r => r
                     .UsingGet()
                     .WithPath("/sse")
-
                 )
                 .ThenRespondWith(r => r
                     .WithHeader("Content-Type", "text/event-stream")
@@ -117,9 +116,9 @@ message HelloReply {
                     .WithHeader("Connection", "keep-alive")
                     .WithSseBody(async (_, q) =>
                     {
-                        for (int i = 0; i < 5; i++)
+                        for (var i = 0; i < 5; i++)
                         {
-                            q.Write("test + " + i + "\r\n");
+                            q.Write("test " + i + "\r\n");
                             await Task.Delay(5000);
                         }
 
@@ -177,7 +176,7 @@ message HelloReply {
 
         public static void Run()
         {
-            RunStreaming();
+            RunSse();
             RunOnLocal();
 
             var mappingBuilder = new MappingBuilder();

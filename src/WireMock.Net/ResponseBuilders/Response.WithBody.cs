@@ -54,22 +54,21 @@ public partial class Response
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
+    public IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null)
     {
         Guard.NotNull(bodyFactory);
 
-        var queue = new BlockingQueue<string>();
+        var queue = new BlockingQueue<string?>(timeout);
 
         return WithCallbackInternal(true, req => new ResponseMessage
         {
-            
             BodyData = new BodyData
             {
                 DetectedBodyType = BodyType.SseString,
                 SseStringQueue = queue,
                 BodyAsSseStringTask = bodyFactory(req, queue),
-                Encoding = encoding ?? Encoding.UTF8,
-                IsFuncUsed = "Func<IRequestMessage, Task<string>>"
+                Encoding = Encoding.UTF8,
+                IsFuncUsed = "Func<IRequestMessage, BlockingQueue<string?>, Task>"
             }
         });
     }

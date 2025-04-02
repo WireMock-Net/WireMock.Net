@@ -59,7 +59,9 @@ public class BodyData : IBodyData
     public string? ProtoBufMessageType { get; set; }
     #endregion
 
+    /// <inheritdoc />
     public BlockingQueue<string?>? SseStringQueue { get; set; }
 
+    /// <inheritdoc />
     public Task? BodyAsSseStringTask { get; set; }
 }

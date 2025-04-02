@@ -83,7 +83,7 @@ namespace WireMock.Owin.Mappers
                 string? text;
                 do
                 {
-                    if (bodyData.SseStringQueue.TryRead(out text, TimeSpan.FromHours(1)))
+                    if (bodyData.SseStringQueue.TryRead(out text))
                     {
                         await response.WriteAsync(text);
                         await response.Body.FlushAsync();

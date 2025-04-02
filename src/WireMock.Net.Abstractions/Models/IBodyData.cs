@@ -72,7 +72,7 @@ public interface IBodyData
     Encoding? Encoding { get; set; }
 
     /// <summary>
-    /// Defines if this BodyData is the result of a dynamically created response-string. (
+    /// Defines if this BodyData is the result of a dynamically created response-string.
     /// </summary>
     public string? IsFuncUsed { get; set; }
 
@@ -88,7 +88,13 @@ public interface IBodyData
     public string? ProtoBufMessageType { get; set; }
     #endregion
 
+    /// <summary>
+    /// Defines the queue to use for Server-Sent Events (string).
+    /// </summary>
     public BlockingQueue<string?>? SseStringQueue { get; set; }
 
+    /// <summary>
+    /// Defines if the body is using Server-Sent Events (string).
+    /// </summary>
     public Task? BodyAsSseStringTask { get; set; }
 }
