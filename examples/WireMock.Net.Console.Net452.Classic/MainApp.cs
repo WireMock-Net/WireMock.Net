@@ -97,6 +97,47 @@ message HelloReply {
    fullName:String 
   }";
 
+        private static void RunStreaming()
+        {
+            var server = WireMockServer.Start(new WireMockServerSettings
+            {
+                Port = 9091,
+                StartAdminInterface = true,
+                Logger = new WireMockConsoleLogger()
+            });
+            server
+                .WhenRequest(r => r
+                    .UsingGet()
+                    .WithPath("/sse")
+
+                )
+                .ThenRespondWith(r => r
+                    .WithHeader("Content-Type", "text/event-stream")
+                    .WithHeader("Cache-Control", "no-cache")
+                    .WithHeader("Connection", "keep-alive")
+                    .WithSseBody(async (_, q) =>
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            q.Write("test + " + i + "\r\n");
+                            await Task.Delay(5000);
+                        }
+
+                        q.Flush();
+                    })
+                );
+
+            server
+                .WhenRequest(r => r
+                    .UsingGet()
+                )
+                .ThenRespondWith(r => r
+                    .WithBody("normal")
+                );
+
+            System.Console.ReadKey();
+        }
+
         private static void RunOnLocal()
         {
             try
@@ -136,6 +177,7 @@ message HelloReply {
 
         public static void Run()
         {
+            RunStreaming();
             RunOnLocal();
 
             var mappingBuilder = new MappingBuilder();

@@ -45,5 +45,7 @@ public enum BodyType
     /// <summary>
     /// Body is a ProtoBuf Byte array
     /// </summary>
-    ProtoBuf
+    ProtoBuf,
+
+    SseString
 }

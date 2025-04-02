@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using Stef.Validation;
@@ -45,6 +47,27 @@ public partial class Response
             {
                 DetectedBodyType = BodyType.String,
                 BodyAsString = await bodyFactory(req).ConfigureAwait(false),
+                Encoding = encoding ?? Encoding.UTF8,
+                IsFuncUsed = "Func<IRequestMessage, Task<string>>"
+            }
+        });
+    }
+
+    /// <inheritdoc />
+    public IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null)
+    {
+        Guard.NotNull(bodyFactory);
+
+        var queue = new BlockingQueue<string>();
+
+        return WithCallbackInternal(true, req => new ResponseMessage
+        {
+            
+            BodyData = new BodyData
+            {
+                DetectedBodyType = BodyType.SseString,
+                SseStringQueue = queue,
+                BodyAsSseStringTask = bodyFactory(req, queue),
                 Encoding = encoding ?? Encoding.UTF8,
                 IsFuncUsed = "Func<IRequestMessage, Task<string>>"
             }

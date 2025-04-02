@@ -17,6 +17,7 @@ using WireMock.Types;
 using Stef.Validation;
 using WireMock.Util;
 
+
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
@@ -69,6 +70,29 @@ namespace WireMock.Owin.Mappers
                 return;
             }
 
+            var bodyData = responseMessage.BodyData;
+            if (bodyData?.GetBodyType() == BodyType.SseString)
+            {
+                if (bodyData.SseStringQueue == null)
+                {
+                    return;
+                }
+
+                SetResponseHeaders(responseMessage, true, response);
+
+                string? text;
+                do
+                {
+                    if (bodyData.SseStringQueue.TryRead(out text, TimeSpan.FromHours(1)))
+                    {
+                        await response.WriteAsync(text);
+                        await response.Body.FlushAsync();
+                    }
+                } while (text != null);
+
+                return;
+            }
+
             byte[]? bytes;
             switch (responseMessage.FaultType)
             {
@@ -104,7 +128,7 @@ namespace WireMock.Owin.Mappers
                 }
             }
 
-            SetResponseHeaders(responseMessage, bytes, response);
+            SetResponseHeaders(responseMessage, bytes != null, response);
 
             if (bytes != null)
             {
@@ -136,7 +160,8 @@ namespace WireMock.Owin.Mappers
             return responseMessage.FaultPercentage == null || _randomizerDouble.Generate() <= responseMessage.FaultPercentage;
         }
 
-        private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage) {
+        private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage)
+        {
             var bodyData = responseMessage.BodyData;
             switch (bodyData?.GetBodyType())
             {
@@ -172,13 +197,13 @@ namespace WireMock.Owin.Mappers
             return null;
         }
 
-        private static void SetResponseHeaders(IResponseMessage responseMessage, byte[]? bytes, IResponse response)
+        private static void SetResponseHeaders(IResponseMessage responseMessage, bool hasBody, IResponse response)
         {
             // Force setting the Date header (#577)
             AppendResponseHeader(
                 response,
                 HttpKnownHeaderNames.Date,
-                [ DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture) ]
+                [DateTime.UtcNow.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, CultureInfo.InvariantCulture)]
             );
 
             // Set other headers
@@ -188,7 +213,7 @@ namespace WireMock.Owin.Mappers
                 var value = item.Value;
                 if (ResponseHeadersToFix.TryGetValue(headerName, out var action))
                 {
-                    action?.Invoke(response, bytes != null, value);
+                    action?.Invoke(response, hasBody, value);
                 }
                 else
                 {
