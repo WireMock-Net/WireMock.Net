@@ -5,7 +5,7 @@ using Stef.Validation;
 
 namespace WireMock.Util;
 
-internal static class PathUtils
+internal static class FilePathUtils
 {
     /// <summary>
     /// Robust handling of the user defined path.
@@ -23,7 +23,7 @@ internal static class PathUtils
     /// <param name="path">The path to remove the loading DirectorySeparatorChars</param>
     public static string? RemoveLeadingDirectorySeparators(string? path)
     {
-        return path?.TrimStart(new[] { Path.DirectorySeparatorChar });
+        return path?.TrimStart(Path.DirectorySeparatorChar);
     }
 
     /// <summary>

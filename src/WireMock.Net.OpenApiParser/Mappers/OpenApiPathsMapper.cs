@@ -102,8 +102,8 @@ internal class OpenApiPathsMapper
             Guid = Guid.NewGuid(),
             Request = new RequestModel
             {
-                Methods = new[] { httpMethod },
-                Path = MapBasePath(servers) + MapPathWithParameters(path, pathParameters),
+                Methods = [httpMethod],
+                Path = PathUtils.Combine(MapBasePath(servers), MapPathWithParameters(path, pathParameters)),
                 Params = MapQueryParameters(queryParameters),
                 Headers = MapRequestHeaders(headers),
                 Body = requestBodyModel

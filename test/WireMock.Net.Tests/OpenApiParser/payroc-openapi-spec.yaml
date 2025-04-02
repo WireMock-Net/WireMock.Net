@@ -8,7 +8,7 @@ info:
     url: https://docs.payroc.com/api
     email: helpdesk@payroc.com
 servers:
-  - url: https://api.payroc.com/v1
+  - url: https://api.payroc.com/v1/
     description: External URL
 security:
   - bearerAuth: []
