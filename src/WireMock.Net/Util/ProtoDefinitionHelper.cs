@@ -35,7 +35,7 @@ public static class ProtoDefinitionHelper
         foreach (var filePath in filePaths)
         {
             // Get the relative path to the directory (note that this will be OS specific).
-            var relativePath = PathUtils.GetRelativePath(directory, filePath);
+            var relativePath = FilePathUtils.GetRelativePath(directory, filePath);
 
             // Make it a valid proto import path
             var protoRelativePath = relativePath.Replace(Path.DirectorySeparatorChar, '/');
