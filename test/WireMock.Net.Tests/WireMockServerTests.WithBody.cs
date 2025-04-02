@@ -3,6 +3,7 @@
 #if !NET452
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -282,6 +283,63 @@ public partial class WireMockServerTests
         responseUnordered.StatusCode.Should().Be(HttpStatusCode.OK);
 
         server.Stop();
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithSseBody()
+    {
+        // Arrange
+        var server = WireMockServer.Start();
+        server
+            .WhenRequest(r => r
+                .UsingGet()
+                .WithPath("/sse")
+            )
+            .ThenRespondWith(r => r
+                .WithHeader("Content-Type", "text/event-stream")
+                .WithHeader("Cache-Control", "no-cache")
+                .WithHeader("Connection", "keep-alive")
+                .WithSseBody(async (_, queue) =>
+                {
+                    for (var i = 1; i <= 3; i++)
+                    {
+                        queue.Write($"x {i};\r\n");
+                        await Task.Delay(100);
+                    }
+
+                    queue.Flush();
+                })
+            );
+
+        server
+            .WhenRequest(r => r
+                .UsingGet()
+            )
+            .ThenRespondWith(r => r
+                .WithBody("normal")
+            );
+
+        using var client = new HttpClient();
+
+        // Act 1
+        var normal = await new HttpClient()
+            .GetAsync(server.Url)
+            .ConfigureAwait(false);
+        (await normal.Content.ReadAsStringAsync()).Should().Be("normal");
+
+        // Act 2
+        using var response = await client.GetStreamAsync($"{server.Url}/sse");
+        using var reader = new StreamReader(response);
+
+        var data = string.Empty;
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+            data += line;
+        }
+
+        // Assert 2
+        data.Should().Be("x 1;x 2;x 3;");
     }
 }
 #endif
