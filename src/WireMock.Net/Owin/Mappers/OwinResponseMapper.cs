@@ -17,7 +17,6 @@ using WireMock.Types;
 using Stef.Validation;
 using WireMock.Util;
 
-
 #if !USE_ASPNETCORE
 using IResponse = Microsoft.Owin.IOwinResponse;
 #else
@@ -73,23 +72,7 @@ namespace WireMock.Owin.Mappers
             var bodyData = responseMessage.BodyData;
             if (bodyData?.GetBodyType() == BodyType.SseString)
             {
-                if (bodyData.SseStringQueue == null)
-                {
-                    return;
-                }
-
-                SetResponseHeaders(responseMessage, true, response);
-
-                string? text;
-                do
-                {
-                    if (bodyData.SseStringQueue.TryRead(out text))
-                    {
-                        await response.WriteAsync(text);
-                        await response.Body.FlushAsync();
-                    }
-                } while (text != null);
-
+                await HandleSseStringAsync(responseMessage, response, bodyData);
                 return;
             }
 
@@ -143,6 +126,26 @@ namespace WireMock.Owin.Mappers
             }
 
             SetResponseTrailingHeaders(responseMessage, response);
+        }
+
+        private static async Task HandleSseStringAsync(IResponseMessage responseMessage, IResponse response, IBodyData bodyData)
+        {
+            if (bodyData.SseStringQueue == null)
+            {
+                return;
+            }
+
+            SetResponseHeaders(responseMessage, true, response);
+
+            string? text;
+            do
+            {
+                if (bodyData.SseStringQueue.TryRead(out text))
+                {
+                    await response.WriteAsync(text);
+                    await response.Body.FlushAsync();
+                }
+            } while (text != null);
         }
 
         private int MapStatusCode(int code)
