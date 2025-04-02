@@ -5,7 +5,7 @@ using Stef.Validation;
 
 namespace WireMock.Util;
 
-internal static class PathUtils
+internal static class FilePathUtils
 {
     /// <summary>
     /// Robust handling of the user defined path.

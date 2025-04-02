@@ -1,5 +1,6 @@
-# 1.7.4 (27 February 2025)
-- #1256 Add ToArray() to ConcurrentObservableCollection [bug]
-- #1254 FindLogEntries exception 'Destination array was not long enough' [bug]
+# 1.7.5-preview-01 (02 April 2025)
+- #1265 Fix construction of path in OpenApiParser [bug]
+- #1269 Server-Sent Events [feature]
+- #1264 OpenApiParser - Construction of path possibly incorrect [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using WireMock.Models;
 using WireMock.Types;
 
@@ -57,4 +58,10 @@ public class BodyData : IBodyData
     /// <inheritdoc />
     public string? ProtoBufMessageType { get; set; }
     #endregion
+
+    /// <inheritdoc />
+    public BlockingQueue<string?>? SseStringQueue { get; set; }
+
+    /// <inheritdoc />
+    public Task? BodyAsSseStringTask { get; set; }
 }
