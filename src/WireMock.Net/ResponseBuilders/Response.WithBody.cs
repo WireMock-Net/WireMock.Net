@@ -54,11 +54,11 @@ public partial class Response
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null)
+    public IResponseBuilder WithSseBody(Func<IRequestMessage, IBlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null)
     {
         Guard.NotNull(bodyFactory);
 
-        var queue = new BlockingQueue<string?>(timeout);
+        var queue = new Util.BlockingQueue<string?>(timeout);
 
         return WithCallbackInternal(true, req => new ResponseMessage
         {

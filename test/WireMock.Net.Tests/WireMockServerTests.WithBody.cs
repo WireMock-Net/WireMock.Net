@@ -307,7 +307,7 @@ public partial class WireMockServerTests
                         await Task.Delay(100);
                     }
 
-                    queue.Flush();
+                    queue.Close();
                 })
             );
 
