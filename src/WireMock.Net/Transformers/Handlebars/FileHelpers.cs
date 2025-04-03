@@ -4,8 +4,10 @@ using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers.Attributes;
 using HandlebarsDotNet.Helpers.Enums;
 using HandlebarsDotNet.Helpers.Helpers;
+using HandlebarsDotNet.Helpers.Options;
 using Stef.Validation;
 using WireMock.Handlers;
+using WireMock.Settings;
 
 namespace WireMock.Transformers.Handlebars;
 
@@ -15,9 +17,9 @@ internal class FileHelpers : BaseHelpers, IHelpers
 
     private readonly IFileSystemHandler _fileSystemHandler;
 
-    public FileHelpers(IHandlebars context, IFileSystemHandler fileSystemHandler) : base(context)
+    public FileHelpers(IHandlebars context, WireMockServerSettings settings) : base(context, new HandlebarsHelpersOptions())
     {
-        _fileSystemHandler = Guard.NotNull(fileSystemHandler);
+        _fileSystemHandler = Guard.NotNull(settings.FileSystemHandler);
     }
 
     [HandlebarsWriter(WriterType.String, usage: HelperUsage.Both, passContext: true, name: Name)]

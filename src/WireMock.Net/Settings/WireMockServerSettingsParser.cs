@@ -50,7 +50,6 @@ public static class WireMockServerSettingsParser
             AdminPath = parser.GetStringValue(nameof(WireMockServerSettings.AdminPath), "/__admin"),
             AllowBodyForAllHttpMethods = parser.GetBoolValue(nameof(WireMockServerSettings.AllowBodyForAllHttpMethods)),
             AllowCSharpCodeMatcher = parser.GetBoolValue(nameof(WireMockServerSettings.AllowCSharpCodeMatcher)),
-            AllowedCustomHandlebarHelpers = parser.GetEnumValue(nameof(WireMockServerSettings.AllowedCustomHandlebarHelpers), CustomHandlebarHelpers.None),
             AllowOnlyDefinedHttpStatusCodeInResponse = parser.GetBoolValue(nameof(WireMockServerSettings.AllowOnlyDefinedHttpStatusCodeInResponse)),
             AllowPartialMapping = parser.GetBoolValue(nameof(WireMockServerSettings.AllowPartialMapping)),
             Culture = parser.GetValue(nameof(WireMockServerSettings.Culture), strings => CultureInfoUtils.Parse(strings.FirstOrDefault()), CultureInfo.CurrentCulture),
@@ -85,6 +84,7 @@ public static class WireMockServerSettingsParser
         ParsePortSettings(settings, parser);
         ParseProxyAndRecordSettings(settings, parser);
         ParseCertificateSettings(settings, parser);
+        ParseHandlebarsSettings(settings, parser);
 
         return true;
     }
@@ -153,7 +153,7 @@ public static class WireMockServerSettingsParser
         }
         else if (settings.HostingScheme is null)
         {
-            settings.Urls = parser.GetValues("Urls", new[] { "http://*:9091/" });
+            settings.Urls = parser.GetValues("Urls", ["http://*:9091/"]);
         }
     }
 
@@ -167,9 +167,22 @@ public static class WireMockServerSettingsParser
             X509CertificateFilePath = parser.GetStringValue("X509CertificateFilePath"),
             X509CertificatePassword = parser.GetStringValue("X509CertificatePassword")
         };
+
         if (certificateSettings.IsDefined)
         {
             settings.CertificateSettings = certificateSettings;
+        }
+    }
+
+    private static void ParseHandlebarsSettings(WireMockServerSettings settings, SimpleSettingsParser parser)
+    {
+        if (parser.ContainsAny(nameof(HandlebarsSettings.AllowedCustomHandlebarsHelpers), nameof(HandlebarsSettings.AllowedHandlebarsHelpers)))
+        {
+            settings.HandlebarsSettings = new HandlebarsSettings
+            {
+                AllowedCustomHandlebarsHelpers = parser.GetEnumValue(nameof(HandlebarsSettings.AllowedCustomHandlebarsHelpers), CustomHandlebarsHelpers.None),
+                AllowedHandlebarsHelpers = parser.GetEnumValues(nameof(HandlebarsSettings.AllowedHandlebarsHelpers), HandlebarsSettings.DefaultAllowedHandlebarsHelpers)
+            };
         }
     }
 

@@ -40,9 +40,9 @@ internal static class WireMockHandlebarsHelpers
             o.CustomHelperPaths = paths;
 
             o.CustomHelpers = new Dictionary<string, IHelpers>();
-            if (settings.AllowedCustomHandlebarHelpers.HasFlag(CustomHandlebarHelpers.File))
+            if (settings.HandlebarsSettings?.AllowedCustomHandlebarsHelpers.HasFlag(CustomHandlebarsHelpers.File) == true)
             {
-                o.CustomHelpers.Add(FileHelpers.Name, new FileHelpers(handlebarsContext, settings.FileSystemHandler));
+                o.CustomHelpers.Add(FileHelpers.Name, new FileHelpers(handlebarsContext, settings));
             }
         });
     }
