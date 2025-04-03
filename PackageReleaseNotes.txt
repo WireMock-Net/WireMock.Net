@@ -1,4 +1,4 @@
-# 1.7.5-preview-01 (02 April 2025)
+# 1.7.5-preview-02 (03 April 2025)
 - #1265 Fix construction of path in OpenApiParser [bug]
 - #1269 Server-Sent Events [feature]
 - #1264 OpenApiParser - Construction of path possibly incorrect [bug]

@@ -1,4 +1,4 @@
-# 1.7.5-preview-01 (02 April 2025)
+# 1.7.5-preview-02 (03 April 2025)
 - [#1265](https://github.com/WireMock-Net/WireMock.Net/pull/1265) - Fix construction of path in OpenApiParser [bug] contributed by [StefH](https://github.com/StefH)
 - [#1269](https://github.com/WireMock-Net/WireMock.Net/pull/1269) - Server-Sent Events [feature] contributed by [StefH](https://github.com/StefH)
 - [#1264](https://github.com/WireMock-Net/WireMock.Net/issues/1264) - OpenApiParser - Construction of path possibly incorrect [bug]
