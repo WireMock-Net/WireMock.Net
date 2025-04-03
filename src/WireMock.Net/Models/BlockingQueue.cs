@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using WireMock.Types;
 
-namespace WireMock.Util;
+namespace WireMock.Models;
 
 /// <inheritdoc />
 internal class BlockingQueue<T>(TimeSpan? readTimeout = null) : IBlockingQueue<T>

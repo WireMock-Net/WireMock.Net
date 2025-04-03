@@ -122,7 +122,7 @@ message HelloReply {
                             await Task.Delay(5000);
                         }
 
-                        q.Flush();
+                        q.Close();
                     })
                 );
 

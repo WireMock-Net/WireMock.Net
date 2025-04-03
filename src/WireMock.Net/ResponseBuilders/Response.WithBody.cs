@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using Stef.Validation;
@@ -58,7 +56,7 @@ public partial class Response
     {
         Guard.NotNull(bodyFactory);
 
-        var queue = new Util.BlockingQueue<string?>(timeout);
+        var queue = new BlockingQueue<string?>(timeout);
 
         return WithCallbackInternal(true, req => new ResponseMessage
         {

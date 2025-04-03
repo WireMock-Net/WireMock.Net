@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace WireMock.Types;
+namespace WireMock.Models;
 
 /// <summary>
 /// A simple implementation for a Blocking Queue.
