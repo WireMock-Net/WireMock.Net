@@ -134,6 +134,9 @@
         <None Update="cert.pem">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Grpc\Test\greet.proto">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="Grpc\request.proto">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <!--<GrpcServices>Client</GrpcServices>-->
@@ -148,6 +151,12 @@
         </None>
         <None Update="Grpc\greet.proto">
             <GrpcServices>Client</GrpcServices>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Grpc\Test\SubFolder\request.proto">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Grpc\ot\opentelemetry\proto\**\*.proto">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="responsebody.json">

@@ -7,18 +7,19 @@ using System.IO;
 using System.Linq;
 using ProtoBufJsonConverter;
 using Stef.Validation;
+using WireMock.Extensions;
 
 namespace WireMock.Util;
 
 /// <summary>
 /// This resolver is used to resolve the extra ProtoDefinition files.
+/// 
 /// It assumes that:
-/// - the first ProtoDefinition file is the main ProtoDefinition file.
-/// - the first commented line of each extra ProtoDefinition file is the filename which is used in the import of the other ProtoDefinition file(s).
+/// - The first commented line of each ProtoDefinition file is the filepath which is used in the import of the other ProtoDefinition file(s).
 /// </summary>
 internal class WireMockProtoFileResolver : IProtoFileResolver
 {
-    private readonly Dictionary<string, string> _files = new();
+    private readonly Dictionary<string, string> _files = [];
 
     public WireMockProtoFileResolver(IReadOnlyCollection<string> protoDefinitions)
     {
@@ -27,12 +28,19 @@ internal class WireMockProtoFileResolver : IProtoFileResolver
             return;
         }
 
-        foreach (var extraProtoDefinition in protoDefinitions.Skip(1))
+        foreach (var extraProtoDefinition in protoDefinitions)
         {
             var firstNonEmptyLine = extraProtoDefinition.Split(['\r', '\n']).FirstOrDefault(l => !string.IsNullOrEmpty(l));
-            if (firstNonEmptyLine != null && TryGetValidFileName(firstNonEmptyLine.TrimStart(['/', ' ']), out var validFileName))
+            if (firstNonEmptyLine != null)
             {
-                _files.Add(validFileName, extraProtoDefinition);
+                if (TryGetValidPath(firstNonEmptyLine.TrimStart(['/', ' ']), out var validPath))
+                {
+                    _files.Add(validPath, extraProtoDefinition);
+                }
+                else
+                {
+                    _files.Add(extraProtoDefinition.GetDeterministicHashCodeAsString(), extraProtoDefinition);
+                }
             }
         }
     }
@@ -52,15 +60,15 @@ internal class WireMockProtoFileResolver : IProtoFileResolver
         throw new FileNotFoundException($"The ProtoDefinition '{path}' was not found.");
     }
 
-    private static bool TryGetValidFileName(string fileName, [NotNullWhen(true)] out string? validFileName)
+    private static bool TryGetValidPath(string path, [NotNullWhen(true)] out string? validPath)
     {
-        if (!fileName.Any(c => Path.GetInvalidFileNameChars().Contains(c)))
+        if (!path.Any(c => Path.GetInvalidPathChars().Contains(c)))
         {
-            validFileName = fileName;
+            validPath = path;
             return true;
         }
 
-        validFileName = null;
+        validPath = null;
         return false;
     }
 }
