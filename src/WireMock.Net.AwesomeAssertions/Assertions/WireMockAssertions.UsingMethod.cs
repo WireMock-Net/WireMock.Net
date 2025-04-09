@@ -58,7 +58,7 @@ public partial class WireMockAssertions
 
         var (filter, condition) = BuildFilterAndCondition(predicate);
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())

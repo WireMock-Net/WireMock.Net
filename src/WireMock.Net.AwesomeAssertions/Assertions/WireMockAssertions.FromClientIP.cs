@@ -13,7 +13,7 @@ public partial class WireMockAssertions
     {
         var (filter, condition) = BuildFilterAndCondition(request => string.Equals(request.ClientIP, clientIP, StringComparison.OrdinalIgnoreCase));
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())

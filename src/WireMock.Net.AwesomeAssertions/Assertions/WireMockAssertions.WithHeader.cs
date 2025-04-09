@@ -15,7 +15,7 @@ public partial class WireMockAssertions
             return request.Headers?.Any(h => h.Key == expectedKey) == true;
         });
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())
@@ -58,7 +58,7 @@ public partial class WireMockAssertions
             return expectedValues.Any(trimmedHeaderValues.Contains);
         });
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())
@@ -89,7 +89,7 @@ public partial class WireMockAssertions
             return request.Headers?.Any(h => h.Key == unexpectedKey) != true;
         });
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())
@@ -132,7 +132,7 @@ public partial class WireMockAssertions
             return !expectedValues.Any(trimmedHeaderValues.Contains);
         });
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())

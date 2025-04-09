@@ -24,7 +24,7 @@ public partial class WireMockAssertions
 
         var absoluteUrl = absoluteUrlMatcher.GetPatterns().FirstOrDefault().GetPattern();
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())
@@ -60,7 +60,7 @@ public partial class WireMockAssertions
 
         var url = urlMatcher.GetPatterns().FirstOrDefault().GetPattern();
 
-        chain
+        _chain
             .BecauseOf(because, becauseArgs)
             .Given(() => RequestMessages)
             .ForCondition(requests => CallsCount == 0 || requests.Any())

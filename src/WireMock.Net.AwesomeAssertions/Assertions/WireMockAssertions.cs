@@ -15,13 +15,13 @@ public partial class WireMockAssertions
 
     public int? CallsCount { get; }
     public IReadOnlyList<IRequestMessage> RequestMessages { get; private set; }
-    private AssertionChain chain;
+    private readonly AssertionChain _chain;
 
     public WireMockAssertions(IWireMockServer subject, int? callsCount, AssertionChain chain)
     {
         CallsCount = callsCount;
         RequestMessages = subject.LogEntries.Select(logEntry => logEntry.RequestMessage).ToList();
-        this.chain = chain;
+        _chain = chain;
     }
 
     public (Func<IReadOnlyList<IRequestMessage>, IReadOnlyList<IRequestMessage>> Filter, Func<IReadOnlyList<IRequestMessage>, bool> Condition) BuildFilterAndCondition(Func<IRequestMessage, bool> predicate)
