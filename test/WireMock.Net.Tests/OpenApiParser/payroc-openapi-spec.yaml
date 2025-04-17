@@ -3734,7 +3734,7 @@ paths:
                   path: /a/b/c
                 - op: replace
                   path: /a/b/c
-                  value: 42
+                  value: 420
                 - op: move
                   from: /a/b/c
                   path: /a/b/d

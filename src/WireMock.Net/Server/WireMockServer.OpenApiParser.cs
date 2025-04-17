@@ -25,7 +25,7 @@ public partial class WireMockServer
             return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, e.Message);
         }
 #else
-        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.");
+        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Not supported for .NETStandard 1.3 and .NET 4.6.x or lower.");
 #endif
     }
 
@@ -50,7 +50,7 @@ public partial class WireMockServer
             return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, e.Message);
         }
 #else
-        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Not supported for .NETStandard 1.3 and .NET 4.5.2 or lower.");
+        return ResponseMessageBuilder.Create(HttpStatusCode.BadRequest, "Not supported for .NETStandard 1.3 and .NET 4.6.x or lower.");
 #endif
     }
 }
