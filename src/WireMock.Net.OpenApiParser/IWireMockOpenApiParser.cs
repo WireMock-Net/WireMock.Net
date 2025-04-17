@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
+using Microsoft.OpenApi.Reader;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Settings;
 
@@ -17,7 +17,7 @@ public interface IWireMockOpenApiParser
     /// <summary>
     /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
-    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
+    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3/V31 or Raml file.</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
     IReadOnlyList<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic);
@@ -25,7 +25,7 @@ public interface IWireMockOpenApiParser
     /// <summary>
     /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
-    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
+    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3/V31 or Raml file.</param>
     /// <param name="settings">Additional settings</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
