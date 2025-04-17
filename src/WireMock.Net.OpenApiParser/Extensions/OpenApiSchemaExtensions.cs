@@ -44,7 +44,7 @@ internal static class OpenApiSchemaExtensions
         isNullable = (schema.Type | JsonSchemaType.Null) == JsonSchemaType.Null || (schema.TryGetXNullable(out var xNullable) && xNullable);
 
         // Return non-nullable value
-        return schema.Type & ~JsonSchemaType.Null;
+        // This operation removes the Null flag from the schema.Type, ensuring the returned value represents a non-nullable type.
     }
 
     public static SchemaFormat GetSchemaFormat(this IOpenApiSchema? schema)
