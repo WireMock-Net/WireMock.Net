@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
 using Stef.Validation;
@@ -54,7 +52,7 @@ public partial class Response
     }
 
     /// <inheritdoc />
-    public IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null)
+    public IResponseBuilder WithSseBody(Func<IRequestMessage, IBlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null)
     {
         Guard.NotNull(bodyFactory);
 

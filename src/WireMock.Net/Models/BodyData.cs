@@ -60,7 +60,7 @@ public class BodyData : IBodyData
     #endregion
 
     /// <inheritdoc />
-    public BlockingQueue<string?>? SseStringQueue { get; set; }
+    public IBlockingQueue<string?>? SseStringQueue { get; set; }
 
     /// <inheritdoc />
     public Task? BodyAsSseStringTask { get; set; }

@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
-using WireMock.Types;
+using WireMock.Models;
 
 namespace WireMock.ResponseBuilders;
 
@@ -49,7 +47,7 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     /// <param name="bodyFactory">The async delegate to build the body.</param>
     /// <param name="timeout">The timeout to wait on new items in the queue. Default value is <c>1</c> hour.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
-    IResponseBuilder WithSseBody(Func<IRequestMessage, BlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null);
+    IResponseBuilder WithSseBody(Func<IRequestMessage, IBlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null);
 
     /// <summary>
     /// WithBody : Create a ... response based on a bytearray.

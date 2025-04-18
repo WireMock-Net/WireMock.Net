@@ -5,17 +5,16 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace WireMock.Types;
+namespace WireMock.Models;
 
-/// <summary>
-/// A simple implementation for a Blocking Queue.
-/// </summary>
-/// <typeparam name="T">Specifies the type of elements in the queue.</typeparam>
-public class BlockingQueue<T>(TimeSpan? readTimeout = null)
+/// <inheritdoc />
+internal class BlockingQueue<T>(TimeSpan? readTimeout = null) : IBlockingQueue<T>
 {
     private readonly TimeSpan _readTimeout = readTimeout ?? TimeSpan.FromHours(1);
     private readonly Queue<T?> _queue = new();
     private readonly object _lockObject = new();
+
+    private bool _isClosed;
 
     /// <summary>
     /// Writes an item to the queue and signals that an item is available.
@@ -25,6 +24,11 @@ public class BlockingQueue<T>(TimeSpan? readTimeout = null)
     {
         lock (_lockObject)
         {
+            if (_isClosed)
+            {
+                throw new InvalidOperationException("Cannot write to a closed queue.");
+            }
+
             _queue.Enqueue(item);
 
             // Signal that an item is available
@@ -33,21 +37,10 @@ public class BlockingQueue<T>(TimeSpan? readTimeout = null)
     }
 
     /// <summary>
-    /// Flushes the queue by adding a default item and signals that an item is available.
-    /// </summary>
-    public void Flush()
-    {
-        lock (_lockObject)
-        {
-            _queue.Enqueue(default);
-
-            // Signal that an item is available
-            Monitor.Pulse(_lockObject);
-        }
-    }
-
-    /// <summary>
-    /// Tries to read an item from the queue. Waits until an item is available or the timeout occurs.
+    /// Tries to read an item from the queue.
+    /// - waits until an item is available
+    /// - or the timeout occurs
+    /// - or queue is closed
     /// </summary>
     /// <param name="item">The item read from the queue, or default if the timeout occurs.</param>
     /// <returns>True if an item was successfully read; otherwise, false.</returns>
@@ -56,7 +49,7 @@ public class BlockingQueue<T>(TimeSpan? readTimeout = null)
         lock (_lockObject)
         {
             // Wait until an item is available or timeout occurs
-            if (_queue.Count == 0)
+            while (_queue.Count == 0 && !_isClosed)
             {
                 // Wait with timeout
                 if (!Monitor.Wait(_lockObject, _readTimeout))
@@ -75,6 +68,18 @@ public class BlockingQueue<T>(TimeSpan? readTimeout = null)
 
             item = _queue.Dequeue();
             return item != null;
+        }
+    }
+
+    /// <summary>
+    /// Closes the queue and signals all waiting threads.
+    /// </summary>
+    public void Close()
+    {
+        lock (_lockObject)
+        {
+            _isClosed = true;
+            Monitor.PulseAll(_lockObject);
         }
     }
 }

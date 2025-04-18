@@ -91,7 +91,7 @@ public interface IBodyData
     /// <summary>
     /// Defines the queue to use for Server-Sent Events (string).
     /// </summary>
-    public BlockingQueue<string?>? SseStringQueue { get; set; }
+    public IBlockingQueue<string?>? SseStringQueue { get; set; }
 
     /// <summary>
     /// Defines if the body is using Server-Sent Events (string).
