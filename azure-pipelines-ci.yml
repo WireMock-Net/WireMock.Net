@@ -7,7 +7,7 @@ jobs:
 - job: Linux_Build_Test_SonarCloud
 
   pool:
-    vmImage: 'Ubuntu-latest'
+    vmImage: 'ubuntu-22.04'
 
   steps:
   - script: |
