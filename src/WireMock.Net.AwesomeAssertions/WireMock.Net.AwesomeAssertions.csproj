@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>AwesomeAssertions extensions for WireMock.Net</Description>
+        <AssemblyTitle>WireMock.Net.AwesomeAssertions</AssemblyTitle>
+        <Authors>Francesco Venturoli;Mahmoud Ali;Stef Heyenrath</Authors>
+        <TargetFrameworks>net47;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>WireMock.Net.AwesomeAssertions</AssemblyName>
+        <PackageId>WireMock.Net.AwesomeAssertions</PackageId>
+        <PackageTags>wiremock;AwesomeAssertions;UnitTest;Assert;Assertions</PackageTags>
+        <RootNamespace>WireMock.AwesomeAssertions</RootNamespace>
+        <ProjectGuid>{9565C395-FC5D-4CB1-8381-EC3D9DA74779}</ProjectGuid>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<DelaySign>true</DelaySign>-->
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AwesomeAssertions" Version="8.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
+
+</Project>
