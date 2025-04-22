@@ -7,7 +7,7 @@ jobs:
 - job: Linux_Build_Test_SonarCloud
 
   pool:
-    vmImage: 'Ubuntu-latest'
+    vmImage: 'ubuntu-22.04'
 
   steps:
   - script: |
@@ -23,6 +23,10 @@ jobs:
       dotnet tool install --global dotnet-sonarscanner
       dotnet tool install --global dotnet-coverage
     displayName: 'Install dotnet tools'
+
+  - script: |
+      dotnet workload install aspire
+    displayName: 'Install aspire'
 
   - task: PowerShell@2
     displayName: "Use JDK17 by default"
