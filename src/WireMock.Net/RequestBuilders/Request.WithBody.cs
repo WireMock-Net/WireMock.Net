@@ -37,13 +37,14 @@ public partial class Request
     /// <inheritdoc />
     public IRequestBuilder WithBodyAsJson(object body, MatchBehaviour matchBehaviour = MatchBehaviour.AcceptOnMatch)
     {
-        return WithBody(new IMatcher[] { new JsonMatcher(matchBehaviour, body) });
+        var matcher = body as IMatcher ?? new JsonMatcher(matchBehaviour, body);
+        return WithBody([matcher]);
     }
 
     /// <inheritdoc />
     public IRequestBuilder WithBody(IMatcher matcher)
     {
-        return WithBody(new[] { matcher });
+        return WithBody([matcher]);
     }
 
     /// <inheritdoc />

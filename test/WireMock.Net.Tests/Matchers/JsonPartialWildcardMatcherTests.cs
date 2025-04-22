@@ -20,7 +20,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher("{}");
 
         // Act
-        string name = matcher.Name;
+        var name = matcher.Name;
 
         // Assert
         Check.That(name).Equals("JsonPartialWildcardMatcher");
@@ -33,7 +33,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher("{}");
 
         // Act
-        object value = matcher.Value;
+        var value = matcher.Value;
 
         // Assert
         Check.That(value).Equals("{}");
@@ -83,7 +83,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(bytes).Score;
+        var match = matcher.IsMatch(bytes).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -97,7 +97,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(s).Score;
+        var match = matcher.IsMatch(s).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -111,7 +111,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(o).Score;
+        var match = matcher.IsMatch(o).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
@@ -129,7 +129,7 @@ public class JsonPartialWildcardMatcherTests
             "x",
             "y"
         };
-        double match = matcher.IsMatch(jArray).Score;
+        var match = matcher.IsMatch(jArray).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -147,7 +147,7 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -165,7 +165,7 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "NaMe", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -179,7 +179,7 @@ public class JsonPartialWildcardMatcherTests
 
         // Act 
         var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -193,7 +193,7 @@ public class JsonPartialWildcardMatcherTests
 
         // Act 
         var jObject = JObject.Parse("{ \"Id\" : 1, \"Name\" : \"Test\" }");
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -211,7 +211,7 @@ public class JsonPartialWildcardMatcherTests
             "x",
             "y"
         };
-        double match = matcher.IsMatch(jArray).Score;
+        var match = matcher.IsMatch(jArray).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -229,7 +229,7 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -247,7 +247,7 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -265,7 +265,7 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "Name", new JValue("Test") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(0.0, match);
@@ -282,7 +282,7 @@ public class JsonPartialWildcardMatcherTests
         {
             { "preferredAt", new JValue("2019-11-21T10:32:53.2210009+00:00") }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);
@@ -305,7 +305,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher(value);
 
         // Act
-        double match = matcher.IsMatch(input).Score;
+        var match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -320,7 +320,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher(value);
 
         // Act
-        double match = matcher.IsMatch(input).Score;
+        var match = matcher.IsMatch(input).Score;
 
         // Assert
         match.Should().Be(1.0);
@@ -344,7 +344,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher(value);
 
         // Act
-        double match = matcher.IsMatch(input).Score;
+        var match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(0.0, match);
@@ -363,7 +363,7 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher(value);
 
         // Act
-        double match = matcher.IsMatch(input).Score;
+        var match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(1.0, match);
@@ -382,14 +382,14 @@ public class JsonPartialWildcardMatcherTests
         var matcher = new JsonPartialWildcardMatcher(value);
 
         // Act
-        double match = matcher.IsMatch(input).Score;
+        var match = matcher.IsMatch(input).Score;
 
         // Assert
         Assert.Equal(0.0, match);
     }
 
     [Fact]
-    public void JsonPartialWildcardMatcher_IsMatch_WithIgnoreCaseTrueAndRegexTrue_JObject()
+    public void JsonPartialWildcardMatcher_IsMatch_WithIgnoreCaseTrueAndRegexTrue_JObject1()
     {
         // Assign 
         var matcher = new JsonPartialWildcardMatcher(new { id = 1, Number = "^\\d+$" }, ignoreCase: true, regex: true);
@@ -400,7 +400,22 @@ public class JsonPartialWildcardMatcherTests
             { "Id", new JValue(1) },
             { "Number", new JValue(1) }
         };
-        double match = matcher.IsMatch(jObject).Score;
+        var match = matcher.IsMatch(jObject).Score;
+
+        // Assert 
+        Assert.Equal(1.0, match);
+    }
+
+    [Fact]
+    public void JsonPartialWildcardMatcher_IsMatch_WithIgnoreCaseTrueAndRegexTrue_JObject2()
+    {
+        // Assign 
+        var matcher = new JsonPartialWildcardMatcher(new { method = "initialize", id = "^[a-f0-9]{32}-[0-9]$" }, ignoreCase: true, regex: true);
+
+        // Act 
+        var jObject = JsonConvert.DeserializeObject(
+            "{\"jsonrpc\":\"2.0\",\"id\":\"ec475f56d4694b48bc737500ba575b35-1\",\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"GitHub Test\",\"version\":\"1.0.0\"}}}");
+        var match = matcher.IsMatch(jObject).Score;
 
         // Assert 
         Assert.Equal(1.0, match);

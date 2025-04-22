@@ -1,7 +1,10 @@
 // Copyright © WireMock.Net
 
+using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -9,15 +12,17 @@ using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
+using WireMock.Transformers.Handlebars;
+using WireMock.Types;
 using Xunit;
 
 namespace WireMock.Net.Tests.ResponseBuilders;
 
 public class ResponseWithHandlebarsFileTests
 {
-    private readonly WireMockServerSettings _settings = new();
     private const string ClientIp = "::1";
 
+    private readonly WireMockServerSettings _settings;
     private readonly Mock<IMapping> _mappingMock;
     private readonly Mock<IFileSystemHandler> _filesystemHandlerMock;
 
@@ -28,7 +33,11 @@ public class ResponseWithHandlebarsFileTests
         _filesystemHandlerMock = new Mock<IFileSystemHandler>(MockBehavior.Strict);
         _filesystemHandlerMock.Setup(fs => fs.ReadResponseBodyAsString(It.IsAny<string>())).Returns("abc");
 
-        _settings.FileSystemHandler = _filesystemHandlerMock.Object;
+        _settings = new()
+        {
+            AllowedCustomHandlebarHelpers = CustomHandlebarHelpers.File,
+            FileSystemHandler = _filesystemHandlerMock.Object
+        };
     }
 
     [Fact]
@@ -48,7 +57,7 @@ public class ResponseWithHandlebarsFileTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+        var j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
         Check.That(j["Data"].Value<string>()).Equals("abc");
 
         // Verify
@@ -73,7 +82,7 @@ public class ResponseWithHandlebarsFileTests
         var response = await responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, _settings).ConfigureAwait(false);
 
         // Assert
-        JObject j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
+        var j = JObject.FromObject(response.Message.BodyData.BodyAsJson);
         Check.That(j["Data"].Value<string>()).Equals("abc");
 
         // Verify
@@ -99,6 +108,30 @@ public class ResponseWithHandlebarsFileTests
 
         // Verify
         _filesystemHandlerMock.Verify(fs => fs.ReadResponseBodyAsString(It.IsAny<string>()), Times.Never);
+        _filesystemHandlerMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public void Response_ProvideResponseAsync_Handlebars_File_NotAllowed_Throws_HandlebarsRuntimeException()
+    {
+        // Assign
+        var settings = new WireMockServerSettings
+        {
+            AllowedCustomHandlebarHelpers = CustomHandlebarHelpers.None,
+            FileSystemHandler = _filesystemHandlerMock.Object
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost:1234?id=x"), "GET", ClientIp);
+
+        var responseBuilder = Response.Create()
+            .WithBody("{{File \"{{request.query.id}}.json\"}}")
+            .WithTransformer();
+
+        // Act
+        Func<Task> action = () => responseBuilder.ProvideResponseAsync(_mappingMock.Object, request, settings);
+
+        action.Should().ThrowAsync<HandlebarsRuntimeException>();
+
+        // Verify
         _filesystemHandlerMock.VerifyNoOtherCalls();
     }
 }

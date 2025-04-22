@@ -23,7 +23,7 @@ internal class HandlebarsContextFactory : ITransformerContextFactory
         };
         var handlebars = HandlebarsDotNet.Handlebars.Create(config);
 
-        WireMockHandlebarsHelpers.Register(handlebars, _settings.FileSystemHandler);
+        WireMockHandlebarsHelpers.Register(handlebars, _settings);
 
         _settings.HandlebarsRegistrationCallback?.Invoke(handlebars, _settings.FileSystemHandler);
 

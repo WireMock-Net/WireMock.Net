@@ -329,4 +329,13 @@ public class WireMockServerSettings
     /// </summary>
     [PublicAPI]
     public string? AdminPath { get; set; }
+
+    /// <summary>
+    /// Defines the allowed custom HandlebarHelpers which can be used. Possible values are:
+    /// - <see cref="CustomHandlebarHelpers.None"/> (Default)
+    /// - <see cref="CustomHandlebarHelpers.File"/>
+    /// - <see cref="CustomHandlebarHelpers.All"/>
+    /// </summary>
+    [PublicAPI]
+    public CustomHandlebarHelpers AllowedCustomHandlebarHelpers { get; set; } = CustomHandlebarHelpers.None;
 }
