@@ -39,6 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="Aspire.Hosting" />
+        <Using Include="Aspire.Hosting.ApplicationModel" />
         <Using Include="Aspire.Hosting.Testing" />
         <Using Include="Xunit" />
     </ItemGroup>
