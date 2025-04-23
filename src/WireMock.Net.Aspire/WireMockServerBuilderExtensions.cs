@@ -2,6 +2,8 @@
 
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
+using Aspire.Hosting.WireMock;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Stef.Validation;
 using WireMock.Client.Builders;
 using WireMock.Net.Aspire;
@@ -55,7 +57,8 @@ public static class WireMockServerBuilderExtensions
             .AddResource(wireMockContainerResource)
             .WithImage(DefaultLinuxImage)
             .WithEnvironment(ctx => ctx.EnvironmentVariables.Add("DOTNET_USE_POLLING_FILE_WATCHER", "1")) // https://khalidabuhakmeh.com/aspnet-docker-gotchas-and-workarounds#configuration-reloads-and-filesystemwatcher
-            .WithHttpEndpoint(port: arguments.HttpPort, targetPort: WireMockServerArguments.HttpContainerPort);
+            .WithHttpEndpoint(port: arguments.HttpPort, targetPort: WireMockServerArguments.HttpContainerPort)
+            .WithOpenInspectorCommand();
 
         if (!string.IsNullOrEmpty(arguments.MappingsPath))
         {
@@ -171,5 +174,49 @@ public static class WireMockServerBuilderExtensions
         wiremock.Resource.Arguments.ApiMappingBuilder = configure;
 
         return wiremock;
+    }
+
+    /// <summary>
+    /// Enables the WireMockInspect, a cross-platform UI app that facilitates WireMock troubleshooting.
+    /// This requires installation of the WireMockInspector tool.
+    /// <code>
+    /// dotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources
+    /// </code>
+    /// </summary>
+    /// <param name="builder">The <see cref="IResourceBuilder{WireMockNetResource}"/>.</param>
+    /// <returns></returns>
+    public static IResourceBuilder<WireMockServerResource> WithOpenInspectorCommand(this IResourceBuilder<WireMockServerResource> builder)
+    {
+        Guard.NotNull(builder);
+
+        CommandOptions commandOptions = new()
+        {
+            Description = "Requires installation of the WireMockInspector tool:\ndotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources",
+            UpdateState = OnUpdateResourceState,
+            IconName = "BoxSearch",
+            IconVariant = IconVariant.Filled
+        };
+
+        builder.WithCommand(
+            name: "open-inspector",
+            displayName: "Open Inspector",
+            executeCommand: context => OnRunOpenInspectorCommandAsync(builder),
+            commandOptions: commandOptions);
+
+        return builder;
+    }
+
+    private static Task<ExecuteCommandResult> OnRunOpenInspectorCommandAsync(IResourceBuilder<WireMockServerResource> builder)
+    {
+        WireMockInspector.Inspect(builder.Resource.GetEndpoint().Url);
+
+        return Task.FromResult(CommandResults.Success());
+    }
+
+    private static ResourceCommandState OnUpdateResourceState(UpdateCommandStateContext context)
+    {
+        return context.ResourceSnapshot.HealthStatus is HealthStatus.Healthy
+            ? ResourceCommandState.Enabled
+            : ResourceCommandState.Disabled;
     }
 }
