@@ -4,7 +4,6 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HandlebarsDotNet;
-using HandlebarsDotNet.Helpers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -12,7 +11,6 @@ using WireMock.Handlers;
 using WireMock.Models;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
-using WireMock.Transformers.Handlebars;
 using WireMock.Types;
 using Xunit;
 
@@ -35,7 +33,10 @@ public class ResponseWithHandlebarsFileTests
 
         _settings = new()
         {
-            AllowedCustomHandlebarHelpers = CustomHandlebarHelpers.File,
+            HandlebarsSettings = new HandlebarsSettings
+            {
+                AllowedCustomHandlebarsHelpers = CustomHandlebarsHelpers.File
+            },
             FileSystemHandler = _filesystemHandlerMock.Object
         };
     }
@@ -117,7 +118,6 @@ public class ResponseWithHandlebarsFileTests
         // Assign
         var settings = new WireMockServerSettings
         {
-            AllowedCustomHandlebarHelpers = CustomHandlebarHelpers.None,
             FileSystemHandler = _filesystemHandlerMock.Object
         };
         var request = new RequestMessage(new UrlDetails("http://localhost:1234?id=x"), "GET", ClientIp);

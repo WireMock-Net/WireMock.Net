@@ -6,7 +6,7 @@ namespace WireMock.Types;
 /// A enum defining the supported Handlebar helpers.
 /// </summary>
 [Flags]
-public enum CustomHandlebarHelpers
+public enum CustomHandlebarsHelpers
 {
     None = 0,
 
