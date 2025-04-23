@@ -67,7 +67,7 @@ public class WireMockServerBuilderExtensionsTests
             MappingsPath = null,
             HttpPort = port
         });
-        wiremock.Resource.Annotations.Should().HaveCount(4);
+        wiremock.Resource.Annotations.Should().HaveCount(5);
 
         var containerImageAnnotation = wiremock.Resource.Annotations.OfType<ContainerImageAnnotation>().FirstOrDefault();
         containerImageAnnotation.Should().BeEquivalentTo(new ContainerImageAnnotation
@@ -92,5 +92,7 @@ public class WireMockServerBuilderExtensionsTests
         wiremock.Resource.Annotations.OfType<EnvironmentCallbackAnnotation>().FirstOrDefault().Should().NotBeNull();
 
         wiremock.Resource.Annotations.OfType<CommandLineArgsCallbackAnnotation>().FirstOrDefault().Should().NotBeNull();
+
+        wiremock.Resource.Annotations.OfType<ResourceCommandAnnotation>().FirstOrDefault().Should().NotBeNull();
     }
 }
