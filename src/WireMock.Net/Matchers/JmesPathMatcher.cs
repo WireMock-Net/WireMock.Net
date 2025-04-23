@@ -74,7 +74,7 @@ public class JmesPathMatcher : IStringMatcher, IObjectMatcher
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
-        if (input != null)
+        if (!string.IsNullOrWhiteSpace(input))
         {
             try
             {
