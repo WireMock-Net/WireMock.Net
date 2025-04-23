@@ -55,11 +55,23 @@ public class JmesPathMatcherTests
     public void JmesPathMatcher_IsMatch_NullString()
     {
         // Assign
-        string? s = null;
         var matcher = new JmesPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(s).Score;
+        double match = matcher.IsMatch(null).Score;
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JmesPathMatcher_IsMatch_EmptyString()
+    {
+        // Assign
+        var matcher = new JmesPathMatcher("");
+
+        // Act 
+        double match = matcher.IsMatch(string.Empty).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);

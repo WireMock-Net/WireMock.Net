@@ -55,11 +55,23 @@ public class JsonPathMatcherTests
     public void JsonPathMatcher_IsMatch_NullString()
     {
         // Arrange
-        string? s = null;
         var matcher = new JsonPathMatcher("");
 
         // Act 
-        double match = matcher.IsMatch(s).Score;
+        double match = matcher.IsMatch(null).Score;
+
+        // Assert 
+        Check.That(match).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void JsonPathMatcher_IsMatch_EmptyString()
+    {
+        // Arrange
+        var matcher = new JsonPathMatcher("");
+
+        // Act 
+        double match = matcher.IsMatch(string.Empty).Score;
 
         // Assert 
         Check.That(match).IsEqualTo(0);
