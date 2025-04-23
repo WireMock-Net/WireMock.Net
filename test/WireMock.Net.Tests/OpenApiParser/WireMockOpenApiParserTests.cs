@@ -13,6 +13,7 @@ namespace WireMock.Net.Tests.OpenApiParser;
 [UsesVerify]
 public class WireMockOpenApiParserTests
 {
+    private readonly DateTime _exampleDateTime = new(2024, 6, 19, 12, 34, 56, DateTimeKind.Utc);
     private readonly Mock<IWireMockOpenApiParserExampleValues> _exampleValuesMock = new();
 
     private readonly WireMockOpenApiParser _sut = new();
@@ -22,12 +23,12 @@ public class WireMockOpenApiParserTests
         _exampleValuesMock.SetupGet(e => e.Boolean).Returns(true);
         _exampleValuesMock.SetupGet(e => e.Integer).Returns(42);
         _exampleValuesMock.SetupGet(e => e.Float).Returns(1.1f);
-        _exampleValuesMock.SetupGet(e => e.Double).Returns(2.2d);
+        _exampleValuesMock.SetupGet(e => e.Decimal).Returns(2.2m);
         _exampleValuesMock.SetupGet(e => e.String).Returns("example-string");
         _exampleValuesMock.SetupGet(e => e.Object).Returns("example-object");
         _exampleValuesMock.SetupGet(e => e.Bytes).Returns("Stef"u8.ToArray());
-        _exampleValuesMock.SetupGet(e => e.Date).Returns(() => new DateTime(2024, 6, 19));
-        _exampleValuesMock.SetupGet(e => e.DateTime).Returns(() => new DateTime(2024, 6, 19, 12, 34, 56, DateTimeKind.Utc));
+        _exampleValuesMock.SetupGet(e => e.Date).Returns(() => _exampleDateTime.Date);
+        _exampleValuesMock.SetupGet(e => e.DateTime).Returns(() => _exampleDateTime);
     }
 
     [Fact]

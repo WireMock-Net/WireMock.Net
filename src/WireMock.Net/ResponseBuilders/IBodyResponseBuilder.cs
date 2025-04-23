@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using JsonConverter.Abstractions;
+using WireMock.Models;
 
 namespace WireMock.ResponseBuilders;
 
@@ -32,13 +33,21 @@ public interface IBodyResponseBuilder : IFaultResponseBuilder
     IResponseBuilder WithBody(Func<IRequestMessage, string> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
 
     /// <summary>
-    /// WithBody : Create a ... response based on a async callback function.
+    /// WithBody : Create a ... response based on an async callback function.
     /// </summary>
     /// <param name="bodyFactory">The async delegate to build the body.</param>
     /// <param name="destination">The Body Destination format (SameAsSource, String or Bytes).</param>
     /// <param name="encoding">The body encoding.</param>
     /// <returns>A <see cref="IResponseBuilder"/>.</returns>
     IResponseBuilder WithBody(Func<IRequestMessage, Task<string>> bodyFactory, string? destination = BodyDestinationFormat.SameAsSource, Encoding? encoding = null);
+
+    /// <summary>
+    /// WithBody : Create a ... response based on an async callback function.
+    /// </summary>
+    /// <param name="bodyFactory">The async delegate to build the body.</param>
+    /// <param name="timeout">The timeout to wait on new items in the queue. Default value is <c>1</c> hour.</param>
+    /// <returns>A <see cref="IResponseBuilder"/>.</returns>
+    IResponseBuilder WithSseBody(Func<IRequestMessage, IBlockingQueue<string?>, Task> bodyFactory, TimeSpan? timeout = null);
 
     /// <summary>
     /// WithBody : Create a ... response based on a bytearray.

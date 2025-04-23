@@ -46,7 +46,7 @@
         <DefineConstants>$(DefineConstants);USE_ASPNETCORE;NET46</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
+    <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <DefineConstants>$(DefineConstants);OPENAPIPARSER</DefineConstants>
     </PropertyGroup>
 
@@ -195,17 +195,17 @@
         <PackageReference Include="Handlebars.Net.Helpers.Xslt" Version="2.4.6" />
     </ItemGroup>
 
-    <ItemGroup>
-        <!-- CVE-2021-26701 and https://github.com/WireMock-Net/WireMock.Net/issues/697 -->
+    <!--<ItemGroup>
+        --><!-- CVE-2021-26701 and https://github.com/WireMock-Net/WireMock.Net/issues/697 --><!--
         <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
-    </ItemGroup>
+    </ItemGroup>-->
 
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452'">
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <ProjectReference Include="..\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj" />
     </ItemGroup>
 </Project>
