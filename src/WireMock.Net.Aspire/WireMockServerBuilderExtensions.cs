@@ -191,15 +191,15 @@ public static class WireMockServerBuilderExtensions
 
         CommandOptions commandOptions = new()
         {
-            Description = "Requires installation of the WireMockInspector tool:\ndotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources",
+            Description = "Requires installation of the WireMockInspector (https://github.com/WireMock-Net/WireMockInspector) tool:\ndotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources",
             UpdateState = OnUpdateResourceState,
             IconName = "BoxSearch",
             IconVariant = IconVariant.Filled
         };
 
         builder.WithCommand(
-            name: "open-inspector",
-            displayName: "Open Inspector",
+            name: "wiremock-inspector",
+            displayName: "WireMock Inspector",
             executeCommand: context => OnRunOpenInspectorCommandAsync(builder),
             commandOptions: commandOptions);
 
