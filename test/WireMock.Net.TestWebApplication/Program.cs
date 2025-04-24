@@ -13,6 +13,9 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddSingleton<TaskQueue>();
+        builder.Services.AddHostedService<TestBackgroundService>();
+
         builder.Services.AddWireMockService(server =>
         {
             server.Given(Request.Create()
@@ -28,6 +31,13 @@ public class Program
             ).RespondWith(Response.Create()
                 .WithBody("Hello 2 from WireMock.Net !")
             );
+
+            server.Given(Request.Create()
+                .WithPath("/test3")
+                .UsingAnyMethod()
+            ).RespondWith(Response.Create()
+                .WithBody("Hello 3 from WireMock.Net !")
+            );
         }, alwaysRedirectToWireMock);
 
         var app = builder.Build();
@@ -42,6 +52,11 @@ public class Program
         {
             using var client = factory.CreateClient();
             return await client.GetStringAsync("https://real-api:12345/test2");
+        });
+
+        app.MapGet("/real3", async (TaskQueue taskQueue, CancellationToken cancellationToken) =>
+        {
+            return await taskQueue.Enqueue("https://real-api:12345/test3", cancellationToken);
         });
 
         await app.RunAsync();

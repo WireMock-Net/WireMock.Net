@@ -10,6 +10,7 @@ public class IntegrationTests
     [Theory]
     [InlineData("/real1", "Hello 1 from WireMock.Net !")]
     [InlineData("/real2", "Hello 2 from WireMock.Net !")]
+    [InlineData("/real3", "Hello 3 from WireMock.Net !")]
     public async Task CallingRealApi_WithAlwaysRedirectToWireMockIsTrue(string requestUri, string expectedResponse)
     {
         // Arrange
