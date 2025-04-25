@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.Testing" Version="8.2.2" />
+        <PackageReference Include="Aspire.Hosting.Testing" Version="9.2.0" />
         <PackageReference Include="Codecov" Version="1.13.0" />
         <PackageReference Include="coverlet.msbuild" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
@@ -39,6 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="Aspire.Hosting" />
+        <Using Include="Aspire.Hosting.ApplicationModel" />
         <Using Include="Aspire.Hosting.Testing" />
         <Using Include="Xunit" />
     </ItemGroup>
