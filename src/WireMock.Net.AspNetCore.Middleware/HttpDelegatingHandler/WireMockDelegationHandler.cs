@@ -36,7 +36,6 @@ internal class WireMockDelegationHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Guard.NotNull(request);
-        Guard.NotNull(_httpContextAccessor.HttpContext);
 
         if (_settings.AlwaysRedirect || IsWireMockRedirectHeaderSetToTrue())
         {
@@ -57,16 +56,30 @@ internal class WireMockDelegationHandler : DelegatingHandler
 
     private bool IsWireMockRedirectHeaderSetToTrue()
     {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext is null)
+        {
+            _logger.LogDebug("HttpContext is not available in current runtime environment");
+            return false;
+        }
+
         return
-            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_REDIRECT, out var values) &&
+            httpContext.Request.Headers.TryGetValue(AppConstants.HEADER_REDIRECT, out var values) &&
             bool.TryParse(values.ToString(), out var shouldRedirectToWireMock) && shouldRedirectToWireMock;
     }
 
     private bool TryGetDelayHeaderValue(out int delayInMs)
     {
         delayInMs = 0;
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext is null)
+        {
+            _logger.LogDebug("HttpContext is not available in current runtime environment");
+            return false;
+        }
+
         return
-            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AppConstants.HEADER_RESPONSE_DELAY, out var values) &&
+            httpContext.Request.Headers.TryGetValue(AppConstants.HEADER_RESPONSE_DELAY, out var values) &&
             int.TryParse(values.ToString(), out delayInMs);
     }
 }
