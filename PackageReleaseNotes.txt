@@ -1,6 +1,15 @@
-# 1.7.5-preview-02 (03 April 2025)
-- #1265 Fix construction of path in OpenApiParser [bug]
-- #1269 Server-Sent Events [feature]
+# 1.8.0 (28 April 2025)
+- #1268 1.7.x [bug]
+- #1271 Add HandlebarsSettings [feature]
+- #1273 feat(awesome-assertions): Added new project WireMock.Net.AwesomeAssertions [feature]
+- #1278 changed null check in JSONPathMatcher and JmesPathMatcher to ensure t&#8230; [bug]
+- #1283 Add an launch inspector command to Aspire Dashboard [feature]
+- #1285 Enable support for WireMock Middleware in Hosted Services [bug]
+- #1243 Support for AwesomeAssertions [feature]
 - #1264 OpenApiParser - Construction of path possibly incorrect [bug]
+- #1275 WithMappingFromOpenApiFile - Support for OpenAPI 3.1.0 [feature]
+- #1276 Add WireMock Inspector command to Aspire integration [feature]
+- #1277 Newtonsoft.Json.JsonReaderException: 'Unable to read the JSON string.' when using IStringMatcher with an empty body [bug]
+- #1284 WireMock.Net.AspNetCore.Middleware does not work in hosted services [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
