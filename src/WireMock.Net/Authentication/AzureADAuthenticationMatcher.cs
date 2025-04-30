@@ -107,7 +107,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
         if (match is { Success: true, Groups.Count: > 1 })
         {
             tenant = match.Groups[1].Value;
-            return string.IsNullOrEmpty(tenant);
+            return !string.IsNullOrEmpty(tenant);
         }
 
         tenant = null;
