@@ -27,18 +27,17 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
     private const string BearerPrefix = "Bearer ";
     private static readonly Regex ExtractTenantIdRegex = new(@"https:\/\/(?:sts\.windows\.net|login\.microsoftonline\.com)\/([a-z0-9-]{36}|[a-zA-Z0-9\.]+)/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
+    private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+    private readonly IConfigurationManager<OpenIdConnectConfiguration> _configurationManager;
     private readonly string _tenant;
     private readonly string _audience;
-    private readonly ConfigurationManager<OpenIdConnectConfiguration> _configurationManager;
 
-    public AzureADAuthenticationMatcher(string tenant, string audience)
+    public AzureADAuthenticationMatcher(JwtSecurityTokenHandler jwtSecurityTokenHandler, IConfigurationManager<OpenIdConnectConfiguration> configurationManager, string tenant, string audience)
     {
+        _jwtSecurityTokenHandler = Guard.NotNull(jwtSecurityTokenHandler);
+        _configurationManager = Guard.NotNull(configurationManager);
         _audience = Guard.NotNullOrEmpty(audience);
         _tenant = Guard.NotNullOrEmpty(tenant);
-
-        var stsDiscoveryEndpoint = string.Format(CultureInfo.InvariantCulture, "https://login.microsoftonline.com/{0}/.well-known/openid-configuration", _tenant);
-        _configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
     }
 
     public string Name => nameof(AzureADAuthenticationMatcher);
@@ -63,13 +62,13 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
         try
         {
-            var config = _configurationManager.GetConfigurationAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            var config = _configurationManager.GetConfigurationAsync(default).ConfigureAwait(false).GetAwaiter().GetResult();
 
             var validationParameters = new TokenValidationParameters
             {
                 ValidAudience = _audience,
                 ValidIssuer = config.Issuer,
-                IssuerValidator =  (issuer, _, _) =>
+                IssuerValidator = (issuer, _, _) =>
                 {
                     if (TryExtractTenantId(issuer, out var extractedTenant) && string.Equals(extractedTenant, _tenant, StringComparison.OrdinalIgnoreCase))
                     {
