@@ -23,7 +23,7 @@ public class WireMockOpenApiParserTests
         _exampleValuesMock.SetupGet(e => e.Boolean).Returns(true);
         _exampleValuesMock.SetupGet(e => e.Integer).Returns(42);
         _exampleValuesMock.SetupGet(e => e.Float).Returns(1.1f);
-        _exampleValuesMock.SetupGet(e => e.Decimal).Returns(2.2m);
+        _exampleValuesMock.SetupGet(e => e.Double).Returns(2.2);
         _exampleValuesMock.SetupGet(e => e.String).Returns("example-string");
         _exampleValuesMock.SetupGet(e => e.Object).Returns("example-object");
         _exampleValuesMock.SetupGet(e => e.Bytes).Returns("Stef"u8.ToArray());

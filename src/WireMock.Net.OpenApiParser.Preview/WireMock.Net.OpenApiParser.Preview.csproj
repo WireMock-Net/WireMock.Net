@@ -5,7 +5,7 @@
         <TargetFrameworks>net47;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageTags>wiremock;openapi;OAS;raml;converter;parser;openapiparser</PackageTags>
-        <ProjectGuid>{D3804228-91F4-4502-9595-39584E5AADAD}</ProjectGuid>
+        <ProjectGuid>{E5B03EEF-822C-4295-952B-4479AD30082B}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
         <SignAssembly>true</SignAssembly>
