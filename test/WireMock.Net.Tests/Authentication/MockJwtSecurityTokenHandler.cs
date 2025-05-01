@@ -11,6 +11,8 @@ internal class MockJwtSecurityTokenHandler : JwtSecurityTokenHandler
     public override ClaimsPrincipal ValidateToken(string token, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
     {
         validatedToken = new JwtSecurityToken();
-        return ClaimsPrincipal.Current;    
+        var claims = new[] { new Claim(ClaimTypes.Name, "TestUser") };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        return new ClaimsPrincipal(identity);
     }
 }
