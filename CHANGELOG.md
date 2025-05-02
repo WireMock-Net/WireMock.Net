@@ -1,3 +1,6 @@
+# 1.8.1 (02 May 2025)
+- [#1289](https://github.com/WireMock-Net/WireMock.Net/pull/1289) - Revert changes to WireMock.Net.OpenApiParser [bug] contributed by [StefH](https://github.com/StefH)
+
 # 1.8.0 (28 April 2025)
 - [#1268](https://github.com/WireMock-Net/WireMock.Net/pull/1268) - 1.7.x [bug] contributed by [StefH](https://github.com/StefH)
 - [#1271](https://github.com/WireMock-Net/WireMock.Net/pull/1271) - Add HandlebarsSettings [feature] contributed by [StefH](https://github.com/StefH)
@@ -7,7 +10,6 @@
 - [#1285](https://github.com/WireMock-Net/WireMock.Net/pull/1285) - Enable support for WireMock Middleware in Hosted Services [bug] contributed by [etkr](https://github.com/etkr)
 - [#1243](https://github.com/WireMock-Net/WireMock.Net/issues/1243) - Support for AwesomeAssertions [feature]
 - [#1264](https://github.com/WireMock-Net/WireMock.Net/issues/1264) - OpenApiParser - Construction of path possibly incorrect [bug]
-- [#1275](https://github.com/WireMock-Net/WireMock.Net/issues/1275) - WithMappingFromOpenApiFile - Support for OpenAPI 3.1.0 [feature]
 - [#1276](https://github.com/WireMock-Net/WireMock.Net/issues/1276) - Add WireMock Inspector command to Aspire integration [feature]
 - [#1277](https://github.com/WireMock-Net/WireMock.Net/issues/1277) - Newtonsoft.Json.JsonReaderException: 'Unable to read the JSON string.' when using IStringMatcher with an empty body [bug]
 - [#1284](https://github.com/WireMock-Net/WireMock.Net/issues/1284) - WireMock.Net.AspNetCore.Middleware does not work in hosted services [bug]
