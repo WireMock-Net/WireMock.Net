@@ -25,7 +25,7 @@ internal static class TypeLoader
                 return foundType;
             }
 
-            throw new DllNotFoundException($"No dll found which implements Interface '{key}'.");
+            throw new DllNotFoundException($"No dll found which implements interface '{key}'.");
         });
 
         return (TInterface)Activator.CreateInstance(pluginType, args)!;

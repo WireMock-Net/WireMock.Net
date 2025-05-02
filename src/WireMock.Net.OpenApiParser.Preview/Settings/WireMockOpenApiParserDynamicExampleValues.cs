@@ -1,7 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models.Interfaces;
 using RandomDataGenerator.FieldOptions;
 using RandomDataGenerator.Randomizers;
 
@@ -22,7 +22,7 @@ public class WireMockOpenApiParserDynamicExampleValues : IWireMockOpenApiParserE
     public virtual float Float => RandomizerFactory.GetRandomizer(new FieldOptionsFloat()).Generate() ?? 4.2f;
 
     /// <inheritdoc />
-    public virtual double Double => RandomizerFactory.GetRandomizer(new FieldOptionsDouble()).Generate() ?? 4.2d;
+    public virtual decimal Decimal => SafeConvertFloatToDecimal(RandomizerFactory.GetRandomizer(new FieldOptionsFloat()).Generate() ?? 4.2f);
 
     /// <inheritdoc />
     public virtual Func<DateTime> Date => () => RandomizerFactory.GetRandomizer(new FieldOptionsDateTime()).Generate() ?? System.DateTime.UtcNow.Date;
@@ -40,5 +40,20 @@ public class WireMockOpenApiParserDynamicExampleValues : IWireMockOpenApiParserE
     public virtual string String => RandomizerFactory.GetRandomizer(new FieldOptionsTextRegex { Pattern = @"^[0-9]{2}[A-Z]{5}[0-9]{2}" }).Generate() ?? "example-string";
 
     /// <inheritdoc />
-    public virtual OpenApiSchema? Schema { get; set; }
+    public virtual IOpenApiSchema? Schema { get; set; }
+
+    /// <summary>
+    /// Safely converts a float to a decimal, ensuring the value stays within the bounds of a decimal.
+    /// </summary>
+    /// <param name="value">The float value to convert.</param>
+    /// <returns>A decimal value within the valid range of a decimal.</returns>
+    private static decimal SafeConvertFloatToDecimal(float value)
+    {
+        return value switch
+        {
+            < (float)decimal.MinValue => decimal.MinValue,
+            > (float)decimal.MaxValue => decimal.MaxValue,
+            _ => (decimal)value
+        };
+    }
 }

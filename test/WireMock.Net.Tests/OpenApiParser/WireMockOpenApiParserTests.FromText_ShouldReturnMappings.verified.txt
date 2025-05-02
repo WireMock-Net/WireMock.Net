@@ -334,7 +334,7 @@
   "processingTerminalId": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED",
@@ -1787,7 +1787,7 @@
   "processingTerminalId": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED"
@@ -2714,7 +2714,7 @@
   "processingTerminalId": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED",
@@ -2863,7 +2863,7 @@
   "processingTerminalId": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED"
@@ -6893,7 +6893,7 @@
   "operator": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED",
@@ -7093,7 +7093,7 @@
   "offlineProcessing": {
     "operation": "offlineDecline",
     "approvalCode": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00"
+    "dateTime": "2024-06-19T12:34:56.000+00:00"
   },
   "autoCapture": true,
   "processAsSale": true
@@ -11349,7 +11349,7 @@
   {
     "op": "replace",
     "path": "/a/b/c",
-    "value": 420
+    "value": "420"
   },
   {
     "op": "move",
@@ -11827,7 +11827,7 @@
   {
     "op": "replace",
     "path": "/a/b/c",
-    "value": 420
+    "value": "420"
   },
   {
     "op": "move",
@@ -12541,7 +12541,7 @@
   {
     "op": "replace",
     "path": "/a/b/c",
-    "value": 420
+    "value": "420"
   },
   {
     "op": "move",
@@ -12986,7 +12986,7 @@
   "operator": "example-string",
   "order": {
     "orderId": "example-string",
-    "dateTime": "2024-06-19T12:34:56.000\u002B00:00",
+    "dateTime": "2024-06-19T12:34:56.000+00:00",
     "description": "example-string",
     "amount": 42,
     "currency": "AED",
