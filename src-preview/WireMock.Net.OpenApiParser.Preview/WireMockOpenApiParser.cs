@@ -6,7 +6,8 @@ using System.IO;
 using System.Text;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
+using Microsoft.OpenApi.Reader;
+using Microsoft.OpenApi.YamlReader;
 using RamlToOpenApiConverter;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Mappers;
@@ -19,7 +20,7 @@ namespace WireMock.Net.OpenApiParser;
 /// </summary>
 public class WireMockOpenApiParser : IWireMockOpenApiParser
 {
-    private readonly OpenApiStreamReader _reader = new();
+    private static readonly OpenApiReaderSettings ReaderSettings = new();
 
     /// <inheritdoc />
     [PublicAPI]
@@ -40,8 +41,7 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
         }
         else
         {
-            var reader = new OpenApiStreamReader();
-            document = reader.Read(File.OpenRead(path), out diagnostic);
+            document = Read(File.OpenRead(path), out diagnostic);
         }
 
         return FromDocument(document, settings);
@@ -51,21 +51,21 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null)
     {
-        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(document.Paths, document.Servers);
+        return new OpenApiPathsMapper(settings ?? new WireMockOpenApiParserSettings()).ToMappingModels(document.Paths, document.Servers ?? []);
     }
 
     /// <inheritdoc  />
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromStream(Stream stream, out OpenApiDiagnostic diagnostic)
     {
-        return FromDocument(_reader.Read(stream, out diagnostic));
+        return FromDocument(Read(stream, out diagnostic));
     }
 
     /// <inheritdoc />
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromStream(Stream stream, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
-        return FromDocument(_reader.Read(stream, out diagnostic), settings);
+        return FromDocument(Read(stream, out diagnostic), settings);
     }
 
     /// <inheritdoc  />
@@ -80,5 +80,28 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
     public IReadOnlyList<MappingModel> FromText(string text, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
         return FromStream(new MemoryStream(Encoding.UTF8.GetBytes(text)), settings, out diagnostic);
+    }
+
+    private static OpenApiDocument Read(Stream stream, out OpenApiDiagnostic diagnostic)
+    {
+        var reader = new OpenApiYamlReader();
+
+        if (stream is not MemoryStream memoryStream)
+        {
+            memoryStream = ReadStreamIntoMemoryStream(stream);
+        }
+
+        var result = reader.Read(memoryStream, ReaderSettings);
+
+        diagnostic = result.Diagnostic ?? new OpenApiDiagnostic();
+        return result.Document ?? throw new InvalidOperationException("The document is null.");
+    }
+
+    private static MemoryStream ReadStreamIntoMemoryStream(Stream stream)
+    {
+        var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        memoryStream.Position = 0;
+        return memoryStream;
     }
 }
