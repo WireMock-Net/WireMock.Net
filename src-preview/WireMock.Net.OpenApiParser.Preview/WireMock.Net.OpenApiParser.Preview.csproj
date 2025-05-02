@@ -32,7 +32,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+      <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
     </ItemGroup>
+
+
 
 </Project>
