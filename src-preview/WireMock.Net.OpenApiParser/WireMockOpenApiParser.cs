@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Reader;
 using Microsoft.OpenApi.YamlReader;
-using RamlToOpenApiConverter;
+//using RamlToOpenApiConverter;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Mappers;
 using WireMock.Net.OpenApiParser.Settings;
@@ -37,7 +37,8 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
         if (Path.GetExtension(path).EndsWith("raml", StringComparison.OrdinalIgnoreCase))
         {
             diagnostic = new OpenApiDiagnostic();
-            document = new RamlConverter().ConvertToOpenApiDocument(path);
+            throw new NotSupportedException("stef");
+            // document = new RamlConverter().ConvertToOpenApiDocument(path);
         }
         else
         {
@@ -84,14 +85,12 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
 
     private static OpenApiDocument Read(Stream stream, out OpenApiDiagnostic diagnostic)
     {
-        var reader = new OpenApiYamlReader();
-
         if (stream is not MemoryStream memoryStream)
         {
             memoryStream = ReadStreamIntoMemoryStream(stream);
         }
 
-        var result = reader.Read(memoryStream, ReaderSettings);
+        var result = OpenApiDocument.Load(memoryStream, settings: ReaderSettings);
 
         diagnostic = result.Diagnostic ?? new OpenApiDiagnostic();
         return result.Document ?? throw new InvalidOperationException("The document is null.");

@@ -1,24 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Description>An OpenApi (swagger) parser to generate MappingModel or mapping.json file.</Description>
-        <TargetFrameworks>net47;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageTags>wiremock;openapi;OAS;raml;converter;parser;openapiparser</PackageTags>
         <ProjectGuid>{E5B03EEF-822C-4295-952B-4479AD30082B}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
-        <SignAssembly>true</SignAssembly>
+        <!--<SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
-        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>-->
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
-
-    <!--
+    
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
-    -->
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -26,15 +24,17 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="RamlToOpenApiConverter" Version="0.7.0" />
+        <!--<PackageReference Include="RamlToOpenApiConverter" Version="0.8.0-preview-01" />-->
         <PackageReference Include="RandomDataGenerator.Net" Version="1.0.18" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
+
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17"  PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17"  PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
     </ItemGroup>
-
-
 
 </Project>
