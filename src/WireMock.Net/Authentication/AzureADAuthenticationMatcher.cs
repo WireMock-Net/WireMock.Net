@@ -3,7 +3,6 @@
 #if !NETSTANDARD1_3
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
 using AnyOfTypes;
@@ -81,7 +80,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
                 ValidateLifetime = true
             };
 
-            // Throws an Exception as the token is invalid (expired, invalid-formatted, etc.)
+            // Throws an Exception as the token is invalid (expired, invalid-formatted, tenant mismatch, etc.)
             _jwtSecurityTokenHandler.ValidateToken(token, validationParameters, out _);
 
             return MatchScores.Perfect;
