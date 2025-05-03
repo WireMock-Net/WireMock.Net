@@ -59,8 +59,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Json\DynamicPropertyWithValue.cs" />
-      <Compile Remove="Json\JObjectExtensions.cs" />
       <Compile Remove="Matchers\LinqMatcher.cs" />
     </ItemGroup>
 

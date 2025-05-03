@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Reader;
 using Microsoft.OpenApi.YamlReader;
+using RamlToOpenApiConverter;
 using WireMock.Admin.Mappings;
 using WireMock.Net.OpenApiParser.Mappers;
 using WireMock.Net.OpenApiParser.Models;
@@ -46,12 +47,17 @@ public class WireMockOpenApiParser : IWireMockOpenApiParser
     [PublicAPI]
     public IReadOnlyList<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic)
     {
+        OpenApiDocument document;
         if (Path.GetExtension(path).EndsWith("raml", StringComparison.OrdinalIgnoreCase))
         {
-            throw new NotSupportedException("raml support is temporary excluded");
+            diagnostic = new OpenApiDiagnostic();
+            document = new RamlConverter().ConvertToOpenApiDocument(path);
+        }
+        else
+        {
+            document = Read(File.OpenRead(path), out diagnostic);
         }
 
-        var document = Read(File.OpenRead(path), out diagnostic);
         return FromDocument(document, settings);
     }
 

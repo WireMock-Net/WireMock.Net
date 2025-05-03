@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
+using RamlToOpenApiConverter;
 
 namespace WireMock.Net.OpenApiParser.Models;
 
@@ -23,5 +24,5 @@ public class OpenApiDiagnostic
     /// <summary>
     /// Open API specification version of the document parsed.
     /// </summary>
-    public OpenApiSpecVersion SpecificationVersion { get; set; }
+    public OpenApiSpecificationVersion SpecificationVersion { get; set; }
 }

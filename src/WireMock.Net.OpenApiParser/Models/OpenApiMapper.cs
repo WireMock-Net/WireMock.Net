@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System.Linq;
+using RamlToOpenApiConverter;
 using MicrosoftOpenApiDiagnostic = Microsoft.OpenApi.Reader.OpenApiDiagnostic;
 
 namespace WireMock.Net.OpenApiParser.Models;
@@ -18,7 +19,7 @@ internal static class OpenApiMapper
         {
             Errors = openApiDiagnostic.Errors.Select(e => new OpenApiError(e.Pointer, e.Message)).ToList(),
             Warnings = openApiDiagnostic.Warnings.Select(e => new OpenApiError(e.Pointer, e.Message)).ToList(),
-            SpecificationVersion = (OpenApiSpecVersion)openApiDiagnostic.SpecificationVersion
+            SpecificationVersion = (OpenApiSpecificationVersion)openApiDiagnostic.SpecificationVersion
         };
     }
 }
