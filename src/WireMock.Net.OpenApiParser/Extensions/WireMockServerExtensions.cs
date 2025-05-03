@@ -3,9 +3,8 @@
 using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
 using Stef.Validation;
+using WireMock.Net.OpenApiParser.Models;
 using WireMock.Net.OpenApiParser.Settings;
 using WireMock.Server;
 
@@ -17,7 +16,7 @@ namespace WireMock.Net.OpenApiParser.Extensions;
 public static class WireMockServerExtensions
 {
     /// <summary>
-    /// Register the mappings via an OpenAPI (swagger) V2 or V3 file.
+    /// Register the mappings via an OpenAPI (swagger) V2/V3/V3.1 file.
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="path">Path containing OpenAPI file to parse and use the mappings.</param>
@@ -29,7 +28,7 @@ public static class WireMockServerExtensions
     }
 
     /// <summary>
-    /// Register the mappings via an OpenAPI (swagger) V2 or V3 file.
+    /// Register the mappings via an OpenAPI (swagger) V2/V3/V3.1 file.
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="path">Path containing OpenAPI file to parse and use the mappings.</param>
@@ -47,7 +46,7 @@ public static class WireMockServerExtensions
     }
 
     /// <summary>
-    /// Register the mappings via an OpenAPI (swagger) V2 or V3 stream.
+    /// Register the mappings via an OpenAPI (swagger) V2/V3/V3.1 stream.
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="stream">Stream containing OpenAPI description to parse and use the mappings.</param>
@@ -59,7 +58,7 @@ public static class WireMockServerExtensions
     }
 
     /// <summary>
-    /// Register the mappings via an OpenAPI (swagger) V2 or V3 stream.
+    /// Register the mappings via an OpenAPI (swagger) V2/V3/V3.1 stream.
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="stream">Stream containing OpenAPI description to parse and use the mappings.</param>
@@ -78,13 +77,13 @@ public static class WireMockServerExtensions
     }
 
     /// <summary>
-    /// Register the mappings via an OpenAPI (swagger) V2 or V3 document.
+    /// Register the mappings via an OpenAPI (swagger) V2/V3/V3.1 document.
     /// </summary>
     /// <param name="server">The WireMockServer instance</param>
     /// <param name="document">The OpenAPI document to use as mappings.</param>
     /// <param name="settings">Additional settings [optional].</param>
     [PublicAPI]
-    public static IWireMockServer WithMappingFromOpenApiDocument(this IWireMockServer server, OpenApiDocument document, WireMockOpenApiParserSettings? settings = null)
+    public static IWireMockServer WithMappingFromOpenApiDocument(this IWireMockServer server, object document, WireMockOpenApiParserSettings? settings = null)
     {
         Guard.NotNull(server);
         Guard.NotNull(document);

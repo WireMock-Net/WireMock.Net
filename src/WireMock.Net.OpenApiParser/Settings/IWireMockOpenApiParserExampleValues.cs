@@ -1,12 +1,12 @@
 // Copyright © WireMock.Net
 
 using System;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models.Interfaces;
 
 namespace WireMock.Net.OpenApiParser.Settings;
 
 /// <summary>
-/// A interface defining the example values to use for the different types.
+/// An interface defining the example values to use for the different types.
 /// </summary>
 public interface IWireMockOpenApiParserExampleValues
 {
@@ -26,9 +26,9 @@ public interface IWireMockOpenApiParserExampleValues
     float Float { get; }
 
     /// <summary>
-    /// An example value for a Double.
+    /// An example value for a Decimal.
     /// </summary>
-    double Double { get; }
+    decimal Decimal { get; }
 
     /// <summary>
     /// An example value for a Date.
@@ -58,5 +58,5 @@ public interface IWireMockOpenApiParserExampleValues
     /// <summary>
     /// OpenApi Schema to generate dynamic examples more accurate
     /// </summary>
-    OpenApiSchema? Schema { get; set; }
+    IOpenApiSchema? Schema { get; set; }
 }
