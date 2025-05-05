@@ -1,4 +1,7 @@
-# 1.8.1 (02 May 2025)
-- #1289 Revert changes to WireMock.Net.OpenApiParser [bug]
+# 1.8.2 (05 May 2025)
+- #1291 Update ProtoBufJsonConverter to fix conflict for 'MessageOptions' [bug]
+- #1083 Compilation Error due to 'MessageOptions' Type Conflict between 'Google.Protobuf' and 'WireMock.Net' [bug]
+- #1097 Encoded url path parameter decoded via proxy [wontfix]
+- #1287 1.8.0 - issues with dependency on Microsoft.OpenApi version 2.0.0-preview.xx [bug]
 
 The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
