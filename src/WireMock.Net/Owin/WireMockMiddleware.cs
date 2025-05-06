@@ -10,11 +10,11 @@ using WireMock.Matchers;
 using WireMock.Http;
 using WireMock.Owin.Mappers;
 using WireMock.Serialization;
-using WireMock.Types;
 using WireMock.ResponseBuilders;
 using WireMock.Settings;
 using System.Collections.Generic;
 using WireMock.Constants;
+using WireMock.Exceptions;
 using WireMock.Util;
 #if !USE_ASPNETCORE
 using IContext = Microsoft.Owin.IOwinContext;
@@ -126,7 +126,7 @@ namespace WireMock.Owin
                 if (targetMapping == null)
                 {
                     logRequest = true;
-                    _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found", ctx.Request);
+                    _options.Logger.Warn("HttpStatusCode set to 404 : No matching mapping found");
                     response = ResponseMessageBuilder.Create(HttpStatusCode.NotFound, WireMockConstants.NoMatchingFound);
                     return;
                 }
@@ -135,10 +135,18 @@ namespace WireMock.Owin
 
                 if (targetMapping.IsAdminInterface && _options.AuthenticationMatcher != null && request.Headers != null)
                 {
-                    bool present = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out WireMockList<string>? authorization);
-                    if (!present || _options.AuthenticationMatcher.IsMatch(authorization!.ToString()).Score < MatchScores.Perfect)
+                    var authorizationHeaderPresent = request.Headers.TryGetValue(HttpKnownHeaderNames.Authorization, out var authorization);
+                    if (!authorizationHeaderPresent)
                     {
-                        _options.Logger.Error("HttpStatusCode set to 401");
+                        _options.Logger.Error("HttpStatusCode set to 401, authorization header is missing.");
+                        response = ResponseMessageBuilder.Create(HttpStatusCode.Unauthorized, null);
+                        return;
+                    }
+
+                    var authorizationHeaderMatchResult = _options.AuthenticationMatcher.IsMatch(authorization!.ToString());
+                    if (!MatchScores.IsPerfect(authorizationHeaderMatchResult.Score))
+                    {
+                        _options.Logger.Error("HttpStatusCode set to 401, authentication failed.", authorizationHeaderMatchResult.Exception ?? throw new WireMockException("Authentication failed"));
                         response = ResponseMessageBuilder.Create(HttpStatusCode.Unauthorized, null);
                         return;
                     }
@@ -156,12 +164,12 @@ namespace WireMock.Owin
 
                 if (!targetMapping.IsAdminInterface && theOptionalNewMapping != null)
                 {
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMapping == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMapping == true || targetMapping.Settings.ProxyAndRecordSettings?.SaveMapping == true)
                     {
                         _options.Mappings.TryAdd(theOptionalNewMapping.Guid, theOptionalNewMapping);
                     }
 
-                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping.Settings?.ProxyAndRecordSettings?.SaveMappingToFile == true)
+                    if (responseBuilder?.ProxyAndRecordSettings?.SaveMappingToFile == true || targetMapping.Settings.ProxyAndRecordSettings?.SaveMappingToFile == true)
                     {
                         var matcherMapper = new MatcherMapper(targetMapping.Settings);
                         var mappingConverter = new MappingConverter(matcherMapper);
