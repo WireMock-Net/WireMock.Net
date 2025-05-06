@@ -74,7 +74,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
                         return issuer;
                     }
 
-                    throw new SecurityTokenInvalidIssuerException("tenant mismatch.");
+                    throw new SecurityTokenInvalidIssuerException($"tenant {extractedTenant} does not match {_tenant}.");
                 },
                 IssuerSigningKeys = config.SigningKeys,
                 ValidateLifetime = true
