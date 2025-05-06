@@ -1,3 +1,8 @@
+# 1.8.2 (05 May 2025)
+- [#1291](https://github.com/WireMock-Net/WireMock.Net/pull/1291) - Update ProtoBufJsonConverter to fix conflict for 'MessageOptions' [bug] contributed by [StefH](https://github.com/StefH)
+- [#1083](https://github.com/WireMock-Net/WireMock.Net/issues/1083) - Compilation Error due to 'MessageOptions' Type Conflict between 'Google.Protobuf' and 'WireMock.Net' [bug]
+- [#1287](https://github.com/WireMock-Net/WireMock.Net/issues/1287) - 1.8.0 - issues with dependency on Microsoft.OpenApi version 2.0.0-preview.xx [bug]
+
 # 1.8.1 (02 May 2025)
 - [#1289](https://github.com/WireMock-Net/WireMock.Net/pull/1289) - Revert changes to WireMock.Net.OpenApiParser [bug] contributed by [StefH](https://github.com/StefH)
 
