@@ -1,3 +1,7 @@
+# 1.8.3 (06 May 2025)
+- [#1288](https://github.com/WireMock-Net/WireMock.Net/pull/1288) - Update AzureADAuthenticationMatcher to support V2 Azure AAD tokens [feature] contributed by [StefH](https://github.com/StefH)
+- [#1286](https://github.com/WireMock-Net/WireMock.Net/issues/1286) - Unauthorized (401) error when calling the admin API with version 2 Azure AAD tokens. [bug]
+
 # 1.8.2 (05 May 2025)
 - [#1291](https://github.com/WireMock-Net/WireMock.Net/pull/1291) - Update ProtoBufJsonConverter to fix conflict for 'MessageOptions' [bug] contributed by [StefH](https://github.com/StefH)
 - [#1083](https://github.com/WireMock-Net/WireMock.Net/issues/1083) - Compilation Error due to 'MessageOptions' Type Conflict between 'Google.Protobuf' and 'WireMock.Net' [bug]
