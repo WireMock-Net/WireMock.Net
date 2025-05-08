@@ -2,9 +2,8 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
 using WireMock.Admin.Mappings;
+using WireMock.Net.OpenApiParser.Models;
 using WireMock.Net.OpenApiParser.Settings;
 
 namespace WireMock.Net.OpenApiParser;
@@ -17,7 +16,7 @@ public interface IWireMockOpenApiParser
     /// <summary>
     /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
-    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
+    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3/V31 or Raml file.</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
     IReadOnlyList<MappingModel> FromFile(string path, out OpenApiDiagnostic diagnostic);
@@ -25,19 +24,19 @@ public interface IWireMockOpenApiParser
     /// <summary>
     /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a file-path.
     /// </summary>
-    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3 or Raml file.</param>
+    /// <param name="path">The path to read the OpenApi/Swagger/V2/V3/V31 or Raml file.</param>
     /// <param name="settings">Additional settings</param>
     /// <param name="diagnostic">OpenApiDiagnostic output</param>
     /// <returns>MappingModel</returns>
     IReadOnlyList<MappingModel> FromFile(string path, WireMockOpenApiParserSettings settings, out OpenApiDiagnostic diagnostic);
 
     /// <summary>
-    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from an <seealso cref="OpenApiDocument"/>.
+    /// Generate <see cref="IReadOnlyList{MappingModel}"/> from an Microsoft.OpenApi.Models.OpenApiDocument.
     /// </summary>
     /// <param name="document">The source OpenApiDocument</param>
     /// <param name="settings">Additional settings [optional]</param>
     /// <returns>MappingModel</returns>
-    IReadOnlyList<MappingModel> FromDocument(OpenApiDocument document, WireMockOpenApiParserSettings? settings = null);
+    IReadOnlyList<MappingModel> FromDocument(object document, WireMockOpenApiParserSettings? settings = null);
 
     /// <summary>
     /// Generate <see cref="IReadOnlyList{MappingModel}"/> from a <seealso cref="Stream"/>.

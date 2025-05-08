@@ -1,60 +1,62 @@
 // Copyright © WireMock.Net
 
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.OpenApi.Any;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models.Interfaces;
 using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.Extensions;
 
 internal static class OpenApiSchemaExtensions
 {
-    /// <summary>
-    /// https://stackoverflow.com/questions/48111459/how-to-define-a-property-that-can-be-string-or-null-in-openapi-swagger
-    /// </summary>
-    public static bool TryGetXNullable(this OpenApiSchema schema, out bool value)
+    public static bool TryGetXNullable(this IOpenApiSchema schema, out bool value)
     {
         value = false;
 
-        if (schema.Extensions.TryGetValue("x-nullable", out var e) && e is OpenApiBoolean openApiBoolean)
+#pragma warning disable S3011
+        var extensionsProperty = schema.GetType().GetProperty("Extensions", BindingFlags.Instance | BindingFlags.NonPublic);
+#pragma warning restore S3011
+        if (extensionsProperty?.GetValue(schema) is Dictionary<string, IOpenApiExtension> extensions && extensions.TryGetValue("x-nullable", out var nullExtRawValue))
         {
-            value = openApiBoolean.Value;
-            return true;
+            var nodeProperty = nullExtRawValue.GetType().GetProperty("Node", BindingFlags.Instance | BindingFlags.Public);
+            if (nodeProperty?.GetValue(nullExtRawValue) is JsonNode jsonNode)
+            {
+                return jsonNode.GetValueKind() == JsonValueKind.True;
+            }
         }
 
         return false;
     }
 
-    public static SchemaType GetSchemaType(this OpenApiSchema? schema)
+    public static JsonSchemaType? GetSchemaType(this IOpenApiSchema? schema, out bool isNullable)
     {
+        isNullable = false;
+
         if (schema == null)
         {
-            return SchemaType.Unknown;
+            return null;
         }
 
         if (schema.Type == null)
         {
-            if (schema.AllOf.Any() || schema.AnyOf.Any())
+            if (schema.AllOf?.Any() == true || schema.AnyOf?.Any() == true)
             {
-                return SchemaType.Object;
+                return JsonSchemaType.Object;
             }
         }
 
-        return schema.Type switch
-        {
-            "object" => SchemaType.Object,
-            "array" => SchemaType.Array,
-            "integer" => SchemaType.Integer,
-            "number" => SchemaType.Number,
-            "boolean" => SchemaType.Boolean,
-            "string" => SchemaType.String,
-            "file" => SchemaType.File,
-            _ => SchemaType.Unknown
-        };
+        isNullable = (schema.Type | JsonSchemaType.Null) == JsonSchemaType.Null || (schema.TryGetXNullable(out var xNullable) && xNullable);
+
+        // Removes the Null flag from the schema.Type, ensuring the returned value represents a non-nullable type.
+        return schema.Type & ~JsonSchemaType.Null;
     }
 
-    public static SchemaFormat GetSchemaFormat(this OpenApiSchema? schema)
+    public static SchemaFormat GetSchemaFormat(this IOpenApiSchema? schema)
     {
         switch (schema?.Format)
         {

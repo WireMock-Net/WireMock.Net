@@ -1,5 +1,7 @@
 // Copyright © WireMock.Net
 
+using System.Text;
+
 namespace WireMock.Net.OpenApiParser.Utils;
 
 internal static class PathUtils
@@ -11,17 +13,17 @@ internal static class PathUtils
             return string.Empty;
         }
 
-        var result = paths[0].Trim().TrimEnd('/');
+        var result = new StringBuilder(paths[0].Trim().TrimEnd('/'));
 
-        for (int i = 1; i < paths.Length; i++)
+        for (var i = 1; i < paths.Length; i++)
         {
             var nextPath = paths[i].Trim().TrimStart('/').TrimEnd('/');
             if (!string.IsNullOrEmpty(nextPath))
             {
-                result += '/' + nextPath;
+                result.Append('/').Append(nextPath);
             }
         }
 
-        return result;
+        return result.ToString();
     }
 }

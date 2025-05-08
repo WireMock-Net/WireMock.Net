@@ -2,7 +2,6 @@
 
 using System;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Models.Interfaces;
 
 namespace WireMock.Net.OpenApiParser.Settings;
 
@@ -21,7 +20,7 @@ public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleV
     public virtual float Float => 4.2f;
 
     /// <inheritdoc />
-    public virtual decimal Decimal => 4.2m;
+    public virtual double Double => 4.2d;
 
     /// <inheritdoc />
     public virtual Func<DateTime> Date { get; } = () => System.DateTime.UtcNow.Date;
@@ -30,7 +29,7 @@ public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleV
     public virtual Func<DateTime> DateTime { get; } = () => System.DateTime.UtcNow;
 
     /// <inheritdoc />
-    public virtual byte[] Bytes { get; } = [48, 49, 50];
+    public virtual byte[] Bytes { get; } = { 48, 49, 50 };
 
     /// <inheritdoc />
     public virtual object Object => "example-object";
@@ -39,5 +38,5 @@ public class WireMockOpenApiParserExampleValues : IWireMockOpenApiParserExampleV
     public virtual string String => "example-string";
 
     /// <inheritdoc />
-    public virtual IOpenApiSchema? Schema { get; set; } = new OpenApiSchema();
+    public virtual OpenApiSchema? Schema { get; set; } = new();
 }

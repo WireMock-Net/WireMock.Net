@@ -1,53 +1,60 @@
 // Copyright © WireMock.Net
 
 using System.Linq;
-using System.Text.Json;
 using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Models.Interfaces;
 using WireMock.Net.OpenApiParser.Types;
 
 namespace WireMock.Net.OpenApiParser.Extensions;
 
 internal static class OpenApiSchemaExtensions
 {
-    public static bool TryGetXNullable(this IOpenApiSchema schema, out bool value)
+    /// <summary>
+    /// https://stackoverflow.com/questions/48111459/how-to-define-a-property-that-can-be-string-or-null-in-openapi-swagger
+    /// </summary>
+    public static bool TryGetXNullable(this OpenApiSchema schema, out bool value)
     {
         value = false;
 
-        if (schema.Extensions != null && schema.Extensions.TryGetValue(OpenApiConstants.NullableExtension, out var nullExtRawValue) && nullExtRawValue is OpenApiAny { Node: { } jsonNode })
+        if (schema.Extensions.TryGetValue("x-nullable", out var e) && e is OpenApiBoolean openApiBoolean)
         {
-            value = jsonNode.GetValueKind() == JsonValueKind.True;
+            value = openApiBoolean.Value;
             return true;
         }
 
         return false;
     }
 
-    public static JsonSchemaType? GetSchemaType(this IOpenApiSchema? schema, out bool isNullable)
+    public static SchemaType GetSchemaType(this OpenApiSchema? schema)
     {
-        isNullable = false;
-
         if (schema == null)
         {
-            return null;
+            return SchemaType.Unknown;
         }
 
         if (schema.Type == null)
         {
-            if (schema.AllOf?.Any() == true || schema.AnyOf?.Any() == true)
+            if (schema.AllOf.Any() || schema.AnyOf.Any())
             {
-                return JsonSchemaType.Object;
+                return SchemaType.Object;
             }
         }
 
-        isNullable = (schema.Type | JsonSchemaType.Null) == JsonSchemaType.Null || (schema.TryGetXNullable(out var xNullable) && xNullable);
-
-        // Removes the Null flag from the schema.Type, ensuring the returned value represents a non-nullable type.
-        return schema.Type & ~JsonSchemaType.Null;
+        return schema.Type switch
+        {
+            "object" => SchemaType.Object,
+            "array" => SchemaType.Array,
+            "integer" => SchemaType.Integer,
+            "number" => SchemaType.Number,
+            "boolean" => SchemaType.Boolean,
+            "string" => SchemaType.String,
+            "file" => SchemaType.File,
+            _ => SchemaType.Unknown
+        };
     }
 
-    public static SchemaFormat GetSchemaFormat(this IOpenApiSchema? schema)
+    public static SchemaFormat GetSchemaFormat(this OpenApiSchema? schema)
     {
         switch (schema?.Format)
         {
