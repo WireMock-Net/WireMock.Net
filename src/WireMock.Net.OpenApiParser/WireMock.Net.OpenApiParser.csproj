@@ -36,7 +36,6 @@
 
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
-
         <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" PrivateAssets="All" />
         <PackageReference Include="System.Text.Json" Version="8.0.5" />

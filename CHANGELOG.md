@@ -1,3 +1,7 @@
+# 1.8.4 (08 May 2025)
+- [#1290](https://github.com/WireMock-Net/WireMock.Net/pull/1290) - Use ILRepack to include Microsoft.OpenApi as internal [feature] contributed by [StefH](https://github.com/StefH)
+- [#1275](https://github.com/WireMock-Net/WireMock.Net/issues/1275) - WithMappingFromOpenApiFile - Support for OpenAPI 3.1.0 [feature]
+
 # 1.8.3 (06 May 2025)
 - [#1288](https://github.com/WireMock-Net/WireMock.Net/pull/1288) - Update AzureADAuthenticationMatcher to support V2 Azure AAD tokens [feature] contributed by [StefH](https://github.com/StefH)
 - [#1286](https://github.com/WireMock-Net/WireMock.Net/issues/1286) - Unauthorized (401) error when calling the admin API with version 2 Azure AAD tokens. [bug]
