@@ -128,8 +128,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireMock.Net.Middleware.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.AwesomeAssertions", "src\WireMock.Net.AwesomeAssertions\WireMock.Net.AwesomeAssertions.csproj", "{7753670F-7C7F-44BF-8BC7-08325588E60C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src-preview", "src-preview", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.OpenApiParser", "src\WireMock.Net.OpenApiParser\WireMock.Net.OpenApiParser.csproj", "{E5B03EEF-822C-4295-952B-4479AD30082B}"
 EndProject
 Global
