@@ -408,6 +408,9 @@ namespace WireMock.Net.ConsoleApplication
                 );
 
             var protoBufJsonMatcherForGetCancellationDetailRequest = new JsonPartialWildcardMatcher("{\"Client\":{\"CorrelationId\":\"*\"}}", false, true);
+            var getCancellationDetailResponseAsJsonObject = JsonConvert.DeserializeObject(
+                """{"Status":{"HasErrors":false,"HasWarnings":false,"Errors":[],"Warnings":[],"CorrelationId":"b8ad0d04-ed2f-42e1-ac85-339d91dc9855"},"CancellationCode":"cc123","CancellationName":"cn123","CancellationDescription":"","CancellationEffDate":null,"NonRenewalCode":"","NonRenewalName":"","NonRenewalDescription":"","NonRenewalEffDate":null,"LastReinstatementDate":null}"""
+            )!;
             server
                 .AddProtoDefinition("grpc-policy", ProtoDefinitionPolicy)
                 .Given(Request.Create()
@@ -418,12 +421,7 @@ namespace WireMock.Net.ConsoleApplication
                 .WithProtoDefinition("grpc-policy")
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/grpc")
-                    .WithBodyAsProtoBuf("Policy2.GetCancellationDetailResponse",
-                        new
-                        {
-                            CancellationName = "test123"
-                        }
-                    )
+                    .WithBodyAsProtoBuf("Policy2.GetCancellationDetailResponse", getCancellationDetailResponseAsJsonObject)
                     .WithTrailingHeader("grpc-status", "0")
                     .WithTransformer()
                 );
