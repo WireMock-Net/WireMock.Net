@@ -5,6 +5,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +19,7 @@
 
     <ItemGroup>
         <Protobuf Include="greet.proto" GrpcServices="Client" />
+        <Protobuf Include="policy.proto" GrpcServices="Client" />
     </ItemGroup>
 
 </Project>

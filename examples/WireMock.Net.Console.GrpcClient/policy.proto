@@ -1,0 +1,64 @@
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+// option csharp_namespace = "NarrowIntegrationTest.Lookup";
+
+package Policy2;
+
+service PolicyService2 {	
+	rpc GetCancellationDetail (GetCancellationDetailRequest) returns (GetCancellationDetailResponse);
+}
+
+message GetCancellationDetailRequest {
+	Client Client = 1;
+	LegacyPolicyKey LegacyPolicyKey = 2;
+}
+
+message GetCancellationDetailResponse {
+	ResponseStatus Status = 1;
+	string CancellationCode = 2;
+	string CancellationName = 3;
+	string CancellationDescription = 4;
+	google.protobuf.Timestamp CancellationEffDate = 5;
+	string NonRenewalCode = 6;
+	string NonRenewalName = 7;
+	string NonRenewalDescription = 8;
+	google.protobuf.Timestamp NonRenewalEffDate = 9;
+	google.protobuf.Timestamp LastReinstatementDate = 10;
+}
+
+message LegacyPolicyKey {
+	string Group = 1;
+	int32 UnitNumber = 2;
+	int32 Year = 3;
+	string Suffix = 4;
+}
+
+message ResponseStatus {
+	bool HasErrors = 1;
+	bool HasWarnings = 2;
+	repeated string Errors = 3;
+	repeated string Warnings = 4;
+	string CorrelationId = 5;
+}
+
+message Client {
+	string CorrelationId = 1;
+	enum Clients {
+		Unknown = 0;
+        QMS = 1;
+        BillingCenter = 2;
+        PAS = 3;
+        Payroll = 4;
+        Portal = 5;
+        SFO = 6;
+        QuoteAndBind = 7;
+        LegacyConversion = 8;
+        BindNow = 9;
+		PaymentPortal = 10 ;
+		PricingEngine = 11;
+	}
+	Clients ClientName = 2;
+}

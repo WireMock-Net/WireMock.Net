@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WireMock.Logging;
@@ -45,57 +44,129 @@ namespace WireMock.Net.ConsoleApplication
 
     public static class MainApp
     {
-        private const string ProtoDefinition = @"
-syntax = ""proto3"";
+        private const string ProtoDefinitionGreeter =
+            """
+            syntax = "proto3";
 
-package greet;
+            package greet;
 
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
-}
+            service Greeter {
+              rpc SayHello (HelloRequest) returns (HelloReply);
+            }
 
-message HelloRequest {
-  string name = 1;
-}
+            message HelloRequest {
+              string name = 1;
+            }
 
-message HelloReply {
-  string message = 1;
-}
-";
+            message HelloReply {
+              string message = 1;
+            }
 
-        private const string TestSchema = @"
-  scalar DateTime
-  scalar MyCustomScalar
+            """;
 
-  input MessageInput {
-    content: String
-    author: String
-  }
+        private const string ProtoDefinitionPolicy =
+            """
+            syntax = "proto3";
 
-  type Message {
-    id: ID!
-    content: String
-    author: String
-  }
+            import "google/protobuf/timestamp.proto";
 
-  type Mutation {
-    createMessage(input: MessageInput): Message
-    createAnotherMessage(x: MyCustomScalar, dt: DateTime): Message
-    updateMessage(id: ID!, input: MessageInput): Message
-  }
+            // option csharp_namespace = "NarrowIntegrationTest.Lookup";
 
-  type Query {
-   greeting:String
-   students:[Student]
-   studentById(id:ID!):Student
-  }
+            package Policy2;
 
-  type Student {
-   id:ID!
-   firstName:String
-   lastName:String
-   fullName:String 
-  }";
+            service PolicyService2 {	
+            	rpc GetCancellationDetail (GetCancellationDetailRequest) returns (GetCancellationDetailResponse);
+            }
+
+            message GetCancellationDetailRequest {
+            	Client Client = 1;
+            	LegacyPolicyKey LegacyPolicyKey = 2;
+            }
+
+            message GetCancellationDetailResponse {
+            	ResponseStatus Status = 1;
+            	string CancellationCode = 2;
+            	string CancellationName = 3;
+            	string CancellationDescription = 4;
+            	google.protobuf.Timestamp CancellationEffDate = 5;
+            	string NonRenewalCode = 6;
+            	string NonRenewalName = 7;
+            	string NonRenewalDescription = 8;
+            	google.protobuf.Timestamp NonRenewalEffDate = 9;
+            	google.protobuf.Timestamp LastReinstatementDate = 10; // Always send the last reinstatement date if present on the policy term.
+            }
+
+            message LegacyPolicyKey {
+            	string Group = 1;
+            	int32 UnitNumber = 2;
+            	int32 Year = 3;
+            	string Suffix = 4;
+            }
+
+
+            message ResponseStatus {
+            	bool HasErrors = 1;
+            	bool HasWarnings = 2;
+            	repeated string Errors = 3;
+            	repeated string Warnings = 4;
+            	string CorrelationId = 5;
+            }
+
+            message Client {
+            	string CorrelationId = 1;
+            	enum Clients {
+            		Unknown = 0;
+                    QMS = 1;
+                    BillingCenter = 2;
+                    PAS = 3;
+                    Payroll = 4;
+                    Portal = 5;
+                    SFO = 6;
+                    QuoteAndBind = 7;
+                    LegacyConversion = 8;
+                    BindNow = 9;
+            		PaymentPortal = 10 ;
+            		PricingEngine = 11;
+            	}
+            	Clients ClientName = 2;
+            }
+            """;
+
+        private const string TestSchema =
+            """
+            scalar DateTime
+            scalar MyCustomScalar
+
+            input MessageInput {
+                content: String
+                author: String
+            }
+
+            type Message {
+                id: ID!
+                content: String
+                author: String
+            }
+
+            type Mutation {
+                createMessage(input: MessageInput): Message
+                createAnotherMessage(x: MyCustomScalar, dt: DateTime): Message
+                updateMessage(id: ID!, input: MessageInput): Message
+            }
+
+            type Query {
+                greeting:String
+                students:[Student]
+                studentById(id:ID!):Student
+            }
+
+            type Student {
+                id:ID!
+                firstName:String
+                lastName:String
+                fullName:String 
+            }
+            """;
 
         private static void RunSse()
         {
@@ -282,11 +353,11 @@ message HelloReply {
                     .UsingPost()
                     .WithHttpVersion("2")
                     .WithPath("/grpc/greet.Greeter/SayHello")
-                    .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloRequest", protoBufJsonMatcher)
+                    .WithBodyAsProtoBuf(ProtoDefinitionGreeter, "greet.HelloRequest", protoBufJsonMatcher)
                 )
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/grpc")
-                    .WithBodyAsProtoBuf(ProtoDefinition, "greet.HelloReply",
+                    .WithBodyAsProtoBuf(ProtoDefinitionGreeter, "greet.HelloReply",
                         new
                         {
                             message = "hello {{request.BodyAsJson.name}}"
@@ -303,7 +374,7 @@ message HelloReply {
                     .WithPath("/grpc2/greet.Greeter/SayHello")
                     .WithBodyAsProtoBuf("greet.HelloRequest", protoBufJsonMatcher)
                 )
-                .WithProtoDefinition(ProtoDefinition)
+                .WithProtoDefinition(ProtoDefinitionGreeter)
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/grpc")
                     .WithBodyAsProtoBuf("greet.HelloReply",
@@ -317,7 +388,7 @@ message HelloReply {
                 );
 
             server
-                .AddProtoDefinition("my-greeter", ProtoDefinition)
+                .AddProtoDefinition("my-greeter", ProtoDefinitionGreeter)
                 .Given(Request.Create()
                     .UsingPost()
                     .WithPath("/grpc3/greet.Greeter/SayHello")
@@ -332,6 +403,25 @@ message HelloReply {
                             message = "hello {{request.BodyAsJson.name}}"
                         }
                     )
+                    .WithTrailingHeader("grpc-status", "0")
+                    .WithTransformer()
+                );
+
+            var protoBufJsonMatcherForGetCancellationDetailRequest = new JsonPartialWildcardMatcher("{\"Client\":{\"CorrelationId\":\"*\"}}", false, true);
+            var getCancellationDetailResponseAsJsonObject = JsonConvert.DeserializeObject(
+                """{"Status":{"HasErrors":false,"HasWarnings":false,"Errors":[],"Warnings":[],"CorrelationId":"b8ad0d04-ed2f-42e1-ac85-339d91dc9855"},"CancellationCode":"cc123","CancellationName":"cn123","CancellationDescription":"","CancellationEffDate":null,"NonRenewalCode":"","NonRenewalName":"","NonRenewalDescription":"","NonRenewalEffDate":null,"LastReinstatementDate":null}"""
+            )!;
+            server
+                .AddProtoDefinition("grpc-policy", ProtoDefinitionPolicy)
+                .Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/Policy2.PolicyService2/GetCancellationDetail")
+                    .WithBodyAsProtoBuf("Policy2.GetCancellationDetailRequest", protoBufJsonMatcherForGetCancellationDetailRequest)
+                )
+                .WithProtoDefinition("grpc-policy")
+                .RespondWith(Response.Create()
+                    .WithHeader("Content-Type", "application/grpc")
+                    .WithBodyAsProtoBuf("Policy2.GetCancellationDetailResponse", getCancellationDetailResponseAsJsonObject)
                     .WithTrailingHeader("grpc-status", "0")
                     .WithTransformer()
                 );
@@ -596,9 +686,9 @@ message HelloReply {
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new { result = "data:headers posted with 201" }));
 
-            if (!System.IO.File.Exists(@"c:\temp\x.json"))
+            if (!File.Exists(@"c:\temp\x.json"))
             {
-                System.IO.File.WriteAllText(@"c:\temp\x.json", "{ \"hello\": \"world\", \"answer\": 42 }");
+                File.WriteAllText(@"c:\temp\x.json", "{ \"hello\": \"world\", \"answer\": 42 }");
             }
 
             server
@@ -925,7 +1015,7 @@ message HelloReply {
                         BodyData = new BodyData
                         {
                             BodyAsString = "random200or505:" + code + ", HeadersFromRequest = " + string.Join(",", request.Headers),
-                            DetectedBodyType = Types.BodyType.String,
+                            DetectedBodyType = BodyType.String,
                         },
                         StatusCode = code
                     };
@@ -941,7 +1031,7 @@ message HelloReply {
 
                     return new ResponseMessage
                     {
-                        BodyData = new BodyData { BodyAsString = "random200or505async:" + code, DetectedBodyType = Types.BodyType.String },
+                        BodyData = new BodyData { BodyAsString = "random200or505async:" + code, DetectedBodyType = BodyType.String },
                         StatusCode = code
                     };
                 }));
