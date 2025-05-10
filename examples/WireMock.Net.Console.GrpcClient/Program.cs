@@ -2,22 +2,42 @@
 
 using Greet;
 using Grpc.Net.Client;
+using Policy2;
 
-namespace WireMock.Net.Console.GrpcClient;
+await TestPolicyAsync();
+// await TestGreeterAsync();
+return;
 
-internal class Program
+async Task TestGreeterAsync()
 {
-    static async Task Main(string[] args)
+    var channel = GrpcChannel.ForAddress("http://localhost:9093/grpc3", new GrpcChannelOptions
     {
-        var channel = GrpcChannel.ForAddress("http://localhost:9093/grpc3", new GrpcChannelOptions
+        Credentials = Grpc.Core.ChannelCredentials.Insecure
+    });
+
+    var client = new Greeter.GreeterClient(channel);
+
+    var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
+
+    Console.WriteLine("Greeting: " + reply.Message);
+}
+
+async Task TestPolicyAsync()
+{
+    var channel = GrpcChannel.ForAddress("http://localhost:9093/grpc-policy", new GrpcChannelOptions
+    {
+        Credentials = Grpc.Core.ChannelCredentials.Insecure
+    });
+
+    var client = new PolicyService2.PolicyService2Client(channel);
+
+    var reply = await client.GetCancellationDetailAsync(new GetCancellationDetailRequest
+    {
+        Client = new Client
         {
-            Credentials = Grpc.Core.ChannelCredentials.Insecure
-        });
+            CorrelationId = "abc"
+        }
+    });
 
-        var client = new Greeter.GreeterClient(channel);
-
-        var reply = await client.SayHelloAsync(new HelloRequest { Name = "stef" });
-
-        System.Console.WriteLine("Greeting: " + reply.Message);
-    }
+    Console.WriteLine("PolicyService2:reply.CancellationName " + reply.CancellationName);
 }
