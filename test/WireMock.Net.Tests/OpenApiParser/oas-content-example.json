@@ -1,0 +1,44 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "codeExample-api",
+    "description": "This is API which is exposing low level system information of the domain in a domain convenient manner.",
+    "contact": {
+      "name": "API"
+    },
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/code-example/csharp/v2",
+      "description": "Example programming language API V2"
+    }
+  ],
+  "paths": {
+    "/health-checks": {
+      "get": {
+        "tags": [ "Health checks" ],
+        "description": "Retrieves the health of API and all services included in the monitoring.",
+        "summary": "Retrieves the health of API and all services included in the monitoring.",
+        "responses": {
+          "200": {
+            "description": "Ok: The request has succeeded",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "schema": {
+                  "type": "string",
+                  "example": "This is an example for 200"
+                }
+              }
+            }
+          }
+
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+    }
+  }
+}
