@@ -1,0 +1,19 @@
+﻿[
+  {
+    Guid: Guid_1,
+    Request: {
+      Path: /api/code-example/csharp/v2/health-checks,
+      Methods: [
+        GET
+      ],
+      Body: {}
+    },
+    Response: {
+      StatusCode: 200,
+      BodyAsJson: This is an example for 200,
+      Headers: {
+        Content-Type: text/plain; charset=utf-8
+      }
+    }
+  }
+]

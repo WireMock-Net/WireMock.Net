@@ -32,7 +32,7 @@ public class WireMockOpenApiParserTests
     }
 
     [Fact]
-    public async Task FromText_ShouldReturnMappings()
+    public async Task FromText_UsingYaml_ShouldReturnMappings()
     {
         // Arrange
         var settings = new WireMockOpenApiParserSettings
@@ -41,6 +41,24 @@ public class WireMockOpenApiParserTests
         };
 
         var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "payroc-openapi-spec.yaml"));
+
+        // Act
+        var mappings = _sut.FromText(openApiDocument, settings, out _);
+
+        // Verify
+        await Verifier.Verify(mappings);
+    }
+
+    [Fact]
+    public async Task FromText_UsingJson_WithPlainTextExample_ShouldReturnMappings()
+    {
+        // Arrange
+        var settings = new WireMockOpenApiParserSettings
+        {
+            ExampleValues = _exampleValuesMock.Object
+        };
+
+        var openApiDocument = await File.ReadAllTextAsync(Path.Combine("OpenApiParser", "oas-content-example.json"));
 
         // Act
         var mappings = _sut.FromText(openApiDocument, settings, out _);
