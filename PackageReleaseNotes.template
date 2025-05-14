@@ -3,4 +3,4 @@
 - #{{Number}} {{Title}}{{#if Labels}} [{{join Labels ", "}}]{{/if}}
 {{/each}}
 
-The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
+The full release notes can be found here: https://github.com/wiremock/WireMock.Net/blob/master/CHANGELOG.md

@@ -154,7 +154,7 @@ public partial class WireMockAdminApiTests
         Check.That(status.Status).Equals("Settings updated");
     }
 
-    // https://github.com/WireMock-Net/WireMock.Net/issues/325
+    // https://github.com/wiremock/WireMock.Net/issues/325
     [Fact]
     public async Task IWireMockAdminApi_PutMappingAsync()
     {

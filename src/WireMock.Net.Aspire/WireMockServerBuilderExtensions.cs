@@ -200,7 +200,7 @@ public static class WireMockServerBuilderExtensions
         builder.WithCommand(
             name: "wiremock-inspector",
             displayName: "WireMock Inspector",
-            executeCommand: context => OnRunOpenInspectorCommandAsync(builder),
+            executeCommand: _ => OnRunOpenInspectorCommandAsync(builder),
             commandOptions: commandOptions);
 
         return builder;

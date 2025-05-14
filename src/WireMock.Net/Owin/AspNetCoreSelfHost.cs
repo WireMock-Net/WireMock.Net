@@ -53,7 +53,7 @@ internal partial class AspNetCoreSelfHost : IOwinSelfHost
     {
         var builder = new WebHostBuilder();
 
-        // Workaround for https://github.com/WireMock-Net/WireMock.Net/issues/292
+        // Workaround for https://github.com/wiremock/WireMock.Net/issues/292
         // On some platforms, AppContext.BaseDirectory is null, which causes WebHostBuilder to fail if ContentRoot is not
         // specified (even though we don't actually use that base path mechanism, since we have our own way of configuring
         // a filesystem handler).

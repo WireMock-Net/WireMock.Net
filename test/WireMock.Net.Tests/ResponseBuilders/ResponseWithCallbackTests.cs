@@ -283,7 +283,7 @@ public class ResponseWithCallbackTests
         response.Message.StatusCode.Should().Be(302);
     }
 
-    // https://github.com/WireMock-Net/WireMock.Net/issues/898
+    // https://github.com/wiremock/WireMock.Net/issues/898
     [Fact]
     public async Task Response_WithCallback_WithRequestHeaders_Should_BeAccessibleInCallback()
     {

@@ -141,7 +141,7 @@ public class JsonPathMatcher : IStringMatcher, IObjectMatcher
         return MatchScores.ToScore(values, MatchOperator);
     }
 
-    // https://github.com/WireMock-Net/WireMock.Net/issues/965
+    // https://github.com/wiremock/WireMock.Net/issues/965
     // https://stackoverflow.com/questions/66922188/newtonsoft-jsonpath-with-c-sharp-syntax
     // Filtering using SelectToken() isn't guaranteed to work for objects inside objects -- only objects inside arrays.
     // So this code checks if it's an JArray, if it's not an array, construct a new JArray.

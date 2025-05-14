@@ -1,5 +1,7 @@
-# 1.8.4 (08 May 2025)
+# 1.8.5 (14 May 2025)
 - #1290 Use ILRepack to include Microsoft.OpenApi as internal [feature]
+- #1293 Grpc: Fix parsing null value for google.protobuf.Timestamp [bug]
 - #1275 WithMappingFromOpenApiFile - Support for OpenAPI 3.1.0 [feature]
+- #1280 Grpc: breaking changes from 1.6.11 to 1.6.12 [bug]
 
-The full release notes can be found here: https://github.com/WireMock-Net/WireMock.Net/blob/master/CHANGELOG.md
+The full release notes can be found here: https://github.com/wiremock/WireMock.Net/blob/master/CHANGELOG.md

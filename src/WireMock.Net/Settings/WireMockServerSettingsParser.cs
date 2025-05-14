@@ -36,7 +36,7 @@ public static class WireMockServerSettingsParser
 
         if (parser.GetBoolSwitchValue("help"))
         {
-            (logger ?? new WireMockConsoleLogger()).Info("See https://github.com/WireMock-Net/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
+            (logger ?? new WireMockConsoleLogger()).Info("See https://github.com/wiremock/WireMock.Net/wiki/WireMock-commandline-parameters for details on all commandline options.");
             settings = null;
             return false;
         }

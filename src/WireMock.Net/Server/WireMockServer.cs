@@ -335,7 +335,7 @@ public partial class WireMockServer : IWireMockServer
         _settings.Logger = settings.Logger ?? new WireMockNullLogger();
         _settings.FileSystemHandler = settings.FileSystemHandler ?? new LocalFileSystemHandler();
 
-        _settings.Logger.Info("By Stef Heyenrath (https://github.com/WireMock-Net/WireMock.Net)");
+        _settings.Logger.Info("By Stef Heyenrath (https://github.com/wiremock/WireMock.Net)");
         _settings.Logger.Debug("Server settings {0}", JsonConvert.SerializeObject(settings, Formatting.Indented));
 
         HostUrlOptions urlOptions;

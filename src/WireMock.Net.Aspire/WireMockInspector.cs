@@ -1,6 +1,9 @@
+// Copyright © WireMock.Net
+
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Aspire.Hosting.WireMock;
 
 internal static class WireMockInspector
@@ -32,10 +35,13 @@ internal static class WireMockInspector
         {
             throw new InvalidOperationException
             (
-                message: @"Cannot find installation of WireMockInspector.
-Execute the following command to install WireMockInspector dotnet tool:
-> dotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources
-To get more info please visit https://github.com/WireMock-Net/WireMockInspector",
+                message:
+                """
+                Cannot find installation of WireMockInspector.
+                Execute the following command to install WireMockInspector dotnet tool:
+                > dotnet tool install WireMockInspector --global --no-cache --ignore-failed-sources
+                To get more info please visit https://github.com/WireMock-Net/WireMockInspector
+                """,
                 innerException: e
             );
         }

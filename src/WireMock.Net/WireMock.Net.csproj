@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
@@ -112,7 +112,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
+        <!-- https://github.com/wiremock/WireMock.Net/issues/507 -->
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
 
@@ -138,7 +138,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <!-- https://github.com/WireMock-Net/WireMock.Net/issues/507 -->
+        <!-- https://github.com/wiremock/WireMock.Net/issues/507 -->
         <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     </ItemGroup>
 
@@ -194,7 +194,7 @@
     </ItemGroup>
 
     <!--<ItemGroup>
-        --><!-- CVE-2021-26701 and https://github.com/WireMock-Net/WireMock.Net/issues/697 --><!--
+        --><!-- CVE-2021-26701 and https://github.com/wiremock/WireMock.Net/issues/697 --><!--
         <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
     </ItemGroup>-->
 
