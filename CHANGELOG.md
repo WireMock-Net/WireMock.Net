@@ -1,3 +1,7 @@
+# 1.8.6 (15 May 2025)
+- [#1296](https://github.com/wiremock/WireMock.Net/pull/1296) - Content-Type multipart/form-data header should also be proxied [bug] contributed by [StefH](https://github.com/StefH)
+- [#1295](https://github.com/wiremock/WireMock.Net/issues/1295) - Content-Type `multipart/form-data` header not proxied [bug]
+
 # 1.8.5 (14 May 2025)
 - [#1290](https://github.com/wiremock/WireMock.Net/pull/1290) - Use ILRepack to include Microsoft.OpenApi as internal [feature] contributed by [StefH](https://github.com/StefH)
 - [#1293](https://github.com/wiremock/WireMock.Net/pull/1293) - Grpc: Fix parsing null value for google.protobuf.Timestamp [bug] contributed by [StefH](https://github.com/StefH)

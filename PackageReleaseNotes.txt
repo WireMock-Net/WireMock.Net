@@ -1,7 +1,5 @@
-# 1.8.5 (14 May 2025)
-- #1290 Use ILRepack to include Microsoft.OpenApi as internal [feature]
-- #1293 Grpc: Fix parsing null value for google.protobuf.Timestamp [bug]
-- #1275 WithMappingFromOpenApiFile - Support for OpenAPI 3.1.0 [feature]
-- #1280 Grpc: breaking changes from 1.6.11 to 1.6.12 [bug]
+# 1.8.6 (15 May 2025)
+- #1296 Content-Type multipart/form-data header should also be proxied [bug]
+- #1295 Content-Type `multipart/form-data` header not proxied [bug]
 
 The full release notes can be found here: https://github.com/wiremock/WireMock.Net/blob/master/CHANGELOG.md
