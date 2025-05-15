@@ -37,10 +37,11 @@ internal static class HttpRequestMessageHelper
         var bodyData = requestMessage.BodyData;
         httpRequestMessage.Content = bodyData?.GetBodyType() switch
         {
-            BodyType.Bytes => ByteArrayContentHelper.Create(bodyData!.BodyAsBytes!, contentType),
-            BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(bodyData!.BodyAsJson), contentType),
-            BodyType.String => StringContentHelper.Create(bodyData!.BodyAsString!, contentType),
-            BodyType.FormUrlEncoded => StringContentHelper.Create(bodyData!.BodyAsString!, contentType),
+            BodyType.Bytes => ByteArrayContentHelper.Create(bodyData.BodyAsBytes!, contentType),
+            BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(bodyData.BodyAsJson), contentType),
+            BodyType.String => StringContentHelper.Create(bodyData.BodyAsString!, contentType),
+            BodyType.FormUrlEncoded => StringContentHelper.Create(bodyData.BodyAsString!, contentType),
+            BodyType.MultiPart => StringContentHelper.Create(bodyData.BodyAsString!, contentType),
 
             _ => httpRequestMessage.Content
         };

@@ -21,7 +21,7 @@ public class HttpRequestMessageHelperTests
     public void HttpRequestMessageHelper_Create()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "x", new[] { "value-1" } } };
+        var headers = new Dictionary<string, string[]> { { "x", ["value-1"] } };
         var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "PUT", ClientIp, null, headers);
 
         // Act
@@ -91,7 +91,7 @@ public class HttpRequestMessageHelperTests
     public async Task HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json" } } };
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["application/json"] } };
         var body = new BodyData
         {
             BodyAsJson = new { x = 42 },
@@ -111,7 +111,7 @@ public class HttpRequestMessageHelperTests
     public async Task HttpRequestMessageHelper_Create_Json_With_ContentType_ApplicationJson_UTF8()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/json; charset=utf-8" } } };
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["application/json; charset=utf-8"] } };
         var body = new BodyData
         {
             BodyAsJson = new { x = 42 },
@@ -131,7 +131,7 @@ public class HttpRequestMessageHelperTests
     public void HttpRequestMessageHelper_Create_String_With_ContentType_ApplicationXml()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml" } } };
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["application/xml"] } };
         var body = new BodyData
         {
             BodyAsString = "<xml>hello</xml>",
@@ -150,7 +150,7 @@ public class HttpRequestMessageHelperTests
     public void HttpRequestMessageHelper_Create_String_With_ContentType_ApplicationXml_UTF8()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml; charset=UTF-8" } } };
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["application/xml; charset=UTF-8"] } };
         var body = new BodyData
         {
             BodyAsString = "<xml>hello</xml>",
@@ -169,7 +169,7 @@ public class HttpRequestMessageHelperTests
     public void HttpRequestMessageHelper_Create_String_With_ContentType_ApplicationXml_ASCII()
     {
         // Assign
-        var headers = new Dictionary<string, string[]> { { "Content-Type", new[] { "application/xml; charset=Ascii" } } };
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["application/xml; charset=Ascii"] } };
         var body = new BodyData
         {
             BodyAsString = "<xml>hello</xml>",
@@ -182,6 +182,48 @@ public class HttpRequestMessageHelperTests
 
         // Assert
         Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=Ascii");
+    }
+
+    [Fact]
+    public async Task HttpRequestMessageHelper_Create_MultiPart_With_ContentType_MultiPartFormData()
+    {
+        // Assign
+        var contentType = "multipart/form-data";
+        var headers = new Dictionary<string, string[]> { { "Content-Type", [contentType] } };
+        var body =
+            """
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="text"
+
+            text default
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="file1"; filename="a.txt"
+            Content-Type: text/plain
+
+            Content of a txt
+
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="file2"; filename="a.html"
+            Content-Type: text/html
+
+            <!DOCTYPE html><title>Content of a.html.</title>
+
+            -----------------------------9051914041544843365972754266--
+            """;
+        var bodyData = new BodyData
+        {
+            BodyAsString = body,
+            DetectedBodyType = BodyType.String,
+            DetectedBodyTypeFromContentType = BodyType.MultiPart
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, bodyData, headers);
+
+        // Act
+        var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+        // Assert
+        Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals(body);
+        Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("multipart/form-data");
     }
 
     [Theory]
@@ -199,7 +241,7 @@ public class HttpRequestMessageHelperTests
         // Arrange
         var key = "Content-Length";
         var value = 1234;
-        var headers = new Dictionary<string, string[]> { { key, new[] { "1234" } } };
+        var headers = new Dictionary<string, string[]> { { key, ["1234"] } };
         var request = new RequestMessage(new UrlDetails("http://localhost/foo"), method, ClientIp, null, headers);
 
         // Act
