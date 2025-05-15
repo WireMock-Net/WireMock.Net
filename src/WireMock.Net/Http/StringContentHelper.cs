@@ -2,7 +2,6 @@
 
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Stef.Validation;
 
 namespace WireMock.Http;
 
@@ -16,8 +15,6 @@ internal static class StringContentHelper
     /// <returns>StringContent</returns>
     internal static StringContent Create(string content, MediaTypeHeaderValue? contentType)
     {
-        Guard.NotNull(content);
-
         var stringContent = new StringContent(content);
         stringContent.Headers.ContentType = contentType;
         return stringContent;
