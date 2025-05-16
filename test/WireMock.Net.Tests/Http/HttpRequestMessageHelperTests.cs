@@ -32,7 +32,7 @@ public class HttpRequestMessageHelperTests
     }
 
     [Fact]
-    public async Task HttpRequestMessageHelper_Create_Bytes()
+    public async Task HttpRequestMessageHelper_Create_Bytes_Without_ContentTypeHeader()
     {
         // Assign
         var body = new BodyData
@@ -40,27 +40,25 @@ public class HttpRequestMessageHelperTests
             BodyAsBytes = Encoding.UTF8.GetBytes("hi"),
             DetectedBodyType = BodyType.Bytes
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
         // Act
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(await message.Content.ReadAsByteArrayAsync().ConfigureAwait(false)).ContainsExactly(Encoding.UTF8.GetBytes("hi"));
+        Check.That(await message.Content!.ReadAsByteArrayAsync().ConfigureAwait(false)).ContainsExactly(Encoding.UTF8.GetBytes("hi"));
     }
 
     [Fact]
-    public async Task HttpRequestMessageHelper_Create_TextPlain()
+    public async Task HttpRequestMessageHelper_Create_TextPlain_Without_ContentTypeHeader()
     {
         // Assign
         var body = new BodyData
         {
             BodyAsString = "0123", // or 83 in decimal
-            BodyAsJson = 83,
-            DetectedBodyType = BodyType.Json,
-            DetectedBodyTypeFromContentType = BodyType.String
+            DetectedBodyType = BodyType.String
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
         // Act
         var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -78,7 +76,7 @@ public class HttpRequestMessageHelperTests
             BodyAsJson = new { x = 42 },
             DetectedBodyType = BodyType.Json
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body);
 
         // Act
         var message = HttpRequestMessageHelper.Create(request, "http://url");
@@ -97,13 +95,13 @@ public class HttpRequestMessageHelperTests
             BodyAsJson = new { x = 42 },
             DetectedBodyType = BodyType.Json
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, headers);
 
         // Act
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
         Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json");
     }
 
@@ -117,15 +115,37 @@ public class HttpRequestMessageHelperTests
             BodyAsJson = new { x = 42 },
             DetectedBodyType = BodyType.Json
         };
-        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "GET", ClientIp, body, headers);
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, headers);
 
         // Act
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
         Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/json; charset=utf-8");
     }
+
+    [Fact]
+    public async Task HttpRequestMessageHelper_Create_Json_With_ContentType_MultiPartFormData()
+    {
+        // Assign
+        var headers = new Dictionary<string, string[]> { { "Content-Type", ["multipart/form-data"] } };
+        var body = new BodyData
+        {
+            BodyAsJson = new { x = 42 },
+            DetectedBodyTypeFromContentType = BodyType.MultiPart,
+            DetectedBodyType = BodyType.Json
+        };
+        var request = new RequestMessage(new UrlDetails("http://localhost/foo"), "POST", ClientIp, body, headers);
+
+        // Act
+        var message = HttpRequestMessageHelper.Create(request, "http://url");
+
+        // Assert
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals("{\"x\":42}");
+        Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("multipart/form-data");
+    }
+
 
     [Fact]
     public void HttpRequestMessageHelper_Create_String_With_ContentType_ApplicationXml()
@@ -143,7 +163,7 @@ public class HttpRequestMessageHelperTests
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml");
+        Check.That(message.Content!.Headers.GetValues("Content-Type")).ContainsExactly("application/xml");
     }
 
     [Fact]
@@ -162,7 +182,7 @@ public class HttpRequestMessageHelperTests
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=UTF-8");
+        Check.That(message.Content!.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=UTF-8");
     }
 
     [Fact]
@@ -181,7 +201,7 @@ public class HttpRequestMessageHelperTests
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=Ascii");
+        Check.That(message.Content!.Headers.GetValues("Content-Type")).ContainsExactly("application/xml; charset=Ascii");
     }
 
     [Fact]
@@ -222,7 +242,7 @@ public class HttpRequestMessageHelperTests
         var message = HttpRequestMessageHelper.Create(request, "http://url");
 
         // Assert
-        Check.That(await message.Content.ReadAsStringAsync().ConfigureAwait(false)).Equals(body);
+        Check.That(await message.Content!.ReadAsStringAsync().ConfigureAwait(false)).Equals(body);
         Check.That(message.Content.Headers.GetValues("Content-Type")).ContainsExactly("multipart/form-data");
     }
 

@@ -70,7 +70,7 @@ namespace WireMock.Owin.Mappers
             }
 
             var bodyData = responseMessage.BodyData;
-            if (bodyData?.GetBodyType() == BodyType.SseString)
+            if (bodyData?.GetDetectedBodyType() == BodyType.SseString)
             {
                 await HandleSseStringAsync(responseMessage, response, bodyData);
                 return;
@@ -166,7 +166,7 @@ namespace WireMock.Owin.Mappers
         private async Task<byte[]?> GetNormalBodyAsync(IResponseMessage responseMessage)
         {
             var bodyData = responseMessage.BodyData;
-            switch (bodyData?.GetBodyType())
+            switch (bodyData?.GetDetectedBodyType())
             {
                 case BodyType.String:
                 case BodyType.FormUrlEncoded:
