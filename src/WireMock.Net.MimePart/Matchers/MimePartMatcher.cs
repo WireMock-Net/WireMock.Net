@@ -17,24 +17,16 @@ internal class MimePartMatcher : IMimePartMatcher
     /// <inheritdoc />
     public string Name => nameof(MimePartMatcher);
 
-    /// <summary>
-    /// ContentType Matcher (image/png; name=image.png.)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentTypeMatcher { get; }
 
-    /// <summary>
-    /// ContentDisposition Matcher (attachment; filename=image.png)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentDispositionMatcher { get; }
 
-    /// <summary>
-    /// ContentTransferEncoding Matcher (base64)
-    /// </summary>
+    /// <inheritdoc />
     public IStringMatcher? ContentTransferEncodingMatcher { get; }
 
-    /// <summary>
-    /// Content Matcher
-    /// </summary>
+    /// <inheritdoc />
     public IMatcher? ContentMatcher { get; }
 
     /// <inheritdoc />
