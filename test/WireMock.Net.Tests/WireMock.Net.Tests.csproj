@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
@@ -57,6 +57,10 @@
         <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.xUnit\WireMock.Net.xUnit.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
+        <ProjectReference Include="../../src/WireMock.Net.MimePart/WireMock.Net.MimePart.csproj" />
     </ItemGroup>
 
     <ItemGroup>

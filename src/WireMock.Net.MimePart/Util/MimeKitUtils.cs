@@ -1,7 +1,7 @@
 // Copyright © WireMock.Net
 
-#if MIMEKIT
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -13,9 +13,9 @@ using WireMock.Types;
 
 namespace WireMock.Util;
 
-internal static class MimeKitUtils
+internal class MimeKitUtils : IMimeKitUtils
 {
-    public static bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out MimeMessage? mimeMessage)
+    public bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out object? mimeMessage)
     {
         Guard.NotNull(requestMessage);
 
@@ -45,6 +45,18 @@ internal static class MimeKitUtils
         return false;
     }
 
+    public IReadOnlyList<object> GetBodyParts(object mimeMessage)
+    {
+        if (mimeMessage is not MimeMessage mm)
+        {
+            throw new ArgumentException($"The mimeMessage must be of type {nameof(MimeMessage)}", nameof(mimeMessage));
+        }
+
+        return mm.BodyParts
+            .OfType<MimePart>()
+            .ToArray();
+    }
+
     private static bool StartsWithMultiPart(WireMockList<string> contentTypeHeader)
     {
         return contentTypeHeader.Any(ct => ct.TrimStart().StartsWith("multipart/", StringComparison.OrdinalIgnoreCase));
@@ -62,4 +74,3 @@ internal static class MimeKitUtils
         return result;
     }
 }
-#endif

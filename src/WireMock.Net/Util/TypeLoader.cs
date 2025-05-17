@@ -14,7 +14,7 @@ internal static class TypeLoader
 {
     private static readonly ConcurrentDictionary<string, Type> Assemblies = new();
 
-    public static TInterface Load<TInterface>(params object[] args) where TInterface : class
+    public static TInterface Load<TInterface>(params object?[] args) where TInterface : class
     {
         var key = typeof(TInterface).FullName!;
 
@@ -31,7 +31,7 @@ internal static class TypeLoader
         return (TInterface)Activator.CreateInstance(pluginType, args)!;
     }
 
-    public static TInterface LoadByFullName<TInterface>(string implementationTypeFullName, params object[] args) where TInterface : class
+    public static TInterface LoadByFullName<TInterface>(string implementationTypeFullName, params object?[] args) where TInterface : class
     {
         Guard.NotNullOrEmpty(implementationTypeFullName);
 

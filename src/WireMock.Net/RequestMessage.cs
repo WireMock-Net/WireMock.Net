@@ -22,6 +22,8 @@ namespace WireMock;
 /// </summary>
 public class RequestMessage : IRequestMessage
 {
+    private static readonly IMimeKitUtils MimeKitUtils = TypeLoader.Load<IMimeKitUtils>();
+
     /// <inheritdoc />
     public string ClientIP { get; }
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
         <AssemblyTitle>WireMock.Net</AssemblyTitle>
@@ -149,8 +149,8 @@
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="8.2.1" />
-        <PackageReference Include="MimeKitLite" Version="4.1.0.1" />
         <PackageReference Include="ProtoBufJsonConverter" Version="0.9.0" />
+        <!--<ProjectReference Include="../WireMock.Net.MimePart/WireMock.Net.MimePart.csproj" />-->
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">

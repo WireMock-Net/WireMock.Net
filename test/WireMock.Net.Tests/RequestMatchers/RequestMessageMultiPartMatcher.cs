@@ -164,12 +164,12 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
 
         var headers = new Dictionary<string, string[]>
         {
-            { "Content-Type", new[] { @"multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""" } }
+            { "Content-Type", [ @"multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""" ] }
         };
         var requestMessage = new RequestMessage(new UrlDetails("http://localhost"), "GET", "127.0.0.1", body, headers);
-        var matchers = new IMatcher?[] { matcher1, matcher2, matcher3 }
-        .Where(m => m is not null)
-        .ToArray();
+        var matchers = new[] { matcher1, matcher2, matcher3 }
+            .OfType<IMatcher>()
+            .ToArray();
 
         var matcher = new RequestMessageMultiPartMatcher(MatchBehaviour.AcceptOnMatch, matchOperator, matchers!);
 

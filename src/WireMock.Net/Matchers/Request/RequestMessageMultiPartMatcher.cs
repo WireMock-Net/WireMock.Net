@@ -1,7 +1,6 @@
 // Copyright © WireMock.Net
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
 using WireMock.Util;
@@ -13,6 +12,8 @@ namespace WireMock.Matchers.Request;
 /// </summary>
 public class RequestMessageMultiPartMatcher : IRequestMatcher
 {
+    private static readonly IMimeKitUtils MimeKitUtils = TypeLoader.Load<IMimeKitUtils>();
+
     /// <summary>
     /// The matchers.
     /// </summary>
@@ -53,9 +54,6 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
     /// <inheritdoc />
     public double GetMatchingScore(IRequestMessage requestMessage, IRequestMatchResult requestMatchResult)
     {
-#if !MIMEKIT
-        throw new System.NotSupportedException("The MultiPartMatcher can not be used for .NETStandard1.3 or .NET Framework 4.6.1 or lower.");
-#else
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
@@ -71,12 +69,10 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
 
         try
         {
-            var mimePartMatchers = Matchers.OfType<MimePartMatcher>().ToArray();
-
-            foreach (var mimePartMatcher in Matchers.OfType<MimePartMatcher>().ToArray())
+            foreach (var mimePartMatcher in Matchers.OfType<IMimePartMatcher>().ToArray())
             {
                 score = MatchScores.Mismatch;
-                foreach (var mimeBodyPart in message.BodyParts.OfType<MimeKit.MimePart>())
+                foreach (var mimeBodyPart in MimeKitUtils.GetBodyParts(message))
                 {
                     var matchResult = mimePartMatcher.IsMatch(mimeBodyPart);
                     if (matchResult.IsPerfect())
@@ -85,8 +81,8 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
                         break;
                     }
                 }
-                if ((MatchOperator == MatchOperator.Or && MatchScores.IsPerfect(score))
-                    || (MatchOperator == MatchOperator.And && !MatchScores.IsPerfect(score)))
+
+                if ((MatchOperator == MatchOperator.Or && MatchScores.IsPerfect(score)) || (MatchOperator == MatchOperator.And && !MatchScores.IsPerfect(score)))
                 {
                     break;
                 }
@@ -98,6 +94,5 @@ public class RequestMessageMultiPartMatcher : IRequestMatcher
         }
 
         return requestMatchResult.AddScore(GetType(), score, exception);
-#endif
     }
 }

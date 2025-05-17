@@ -75,10 +75,10 @@ internal class MatcherMapper
                 return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcherModel.CustomScalars, matchBehaviour, matchOperator);
 #endif
 
-#if MIMEKIT
-            case nameof(MimePartMatcher):
+//#if MIMEKIT
+            case "MimePartMatcher":
                 return CreateMimePartMatcher(matchBehaviour, matcherModel);
-#endif
+//#endif
 
 #if PROTOBUF
             case nameof(ProtoBufMatcher):
@@ -203,14 +203,14 @@ internal class MatcherMapper
                 model.Pattern = objectMatcher.Value;
                 break;
 
-#if MIMEKIT
-            case MimePartMatcher mimePartMatcher:
+//#if MIMEKIT
+            case IMimePartMatcher mimePartMatcher:
                 model.ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher);
                 model.ContentMatcher = Map(mimePartMatcher.ContentMatcher);
                 model.ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher);
                 model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
                 break;
-#endif
+//#endif
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
@@ -279,17 +279,17 @@ internal class MatcherMapper
         return new ExactObjectMatcher(matchBehaviour, bytePattern);
     }
 
-#if MIMEKIT
-    private MimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
+//#if MIMEKIT
+    private IMimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
     {
         var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
         var contentDispositionMatcher = Map(matcher?.ContentDispositionMatcher) as IStringMatcher;
         var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
         var contentMatcher = Map(matcher?.ContentMatcher);
 
-        return new MimePartMatcher(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
+        return TypeLoader.Load<IMimePartMatcher>(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
     }
-#endif
+//#endif
 
 #if PROTOBUF
     private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, IReadOnlyList<string> protoDefinitions, MatcherModel matcher)

@@ -1,12 +1,8 @@
 // Copyright © WireMock.Net
 
-#if MIMEKIT
 using System;
 using MimeKit;
-using WireMock.Extensions;
-using WireMock.Matchers;
 using WireMock.Matchers.Helpers;
-using WireMock.Models;
 using WireMock.Util;
 
 namespace WireMock.Matchers;
@@ -14,7 +10,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// MimePartMatcher
 /// </summary>
-public class MimePartMatcher : IMatcher
+internal class MimePartMatcher : IMimePartMatcher
 {
     private readonly Func<MimePart, MatchResult>[] _funcs;
 
@@ -70,19 +66,15 @@ public class MimePartMatcher : IMatcher
         ];
     }
 
-    /// <summary>
-    /// Determines whether the specified MimePart is match.
-    /// </summary>
-    /// <param name="mimePart">The MimePart.</param>
-    /// <returns>A value between 0.0 - 1.0 of the similarity.</returns>
-    public MatchResult IsMatch(MimePart mimePart)
+    /// <inheritdoc />
+    public MatchResult IsMatch(object value)
     {
         var score = MatchScores.Mismatch;
         Exception? exception = null;
 
         try
         {
-            if (Array.TrueForAll(_funcs, func => func(mimePart).IsPerfect()))
+            if (value is MimePart mimePart && Array.TrueForAll(_funcs, func => func(mimePart).IsPerfect()))
             {
                 score = MatchScores.Perfect;
             }
@@ -126,4 +118,3 @@ public class MimePartMatcher : IMatcher
         return contentType?.ToString().Replace("Content-Type: ", string.Empty);
     }
 }
-#endif

@@ -121,15 +121,15 @@ internal class MappingConverter(MatcherMapper mapper)
         }
 #endif
 
-#if MIMEKIT
+//#if MIMEKIT
         if (requestMessageMultiPartMatcher?.Matchers != null)
         {
-            if (requestMessageMultiPartMatcher.Matchers.OfType<MimePartMatcher>().Any())
+            if (requestMessageMultiPartMatcher.Matchers.OfType<IMimePartMatcher>().Any())
             {
                 sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
         }
-#endif
+//#endif
 
 #if PROTOBUF
         if (requestMessageProtoBufMatcher?.Matcher != null)
