@@ -22,8 +22,6 @@ namespace WireMock;
 /// </summary>
 public class RequestMessage : IRequestMessage
 {
-    private static readonly IMimeKitUtils MimeKitUtils = TypeLoader.Load<IMimeKitUtils>();
-
     /// <inheritdoc />
     public string ClientIP { get; }
 
@@ -187,7 +185,7 @@ public class RequestMessage : IRequestMessage
 #if MIMEKIT
         try
         {
-            if (MimeKitUtils.TryGetMimeMessage(this, out var mimeMessage))
+            if (TypeLoader.LoadStaticInstance<IMimeKitUtils>().TryGetMimeMessage(this, out var mimeMessage))
             {
                 BodyAsMimeMessage = mimeMessage;
             }

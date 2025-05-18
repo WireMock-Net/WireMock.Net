@@ -17,11 +17,11 @@ using WireMock.Owin;
 #if NET452
 using Microsoft.Owin;
 using IResponse = Microsoft.Owin.IOwinResponse;
-using Response = Microsoft.Owin.OwinResponse;
+// using Response = Microsoft.Owin.OwinResponse;
 #else
 using Microsoft.AspNetCore.Http;
 using IResponse = Microsoft.AspNetCore.Http.HttpResponse;
-using Response = Microsoft.AspNetCore.Http.HttpResponse;
+// using Response = Microsoft.AspNetCore.Http.HttpResponse;
 using Microsoft.Extensions.Primitives;
 #endif
 
@@ -273,7 +273,7 @@ public class OwinResponseMapperTests
         await _sut.MapAsync(responseMessage, _responseMock.Object).ConfigureAwait(false);
 
         // Assert
-        _stream.Verify(s => s.WriteAsync(EmptyArray<byte>.Value, 0, 0, It.IsAny<CancellationToken>()), Times.Once);
+        _stream.Verify(s => s.WriteAsync(new byte[0], 0, 0, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Theory]

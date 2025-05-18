@@ -4,7 +4,7 @@ using System;
 
 namespace WireMock.Extensions;
 
-internal static class ExceptionExtensions
+public static class ExceptionExtensions
 {
     public static Exception? ToException(this Exception[] exceptions)
     {

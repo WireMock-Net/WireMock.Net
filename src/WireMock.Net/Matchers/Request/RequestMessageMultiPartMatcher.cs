@@ -12,7 +12,7 @@ namespace WireMock.Matchers.Request;
 /// </summary>
 public class RequestMessageMultiPartMatcher : IRequestMatcher
 {
-    private static readonly IMimeKitUtils MimeKitUtils = TypeLoader.Load<IMimeKitUtils>();
+    private static readonly IMimeKitUtils MimeKitUtils = TypeLoader.LoadStaticInstance<IMimeKitUtils>();
 
     /// <summary>
     /// The matchers.

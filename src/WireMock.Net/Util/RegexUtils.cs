@@ -36,11 +36,11 @@ internal static class RegexUtils
         {
             if (useRegexExtended)
             {
-                var regexExtended = new RegexExtended(pattern!, RegexOptions.None, WireMockConstants.DefaultRegexTimeout);
+                var regexExtended = new RegexExtended(pattern!, RegexOptions.None, RegexConstants.DefaultTimeout);
                 return (true, regexExtended.IsMatch(input));
             }
 
-            var regex = new Regex(pattern, RegexOptions.None, WireMockConstants.DefaultRegexTimeout);
+            var regex = new Regex(pattern, RegexOptions.None, RegexConstants.DefaultTimeout);
             return (true, regex.IsMatch(input));
         }
         catch

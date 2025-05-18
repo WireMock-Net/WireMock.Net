@@ -13,8 +13,41 @@ namespace WireMock.Util;
 internal static class TypeLoader
 {
     private static readonly ConcurrentDictionary<string, Type> Assemblies = new();
+    private static readonly ConcurrentDictionary<Type, object> Instances = new();
 
-    public static TInterface Load<TInterface>(params object?[] args) where TInterface : class
+    public static TInterface LoadNewInstance<TInterface>(params object?[] args) where TInterface : class
+    {
+        var pluginType = GetPluginType<TInterface>();
+
+        return (TInterface)Activator.CreateInstance(pluginType, args)!;
+    }
+
+    public static TInterface LoadStaticInstance<TInterface>(params object?[] args) where TInterface : class
+    {
+        var pluginType = GetPluginType<TInterface>();
+
+        return (TInterface)Instances.GetOrAdd(pluginType, key => Activator.CreateInstance(key, args)!);
+    }
+
+    public static TInterface LoadNewInstanceByFullName<TInterface>(string implementationTypeFullName, params object?[] args) where TInterface : class
+    {
+        Guard.NotNullOrEmpty(implementationTypeFullName);
+
+        var pluginType = GetPluginTypeByFullName<TInterface>(implementationTypeFullName);
+
+        return (TInterface)Activator.CreateInstance(pluginType, args)!;
+    }
+
+    public static TInterface LoadStaticInstanceByFullName<TInterface>(string implementationTypeFullName, params object?[] args) where TInterface : class
+    {
+        Guard.NotNullOrEmpty(implementationTypeFullName);
+
+        var pluginType = GetPluginTypeByFullName<TInterface>(implementationTypeFullName);
+
+        return (TInterface)Instances.GetOrAdd(pluginType, key => Activator.CreateInstance(key, args)!);
+    }
+
+    private static Type GetPluginType<TInterface>() where TInterface : class
     {
         var key = typeof(TInterface).FullName!;
 
@@ -27,14 +60,11 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements interface '{key}'.");
         });
-
-        return (TInterface)Activator.CreateInstance(pluginType, args)!;
+        return pluginType;
     }
 
-    public static TInterface LoadByFullName<TInterface>(string implementationTypeFullName, params object?[] args) where TInterface : class
+    private static Type GetPluginTypeByFullName<TInterface>(string implementationTypeFullName) where TInterface : class
     {
-        Guard.NotNullOrEmpty(implementationTypeFullName);
-
         var @interface = typeof(TInterface).FullName;
         var key = $"{@interface}_{implementationTypeFullName}";
 
@@ -47,8 +77,7 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements Interface '{@interface}' and has FullName '{implementationTypeFullName}'.");
         });
-
-        return (TInterface)Activator.CreateInstance(pluginType, args)!;
+        return pluginType;
     }
 
     private static bool TryFindTypeInDlls<TInterface>(string? implementationTypeFullName, [NotNullWhen(true)] out Type? pluginType) where TInterface : class

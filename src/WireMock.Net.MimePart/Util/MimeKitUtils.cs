@@ -15,6 +15,7 @@ namespace WireMock.Util;
 
 internal class MimeKitUtils : IMimeKitUtils
 {
+    /// <inheritdoc />
     public bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out object? mimeMessage)
     {
         Guard.NotNull(requestMessage);
@@ -45,6 +46,7 @@ internal class MimeKitUtils : IMimeKitUtils
         return false;
     }
 
+    /// <inheritdoc />
     public IReadOnlyList<object> GetBodyParts(object mimeMessage)
     {
         if (mimeMessage is not MimeMessage mm)

@@ -80,11 +80,11 @@ namespace WireMock.Owin.Mappers
             switch (responseMessage.FaultType)
             {
                 case FaultType.EMPTY_RESPONSE:
-                    bytes = IsFault(responseMessage) ? EmptyArray<byte>.Value : await GetNormalBodyAsync(responseMessage).ConfigureAwait(false);
+                    bytes = IsFault(responseMessage) ? [] : await GetNormalBodyAsync(responseMessage).ConfigureAwait(false);
                     break;
 
                 case FaultType.MALFORMED_RESPONSE_CHUNK:
-                    bytes = await GetNormalBodyAsync(responseMessage).ConfigureAwait(false) ?? EmptyArray<byte>.Value;
+                    bytes = await GetNormalBodyAsync(responseMessage).ConfigureAwait(false) ?? [];
                     if (IsFault(responseMessage))
                     {
                         bytes = bytes.Take(bytes.Length / 2).Union(_randomizerBytes.Generate()).ToArray();

@@ -10,7 +10,10 @@ using Newtonsoft.Json.Linq;
 
 namespace WireMock.Util;
 
-internal static class CSharpFormatter
+/// <summary>
+/// A utility class for converting JSON to C# anonymous object definitions.
+/// </summary>
+public static class CSharpFormatter
 {
     private const string Null = "null";
 
@@ -141,12 +144,12 @@ internal static class CSharpFormatter
 
         if (value.Contains('\n'))
         {
-            var escapedValue = value.Replace("\"", "\"\"");
+            var escapedValue = value!.Replace("\"", "\"\"");
             return $"@\"{escapedValue}\"";
         }
         else
         {
-            var escapedValue = value.Replace("\"", "\\\"");
+            var escapedValue = value!.Replace("\"", "\\\"");
             return $"\"{escapedValue}\"";
         }
     }

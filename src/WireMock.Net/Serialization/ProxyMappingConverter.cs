@@ -31,9 +31,9 @@ internal class ProxyMappingConverter
     public IMapping? ToMapping(IMapping? mapping, ProxyAndRecordSettings proxyAndRecordSettings, IRequestMessage requestMessage, ResponseMessage responseMessage)
     {
         var useDefinedRequestMatchers = proxyAndRecordSettings.UseDefinedRequestMatchers;
-        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? new string[] { }) { "Cookie" };
-        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? EmptyArray<string>.Value;
-        var excludedParams = proxyAndRecordSettings.ExcludedParams ?? EmptyArray<string>.Value;
+        var excludedHeaders = new List<string>(proxyAndRecordSettings.ExcludedHeaders ?? []) { "Cookie" };
+        var excludedCookies = proxyAndRecordSettings.ExcludedCookies ?? [];
+        var excludedParams = proxyAndRecordSettings.ExcludedParams ?? [];
 
         var request = (Request?)mapping?.RequestMatcher;
         var clientIPMatcher = request?.GetRequestMessageMatcher<RequestMessageClientIPMatcher>();

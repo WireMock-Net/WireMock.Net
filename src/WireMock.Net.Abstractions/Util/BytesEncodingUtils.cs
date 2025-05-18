@@ -9,6 +9,7 @@ using System.Text;
 namespace WireMock.Util;
 
 /// <summary>
+/// Some utility methods for encoding.
 /// Based on:
 /// http://utf8checker.codeplex.com
 /// https://github.com/0x53A/Mvvm/blob/master/src/Mvvm/src/Utf8Checker.cs
@@ -19,7 +20,7 @@ namespace WireMock.Util;
 /// http://www.unicode.org/versions/corrigendum1.html
 /// http://www.ietf.org/rfc/rfc2279.txt
 /// </summary>
-internal static class BytesEncodingUtils
+public static class BytesEncodingUtils
 {
     /// <summary>
     /// Tries the get the Encoding from an array of bytes.
@@ -35,25 +36,25 @@ internal static class BytesEncodingUtils
             return true;
         }
 
-        if (StartsWith(bytes, new byte[] { 0xff, 0xfe, 0x00, 0x00 }))
+        if (StartsWith(bytes, [0xff, 0xfe, 0x00, 0x00]))
         {
             encoding = Encoding.UTF32;
             return true;
         }
 
-        if (StartsWith(bytes, new byte[] { 0xfe, 0xff }))
+        if (StartsWith(bytes, [0xfe, 0xff]))
         {
             encoding = Encoding.BigEndianUnicode;
             return true;
         }
 
-        if (StartsWith(bytes, new byte[] { 0xff, 0xfe }))
+        if (StartsWith(bytes, [0xff, 0xfe]))
         {
             encoding = Encoding.Unicode;
             return true;
         }
 
-        if (StartsWith(bytes, new byte[] { 0xef, 0xbb, 0xbf }))
+        if (StartsWith(bytes, [0xef, 0xbb, 0xbf]))
         {
             encoding = Encoding.UTF8;
             return true;

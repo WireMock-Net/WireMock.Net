@@ -175,8 +175,8 @@ public class JsonMatcher : IJsonMatcher
 
             // If the value is an array, compare all elements.
             case JTokenType.Array:
-                var valueArray = value.ToObject<JToken[]>() ?? EmptyArray<JToken>.Value;
-                var inputArray = input.ToObject<JToken[]>() ?? EmptyArray<JToken>.Value;
+                var valueArray = value.ToObject<JToken[]>() ?? [];
+                var inputArray = input.ToObject<JToken[]>() ?? [];
 
                 // If the number of elements is different, return false.
                 if (valueArray.Length != inputArray.Length)

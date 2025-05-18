@@ -5,8 +5,17 @@ using System.Reflection;
 
 namespace WireMock.Extensions;
 
-internal static class EnumExtensions
+/// <summary>
+/// Some extension methods for Enums.
+/// </summary>
+public static class EnumExtensions
 {
+    /// <summary>
+    /// Get the fully qualified enum value.
+    /// </summary>
+    /// <typeparam name="T">The type.</typeparam>
+    /// <param name="enumValue">The value.</param>
+    /// <returns>The fully qualified enum value.</returns>
     public static string GetFullyQualifiedEnumValue<T>(this T enumValue)
         where T : struct, IConvertible
     {

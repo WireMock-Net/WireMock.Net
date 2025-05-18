@@ -39,7 +39,7 @@ internal class SimpleSettingsParser
             }
             else if (string.IsNullOrEmpty(currentName))
             {
-                Arguments[arg] = EmptyArray<string>.Value;
+                Arguments[arg] = [];
             }
             else
             {

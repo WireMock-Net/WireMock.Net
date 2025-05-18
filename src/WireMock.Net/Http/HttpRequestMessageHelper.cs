@@ -61,7 +61,7 @@ internal static class HttpRequestMessageHelper
         if (contentLengthHeaderAllowed)
         {
             // Set Content to empty ByteArray to be able to set the Content-Length on the content in case of a HEAD method.
-            httpRequestMessage.Content ??= new ByteArrayContent(EmptyArray<byte>.Value);
+            httpRequestMessage.Content ??= new ByteArrayContent([]);
         }
         else
         {

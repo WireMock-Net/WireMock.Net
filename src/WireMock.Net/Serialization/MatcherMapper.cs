@@ -54,7 +54,7 @@ internal class MatcherMapper
             case "CSharpCodeMatcher":
                 if (_settings.AllowCSharpCodeMatcher == true)
                 {
-                    return TypeLoader.Load<ICSharpCodeMatcher>(matchBehaviour, matchOperator, stringPatterns);
+                    return TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(matchBehaviour, matchOperator, stringPatterns);
                 }
 
                 throw new NotSupportedException("It's not allowed to use the 'CSharpCodeMatcher' because WireMockServerSettings.AllowCSharpCodeMatcher is not set to 'true'.");
@@ -75,10 +75,8 @@ internal class MatcherMapper
                 return new GraphQLMatcher(stringPatterns[0].GetPattern(), matcherModel.CustomScalars, matchBehaviour, matchOperator);
 #endif
 
-//#if MIMEKIT
             case "MimePartMatcher":
                 return CreateMimePartMatcher(matchBehaviour, matcherModel);
-//#endif
 
 #if PROTOBUF
             case nameof(ProtoBufMatcher):
@@ -203,14 +201,12 @@ internal class MatcherMapper
                 model.Pattern = objectMatcher.Value;
                 break;
 
-//#if MIMEKIT
             case IMimePartMatcher mimePartMatcher:
                 model.ContentDispositionMatcher = Map(mimePartMatcher.ContentDispositionMatcher);
                 model.ContentMatcher = Map(mimePartMatcher.ContentMatcher);
                 model.ContentTransferEncodingMatcher = Map(mimePartMatcher.ContentTransferEncodingMatcher);
                 model.ContentTypeMatcher = Map(mimePartMatcher.ContentTypeMatcher);
                 break;
-//#endif
 
 #if PROTOBUF
             case ProtoBufMatcher protoBufMatcher:
@@ -261,7 +257,7 @@ internal class MatcherMapper
             return [new AnyOf<string, StringPattern>(new StringPattern { Pattern = pattern, PatternAsFile = patternAsFile })];
         }
 
-        return EmptyArray<AnyOf<string, StringPattern>>.Value;
+        return [];
     }
 
     private static ExactObjectMatcher CreateExactObjectMatcher(MatchBehaviour matchBehaviour, AnyOf<string, StringPattern> stringPattern)
@@ -279,7 +275,6 @@ internal class MatcherMapper
         return new ExactObjectMatcher(matchBehaviour, bytePattern);
     }
 
-//#if MIMEKIT
     private IMimePartMatcher CreateMimePartMatcher(MatchBehaviour matchBehaviour, MatcherModel matcher)
     {
         var contentTypeMatcher = Map(matcher?.ContentTypeMatcher) as IStringMatcher;
@@ -287,9 +282,8 @@ internal class MatcherMapper
         var contentTransferEncodingMatcher = Map(matcher?.ContentTransferEncodingMatcher) as IStringMatcher;
         var contentMatcher = Map(matcher?.ContentMatcher);
 
-        return TypeLoader.Load<IMimePartMatcher>(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
+        return TypeLoader.LoadNewInstance<IMimePartMatcher>(matchBehaviour, contentTypeMatcher, contentDispositionMatcher, contentTransferEncodingMatcher, contentMatcher);
     }
-//#endif
 
 #if PROTOBUF
     private ProtoBufMatcher CreateProtoBufMatcher(MatchBehaviour? matchBehaviour, IReadOnlyList<string> protoDefinitions, MatcherModel matcher)

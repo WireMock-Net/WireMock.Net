@@ -10,21 +10,21 @@ using WireMock.Types;
 namespace WireMock.Util;
 
 /// <summary>
-/// Based on https://stackoverflow.com/questions/659887/get-url-parameters-from-a-string-in-net
+/// QueryStringParser (based on https://stackoverflow.com/questions/659887/get-url-parameters-from-a-string-in-net)
 /// </summary>
-internal static class QueryStringParser
+public static class QueryStringParser
 {
     private static readonly Dictionary<string, WireMockList<string>> Empty = new();
 
     public static bool TryParse(string? queryString, bool caseIgnore, [NotNullWhen(true)] out IDictionary<string, string>? nameValueCollection)
     {
-        if (queryString is null)
+        if (queryString == null)
         {
             nameValueCollection = null;
             return false;
         }
 
-        var parts = queryString!
+        var parts = queryString
             .Split(["&"], StringSplitOptions.RemoveEmptyEntries)
             .Select(parameter => parameter.Split('='))
             .Distinct();

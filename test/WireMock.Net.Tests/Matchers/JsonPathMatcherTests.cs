@@ -41,7 +41,7 @@ public class JsonPathMatcherTests
     public void JsonPathMatcher_IsMatch_ByteArray()
     {
         // Arrange
-        var bytes = EmptyArray<byte>.Value;
+        var bytes = new byte[0];
         var matcher = new JsonPathMatcher("");
 
         // Act 

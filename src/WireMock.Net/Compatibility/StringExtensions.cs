@@ -12,7 +12,7 @@ internal static class StringExtensions
     public static string Replace(this string text, string oldValue, string newValue, StringComparison stringComparison)
     {
         var options = stringComparison == StringComparison.OrdinalIgnoreCase ? RegexOptions.IgnoreCase : RegexOptions.None;
-        return Regex.Replace(text, oldValue, newValue, options, WireMockConstants.DefaultRegexTimeout);
+        return Regex.Replace(text, oldValue, newValue, options, RegexConstants.DefaultTimeout);
     }
 }
 #endif

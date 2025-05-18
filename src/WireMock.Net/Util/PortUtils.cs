@@ -16,7 +16,7 @@ namespace WireMock.Util;
 /// </summary>
 internal static class PortUtils
 {
-    private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled, WireMockConstants.DefaultRegexTimeout);
+    private static readonly Regex UrlDetailsRegex = new(@"^((?<proto>\w+)://)(?<host>[^/]+?):(?<port>\d+)\/?$", RegexOptions.Compiled, RegexConstants.DefaultTimeout);
 
     /// <summary>
     /// Finds a random, free port to be listened on.

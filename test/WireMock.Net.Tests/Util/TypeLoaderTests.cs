@@ -25,41 +25,61 @@ public class TypeLoaderTests
     }
 
     [Fact]
-    public void Load_ByInterface()
+    public void LoadNewInstance()
     {
         // Act
         AnyOf<string, StringPattern> pattern = "x";
-        var result = TypeLoader.Load<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
+        var result = TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
 
         // Assert
         result.Should().NotBeNull();
     }
 
     [Fact]
-    public void Load_ByInterfaceAndFullName()
+    public void LoadNewInstanceByFullName()
     {
         // Act
-        var result = TypeLoader.LoadByFullName<IDummyInterfaceWithImplementation>(typeof(DummyClass).FullName!);
+        var result = TypeLoader.LoadNewInstanceByFullName<IDummyInterfaceWithImplementation>(typeof(DummyClass).FullName!);
 
         // Assert
         result.Should().BeOfType<DummyClass>();
     }
 
     [Fact]
-    public void Load_ByInterface_ButNoImplementationFoundForInterface_ThrowsException()
+    public void LoadStaticInstance()
     {
         // Act
-        Action a = () => TypeLoader.Load<IDummyInterfaceNoImplementation>();
+        var result = TypeLoader.LoadStaticInstance<IMimeKitUtils>();
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void LoadStaticInstanceByFullName()
+    {
+        // Act
+        var result = TypeLoader.LoadStaticInstanceByFullName<IDummyInterfaceWithImplementation>(typeof(DummyClass).FullName!);
+
+        // Assert
+        result.Should().BeOfType<DummyClass>();
+    }
+
+    [Fact]
+    public void LoadNewInstance_ButNoImplementationFoundForInterface_ThrowsException()
+    {
+        // Act
+        Action a = () => TypeLoader.LoadNewInstance<IDummyInterfaceNoImplementation>();
 
         // Assert
         a.Should().Throw<DllNotFoundException>().WithMessage("No dll found which implements Interface 'WireMock.Net.Tests.Util.TypeLoaderTests+IDummyInterfaceNoImplementation'.");
     }
 
     [Fact]
-    public void Load_ByInterfaceAndFullName_ButNoImplementationFoundForInterface_ThrowsException()
+    public void LoadNewInstanceByFullName_ButNoImplementationFoundForInterface_ThrowsException()
     {
         // Act
-        Action a = () => TypeLoader.LoadByFullName<IDummyInterfaceWithImplementation>("xyz");
+        Action a = () => TypeLoader.LoadNewInstanceByFullName<IDummyInterfaceWithImplementation>("xyz");
 
         // Assert
         a.Should().Throw<DllNotFoundException>().WithMessage("No dll found which implements Interface 'WireMock.Net.Tests.Util.TypeLoaderTests+IDummyInterfaceWithImplementation' and has FullName 'xyz'.");

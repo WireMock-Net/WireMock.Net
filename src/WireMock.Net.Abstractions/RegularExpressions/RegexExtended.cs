@@ -13,7 +13,7 @@ namespace WireMock.RegularExpressions;
 #if !NETSTANDARD1_3
 [Serializable]
 #endif
-internal class RegexExtended : Regex
+public class RegexExtended : Regex
 {
     /// <inheritdoc cref="Regex"/>
     public RegexExtended(string pattern) : this(pattern, RegexOptions.None)
@@ -39,6 +39,7 @@ internal class RegexExtended : Regex
     {
     }
 #endif
+
     // Dictionary of various Guid tokens with a corresponding regular expression pattern to use instead.
     private static readonly Dictionary<string, string> GuidTokenPatterns = new()
     {

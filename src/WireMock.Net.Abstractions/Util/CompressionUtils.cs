@@ -6,8 +6,17 @@ using System.IO.Compression;
 
 namespace WireMock.Util;
 
-internal static class CompressionUtils
+/// <summary>
+/// Some utility methods for compressing and decompressing data.
+/// </summary>
+public static class CompressionUtils
 {
+    /// <summary>
+    /// Compresses the specified data using the specified content encoding.
+    /// </summary>
+    /// <param name="contentEncoding">The content-encoding.</param>
+    /// <param name="data">The data.</param>
+    /// <returns>Compressed data</returns>
     public static byte[] Compress(string contentEncoding, byte[] data)
     {
         using var compressedStream = new MemoryStream();
@@ -20,6 +29,12 @@ internal static class CompressionUtils
         return compressedStream.ToArray();
     }
 
+    /// <summary>
+    /// Decompresses the specified data using the specified content encoding.
+    /// </summary>
+    /// <param name="contentEncoding">The content-encoding.</param>
+    /// <param name="data">The compressed data.</param>
+    /// <returns>Uncompressed data</returns>
     public static byte[] Decompress(string contentEncoding, byte[] data)
     {
         using var compressedStream = new MemoryStream(data);

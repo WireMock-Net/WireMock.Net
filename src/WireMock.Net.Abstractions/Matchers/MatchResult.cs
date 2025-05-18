@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stef.Validation;
+using System.Runtime.CompilerServices;
 using WireMock.Extensions;
 
 namespace WireMock.Matchers;

@@ -121,7 +121,6 @@ internal class MappingConverter(MatcherMapper mapper)
         }
 #endif
 
-//#if MIMEKIT
         if (requestMessageMultiPartMatcher?.Matchers != null)
         {
             if (requestMessageMultiPartMatcher.Matchers.OfType<IMimePartMatcher>().Any())
@@ -129,7 +128,6 @@ internal class MappingConverter(MatcherMapper mapper)
                 sb.AppendLine("        // .WithMultiPart() is not yet supported");
             }
         }
-//#endif
 
 #if PROTOBUF
         if (requestMessageProtoBufMatcher?.Matcher != null)
@@ -368,7 +366,7 @@ internal class MappingConverter(MatcherMapper mapper)
             mappingModel.Response.Delay = (int?)(response.Delay == Timeout.InfiniteTimeSpan ? TimeSpan.MaxValue.TotalMilliseconds : response.Delay?.TotalMilliseconds);
         }
 
-        var nonNullableWebHooks = mapping.Webhooks?.ToArray() ?? EmptyArray<IWebhook>.Value;
+        var nonNullableWebHooks = mapping.Webhooks?.ToArray() ?? [];
         if (nonNullableWebHooks.Length == 1)
         {
             mappingModel.Webhook = WebhookMapper.Map(nonNullableWebHooks[0]);

@@ -2,7 +2,10 @@
 
 namespace WireMock.Matchers;
 
-internal static class MatchBehaviourHelper
+/// <summary>
+/// MatchBehaviourHelper
+/// </summary>
+public static class MatchBehaviourHelper
 {
     /// <summary>
     /// Converts the specified match behaviour and match value to a new match value.
@@ -12,11 +15,10 @@ internal static class MatchBehaviourHelper
     /// if RejectOnMatch and match = 0.? --> return 0.0
     /// if RejectOnMatch and match = 1.0 --> return 0.0
     /// </summary>
-    /// 
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="match">The match.</param>
     /// <returns>match value</returns>
-    internal static double Convert(MatchBehaviour matchBehaviour, double match)
+    public static double Convert(MatchBehaviour matchBehaviour, double match)
     {
         if (matchBehaviour == MatchBehaviour.AcceptOnMatch)
         {
@@ -26,10 +28,14 @@ internal static class MatchBehaviourHelper
         return match <= MatchScores.Tolerance ? MatchScores.Perfect : MatchScores.Mismatch;
     }
 
-    internal static MatchResult Convert(MatchBehaviour matchBehaviour, MatchResult result)
+    /// <summary>
+    /// Converts the specified match behaviour and match result to a new match result value.
+    /// </summary>
+    /// <param name="matchBehaviour">The match behaviour.</param>
+    /// <param name="result">The match result.</param>
+    /// <returns>match result</returns>
+    public static MatchResult Convert(MatchBehaviour matchBehaviour, MatchResult result)
     {
-        return matchBehaviour == MatchBehaviour.AcceptOnMatch ?
-            result :
-            new MatchResult(Convert(matchBehaviour, result.Score), result.Exception);
+        return matchBehaviour == MatchBehaviour.AcceptOnMatch ? result : new MatchResult(Convert(matchBehaviour, result.Score), result.Exception);
     }
 }

@@ -10,7 +10,7 @@ using WireMock.Serialization;
 
 namespace WireMock.Util;
 
-internal static class JsonUtils
+public static class JsonUtils
 {
     public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
     {

@@ -45,7 +45,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
 
     public AnyOf<string, StringPattern>[] GetPatterns()
     {
-        return EmptyArray<AnyOf<string, StringPattern>>.Value;
+        return [];
     }
 
     public MatchOperator MatchOperator => MatchOperator.Or;
@@ -57,7 +57,7 @@ internal class AzureADAuthenticationMatcher : IStringMatcher
             return MatchScores.Mismatch;
         }
 
-        var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase, WireMockConstants.DefaultRegexTimeout);
+        var token = Regex.Replace(input, BearerPrefix, string.Empty, RegexOptions.IgnoreCase, RegexConstants.DefaultTimeout);
 
         try
         {

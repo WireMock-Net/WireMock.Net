@@ -1,6 +1,5 @@
 // Copyright © WireMock.Net
 
-using System;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NFluent;
@@ -41,7 +40,7 @@ public class JmesPathMatcherTests
     public void JmesPathMatcher_IsMatch_ByteArray()
     {
         // Assign
-        var bytes = EmptyArray<byte>.Value;
+        var bytes = new byte[0];
         var matcher = new JmesPathMatcher("");
 
         // Act 

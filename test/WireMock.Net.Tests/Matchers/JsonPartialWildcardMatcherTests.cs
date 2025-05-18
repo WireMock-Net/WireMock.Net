@@ -79,7 +79,7 @@ public class JsonPartialWildcardMatcherTests
     public void JsonPartialWildcardMatcher_IsMatch_ByteArray()
     {
         // Assign
-        var bytes = EmptyArray<byte>.Value;
+        var bytes = new byte[0];
         var matcher = new JsonPartialWildcardMatcher("");
 
         // Act 

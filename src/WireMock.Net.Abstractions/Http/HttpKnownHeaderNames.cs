@@ -12,12 +12,12 @@ namespace WireMock.Http;
 /// <summary>
 /// Copied from https://raw.githubusercontent.com/dotnet/corefx/master/src/Common/src/System/Net/HttpKnownHeaderNames.cs
 /// </summary>
-internal static class HttpKnownHeaderNames
+public static class HttpKnownHeaderNames
 {
     // - https://docs.microsoft.com/en-us/dotnet/api/system.net.webheadercollection.isrestricted
     // - ContentLength is allowed per #720
     private static readonly string[] RestrictedResponseHeaders =
-    {
+    [
         Accept,
         Connection,
         ContentType,
@@ -30,7 +30,7 @@ internal static class HttpKnownHeaderNames
         TransferEncoding,
         UserAgent,
         ProxyConnection
-    };
+    ];
 
     /// <summary>Tests whether the specified HTTP header can be set for the response.</summary>
     /// <param name="headerName">The header to test.</param>

@@ -101,7 +101,7 @@ public class JsonMatcherTests
     public void JsonMatcher_IsMatch_ByteArray()
     {
         // Assign
-        var bytes = EmptyArray<byte>.Value;
+        var bytes = new byte[0];
         var matcher = new JsonMatcher("");
 
         // Act
