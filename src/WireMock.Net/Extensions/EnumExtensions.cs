@@ -8,7 +8,7 @@ namespace WireMock.Extensions;
 /// <summary>
 /// Some extension methods for Enums.
 /// </summary>
-public static class EnumExtensions
+internal static class EnumExtensions
 {
     /// <summary>
     /// Get the fully qualified enum value.

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace WireMock.Serialization;
 
-public static class JsonSerializationConstants
+internal static class JsonSerializationConstants
 {
     public static readonly JsonSerializerSettings JsonSerializerSettingsDefault = new()
     {

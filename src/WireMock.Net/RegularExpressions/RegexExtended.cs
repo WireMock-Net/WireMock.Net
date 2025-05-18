@@ -13,7 +13,7 @@ namespace WireMock.RegularExpressions;
 #if !NETSTANDARD1_3
 [Serializable]
 #endif
-public class RegexExtended : Regex
+internal class RegexExtended : Regex
 {
     /// <inheritdoc cref="Regex"/>
     public RegexExtended(string pattern) : this(pattern, RegexOptions.None)

@@ -9,7 +9,7 @@ namespace WireMock.Util;
 /// <summary>
 /// Some utility methods for compressing and decompressing data.
 /// </summary>
-public static class CompressionUtils
+internal static class CompressionUtils
 {
     /// <summary>
     /// Compresses the specified data using the specified content encoding.

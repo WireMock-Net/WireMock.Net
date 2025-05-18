@@ -4,10 +4,7 @@ using System.IO;
 
 namespace WireMock.Util;
 
-/// <summary>
-/// BodyParserSettings
-/// </summary>
-public class BodyParserSettings
+internal class BodyParserSettings
 {
     /// <summary>
     /// The body stream to parse.

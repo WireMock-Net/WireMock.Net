@@ -12,7 +12,7 @@ namespace WireMock.Util;
 /// <summary>
 /// QueryStringParser (based on https://stackoverflow.com/questions/659887/get-url-parameters-from-a-string-in-net)
 /// </summary>
-public static class QueryStringParser
+internal static class QueryStringParser
 {
     private static readonly Dictionary<string, WireMockList<string>> Empty = new();
 

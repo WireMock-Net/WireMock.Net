@@ -12,7 +12,7 @@ namespace WireMock.Http;
 /// <summary>
 /// Copied from https://raw.githubusercontent.com/dotnet/corefx/master/src/Common/src/System/Net/HttpKnownHeaderNames.cs
 /// </summary>
-public static class HttpKnownHeaderNames
+internal static class HttpKnownHeaderNames
 {
     // - https://docs.microsoft.com/en-us/dotnet/api/system.net.webheadercollection.isrestricted
     // - ContentLength is allowed per #720

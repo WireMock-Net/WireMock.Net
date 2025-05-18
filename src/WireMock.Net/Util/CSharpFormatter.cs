@@ -13,7 +13,7 @@ namespace WireMock.Util;
 /// <summary>
 /// A utility class for converting JSON to C# anonymous object definitions.
 /// </summary>
-public static class CSharpFormatter
+internal static class CSharpFormatter
 {
     private const string Null = "null";
 

@@ -5,7 +5,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// MatchBehaviourHelper
 /// </summary>
-public static class MatchBehaviourHelper
+internal static class MatchBehaviourHelper
 {
     /// <summary>
     /// Converts the specified match behaviour and match value to a new match value.
@@ -18,7 +18,7 @@ public static class MatchBehaviourHelper
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="match">The match.</param>
     /// <returns>match value</returns>
-    public static double Convert(MatchBehaviour matchBehaviour, double match)
+    internal static double Convert(MatchBehaviour matchBehaviour, double match)
     {
         if (matchBehaviour == MatchBehaviour.AcceptOnMatch)
         {
@@ -34,7 +34,7 @@ public static class MatchBehaviourHelper
     /// <param name="matchBehaviour">The match behaviour.</param>
     /// <param name="result">The match result.</param>
     /// <returns>match result</returns>
-    public static MatchResult Convert(MatchBehaviour matchBehaviour, MatchResult result)
+    internal static MatchResult Convert(MatchBehaviour matchBehaviour, MatchResult result)
     {
         return matchBehaviour == MatchBehaviour.AcceptOnMatch ? result : new MatchResult(Convert(matchBehaviour, result.Score), result.Exception);
     }

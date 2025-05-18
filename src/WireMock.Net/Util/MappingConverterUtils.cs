@@ -12,7 +12,7 @@ namespace WireMock.Util;
 /// <summary>
 /// Some MappingConverter utility methods.
 /// </summary>
-public static class MappingConverterUtils
+internal static class MappingConverterUtils
 {
     /// <summary>
     /// Convert a list of matchers to C# code arguments.

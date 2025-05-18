@@ -12,13 +12,13 @@ public partial class Response
     /// <summary>
     /// A delegate to execute to generate the response.
     /// </summary>
-    // [MemberNotNullWhen(true, nameof(WithCallbackUsed))]
+    [MemberNotNullWhen(true, nameof(WithCallbackUsed))]
     public Func<IRequestMessage, ResponseMessage>? Callback { get; private set; }
 
     /// <summary>
     /// A delegate to execute to generate the response async.
     /// </summary>
-    // [MemberNotNullWhen(true, nameof(WithCallbackUsed))]
+    [MemberNotNullWhen(true, nameof(WithCallbackUsed))]
     public Func<IRequestMessage, Task<ResponseMessage>>? CallbackAsync { get; private set; }
 
     /// <summary>

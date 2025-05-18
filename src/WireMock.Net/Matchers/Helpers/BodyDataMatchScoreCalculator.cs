@@ -6,9 +6,9 @@ using WireMock.Util;
 
 namespace WireMock.Matchers.Helpers;
 
-public static class BodyDataMatchScoreCalculator
+internal static class BodyDataMatchScoreCalculator
 {
-    public static MatchResult CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
+    internal static MatchResult CalculateMatchScore(IBodyData? requestMessage, IMatcher matcher)
     {
         Guard.NotNull(matcher);
 
