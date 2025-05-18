@@ -579,7 +579,12 @@ internal class MappingConverter(MatcherMapper mapper)
             sb.AppendFormat("{0}, ", matchBehaviour.Value.GetFullyQualifiedEnumValue());
         }
 
-        return To1Or2Arguments(matchOperator, values, defaultValue);
+        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
+        {
+            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
+        }
+
+        return sb.Append(ToValueArguments(values, defaultValue)).ToString();
     }
 
     private static string To1Or2Arguments(MatchOperator? matchOperator, IReadOnlyList<IStringMatcher> matchers)
@@ -594,18 +599,6 @@ internal class MappingConverter(MatcherMapper mapper)
         sb.AppendFormat("{0}", MappingConverterUtils.ToCSharpCodeArguments(matchers));
 
         return sb.ToString();
-    }
-
-    private static string To1Or2Arguments(MatchOperator? matchOperator, string[]? values, string defaultValue)
-    {
-        var sb = new StringBuilder();
-
-        if (matchOperator.HasValue && matchOperator != MatchOperator.Or)
-        {
-            sb.AppendFormat("{0}, ", matchOperator.Value.GetFullyQualifiedEnumValue());
-        }
-
-        return sb.Append(ToValueArguments(values, defaultValue)).ToString();
     }
 
     private static string ToValueArguments(string[]? values, string defaultValue = "")
