@@ -12,17 +12,23 @@ namespace WireMock.Util;
 
 internal static class JsonUtils
 {
-    public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
+    public static bool IsJson(string? value)
     {
-        value = null;
-
-        if (strInput == null || string.IsNullOrWhiteSpace(strInput))
+        if (string.IsNullOrWhiteSpace(value))
         {
             return false;
         }
 
-        strInput = strInput.Trim();
-        if ((!strInput.StartsWith("{") || !strInput.EndsWith("}")) && (!strInput.StartsWith("[") || !strInput.EndsWith("]")))
+        value = value!.Trim();
+
+        return (value.StartsWith("{") && value.EndsWith("}")) || (value.StartsWith("[") && value.EndsWith("]"));
+    }
+
+    public static bool TryParseAsJObject(string? strInput, [NotNullWhen(true)] out JObject? value)
+    {
+        value = null;
+
+        if (!IsJson(strInput))
         {
             return false;
         }
@@ -30,7 +36,7 @@ internal static class JsonUtils
         try
         {
             // Try to convert this string into a JToken
-            value = JObject.Parse(strInput);
+            value = JObject.Parse(strInput!);
             return true;
         }
         catch

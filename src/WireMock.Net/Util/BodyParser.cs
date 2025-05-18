@@ -177,7 +177,7 @@ internal static class BodyParser
             }
 
             // If string is not null or empty, try to deserialize the string to a JObject
-            if (settings.DeserializeJson && IsJson(data.BodyAsString))
+            if (settings.DeserializeJson && JsonUtils.IsJson(data.BodyAsString))
             {
                 try
                 {
@@ -197,19 +197,7 @@ internal static class BodyParser
 
         return data;
     }
-
-    private static bool IsJson(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        value = value.Trim();
-
-        return (value.StartsWith("{") && value.EndsWith("}")) || (value.StartsWith("[") && value.EndsWith("]"));
-    }
-
+    
     private static async Task<(string? ContentType, byte[] Bytes)> ReadBytesAsync(Stream stream, string? contentEncoding = null, bool decompressGZipAndDeflate = true)
     {
         using var memoryStream = new MemoryStream();
