@@ -16,6 +16,12 @@ namespace WireMock.Util;
 internal class MimeKitUtils : IMimeKitUtils
 {
     /// <inheritdoc />
+    public object LoadFromStream(Stream stream)
+    {
+        return MimeMessage.Load(Guard.NotNull(stream));
+    }
+
+    /// <inheritdoc />
     public bool TryGetMimeMessage(IRequestMessage requestMessage, [NotNullWhen(true)] out object? mimeMessage)
     {
         Guard.NotNull(requestMessage);
@@ -38,7 +44,7 @@ internal class MimeKitUtils : IMimeKitUtils
 
             var fixedBytes = FixBytes(bytes, contentTypeHeader[0]);
 
-            mimeMessage = MimeMessage.Load(new MemoryStream(fixedBytes));
+            mimeMessage = LoadFromStream(new MemoryStream(fixedBytes));
             return true;
         }
 

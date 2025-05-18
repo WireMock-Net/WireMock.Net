@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace WireMock.Util;
 
@@ -10,6 +11,13 @@ namespace WireMock.Util;
 /// </summary>
 public interface IMimeKitUtils
 {
+    /// <summary>
+    /// Loads the MimeKit.MimeMessage from the stream.
+    /// </summary>
+    /// <param name="stream">The stream</param>
+    /// <returns>MimeKit.MimeMessage</returns>
+    object LoadFromStream(Stream stream);
+
     /// <summary>
     /// Tries to get the MimeKit.MimeMessage from the request message.
     /// </summary>

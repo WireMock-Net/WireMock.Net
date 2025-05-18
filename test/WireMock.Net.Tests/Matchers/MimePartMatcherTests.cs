@@ -2,9 +2,7 @@
 
 #if MIMEKIT
 using System;
-using System.Linq;
 using FluentAssertions;
-using MimeKit;
 using WireMock.Matchers;
 using WireMock.Util;
 using Xunit;
@@ -13,40 +11,44 @@ namespace WireMock.Net.Tests.Matchers;
 
 public class MimePartMatcherTests
 {
-    private const string TestMultiPart = @"From:
-Date: Sun, 23 Jul 2023 16:13:13 +0200
-Subject:
-Message-Id: <HZ3K1HEAJKU4.IO57XCVO4BWV@desktop-6dd5qi2>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary=""=-5XgmpXt0XOfzdtcgNJc2ZQ==""
+    private static readonly IMimeKitUtils MimeKitUtils = new MimeKitUtils();
 
---=-5XgmpXt0XOfzdtcgNJc2ZQ==
-Content-Type: text/plain; charset=utf-8
+    private const string TestMultiPart =
+        """
+        From:
+        Date: Sun, 23 Jul 2023 16:13:13 +0200
+        Subject:
+        Message-Id: <HZ3K1HEAJKU4.IO57XCVO4BWV@desktop-6dd5qi2>
+        MIME-Version: 1.0
+        Content-Type: multipart/mixed; boundary="=-5XgmpXt0XOfzdtcgNJc2ZQ=="
 
-This is some plain text
---=-5XgmpXt0XOfzdtcgNJc2ZQ==
-Content-Type: text/json; charset=utf-8
+        --=-5XgmpXt0XOfzdtcgNJc2ZQ==
+        Content-Type: text/plain; charset=utf-8
 
-{
-        ""Key"": ""Value""
-    }
---=-5XgmpXt0XOfzdtcgNJc2ZQ==
-Content-Type: image/png; name=image.png
-Content-Disposition: attachment; filename=image.png
-Content-Transfer-Encoding: base64
+        This is some plain text
+        --=-5XgmpXt0XOfzdtcgNJc2ZQ==
+        Content-Type: text/json; charset=utf-8
 
-iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAADFBMVEX/tID/vpH/pWX/sHidUyjl
-AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
+        {
+            "Key": "Value"
+        }
+        --=-5XgmpXt0XOfzdtcgNJc2ZQ==
+        Content-Type: image/png; name=image.png
+        Content-Disposition: attachment; filename=image.png
+        Content-Transfer-Encoding: base64
 
---=-5XgmpXt0XOfzdtcgNJc2ZQ==-- 
-";
+        iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAADFBMVEX/tID/vpH/pWX/sHidUyjl
+        AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
+
+        --=-5XgmpXt0XOfzdtcgNJc2ZQ==-- 
+        """;
 
     [Fact]
     public void MimePartMatcher_IsMatch_Part_TextPlain()
     {
         // Arrange
-        var message = MimeMessage.Load(StreamUtils.CreateStream(TestMultiPart));
-        var part = (MimePart)message.BodyParts.ToArray()[0];
+        var message = MimeKitUtils.LoadFromStream(StreamUtils.CreateStream(TestMultiPart));
+        var part = MimeKitUtils.GetBodyParts(message)[0];
 
         // Act
         var contentTypeMatcher = new ContentTypeMatcher("text/plain");
@@ -64,8 +66,8 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
     public void MimePartMatcher_IsMatch_Part_TextJson()
     {
         // Arrange
-        var message = MimeMessage.Load(StreamUtils.CreateStream(TestMultiPart));
-        var part = (MimePart)message.BodyParts.ToArray()[1];
+        var message = MimeKitUtils.LoadFromStream(StreamUtils.CreateStream(TestMultiPart));
+        var part = MimeKitUtils.GetBodyParts(message)[1];
 
         // Act
         var contentTypeMatcher = new ContentTypeMatcher("text/json");
@@ -82,8 +84,8 @@ AAAADElEQVR4XmMQYNgAAADkAMHebX3mAAAAAElFTkSuQmCC
     public void MimePartMatcher_IsMatch_Part_ImagePng()
     {
         // Arrange
-        var message = MimeMessage.Load(StreamUtils.CreateStream(TestMultiPart));
-        var part = (MimePart)message.BodyParts.ToArray()[2];
+        var message = MimeKitUtils.LoadFromStream(StreamUtils.CreateStream(TestMultiPart));
+        var part = MimeKitUtils.GetBodyParts(message)[2];
 
         // Act
         var contentTypeMatcher = new ContentTypeMatcher("image/png");

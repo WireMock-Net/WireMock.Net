@@ -14,10 +14,10 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <!--<SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>-->
         <!--<DelaySign>true</DelaySign>-->
-        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+        <!--<PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>-->
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
@@ -30,8 +30,15 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
 
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
+        <PackageReference Include="MimeKitLite" Version="4.12.0" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>

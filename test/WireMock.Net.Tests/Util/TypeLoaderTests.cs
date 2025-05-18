@@ -24,6 +24,36 @@ public class TypeLoaderTests
     {
     }
 
+    public interface IDummyInterfaceWithImplementationUsedForStaticTest
+    {
+    }
+
+    public class DummyClass1UsedForStaticTest : IDummyInterfaceWithImplementationUsedForStaticTest
+    {
+        public DummyClass1UsedForStaticTest(Counter counter)
+        {
+            counter.AddOne();
+        }
+    }
+
+    public class DummyClass2UsedForStaticTest : IDummyInterfaceWithImplementationUsedForStaticTest
+    {
+        public DummyClass2UsedForStaticTest(Counter counter)
+        {
+            counter.AddOne();
+        }
+    }
+
+    public class Counter
+    {
+        public int Value { get; private set; }
+
+        public void AddOne()
+        {
+            Value++;
+        }
+    }
+
     [Fact]
     public void LoadNewInstance()
     {
@@ -46,23 +76,34 @@ public class TypeLoaderTests
     }
 
     [Fact]
-    public void LoadStaticInstance()
+    public void LoadStaticInstance_ShouldOnlyCreateInstanceOnce()
     {
+        // Arrange
+        var counter = new Counter();
+
         // Act
-        var result = TypeLoader.LoadStaticInstance<IMimeKitUtils>();
+        var result = TypeLoader.LoadStaticInstance<IDummyInterfaceWithImplementationUsedForStaticTest>(counter);
+        TypeLoader.LoadStaticInstance<IDummyInterfaceWithImplementationUsedForStaticTest>(counter);
 
         // Assert
-        result.Should().NotBeNull();
+        result.Should().BeOfType<DummyClass1UsedForStaticTest>();
+        counter.Value.Should().Be(1);
     }
 
     [Fact]
-    public void LoadStaticInstanceByFullName()
+    public void LoadStaticInstanceByFullName_ShouldOnlyCreateInstanceOnce()
     {
+        // Arrange
+        var counter = new Counter();
+        var fullName = typeof(DummyClass2UsedForStaticTest).FullName!;
+
         // Act
-        var result = TypeLoader.LoadStaticInstanceByFullName<IDummyInterfaceWithImplementation>(typeof(DummyClass).FullName!);
+        var result = TypeLoader.LoadStaticInstanceByFullName<IDummyInterfaceWithImplementationUsedForStaticTest>(fullName, counter);
+        TypeLoader.LoadStaticInstanceByFullName<IDummyInterfaceWithImplementationUsedForStaticTest>(fullName, counter);
 
         // Assert
-        result.Should().BeOfType<DummyClass>();
+        result.Should().BeOfType<DummyClass2UsedForStaticTest>();
+        counter.Value.Should().Be(1);
     }
 
     [Fact]
