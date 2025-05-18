@@ -47,9 +47,9 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <!--<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
-        <PackageReference Include="AnyOf" Version="0.4.0" />
+        <PackageReference Include="AnyOf" Version="0.4.0" />-->
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard')) and '$(TargetFramework)' != 'netstandard1.0'">

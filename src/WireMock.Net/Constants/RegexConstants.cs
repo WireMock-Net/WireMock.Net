@@ -7,7 +7,7 @@ namespace WireMock.Constants;
 /// <summary>
 /// Some constants for Regex.
 /// </summary>
-public static class RegexConstants
+internal static class RegexConstants
 {
     /// <summary>
     /// The default timeout for regex operations.
