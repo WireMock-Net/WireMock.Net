@@ -10,7 +10,7 @@ namespace WireMock.Matchers;
 /// <summary>
 /// MimePartMatcher
 /// </summary>
-internal class MimePartMatcher : IMimePartMatcher
+public class MimePartMatcher : IMimePartMatcher
 {
     private readonly Func<MimePart, MatchResult>[] _funcs;
 
