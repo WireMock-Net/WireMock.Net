@@ -58,10 +58,6 @@
         <ProjectReference Include="..\..\src\WireMock.Net.StandAlone\WireMock.Net.StandAlone.csproj" />
     </ItemGroup>
 
-    <!--<ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
-        <ProjectReference Include="../../src/WireMock.Net.MimePart/WireMock.Net.MimePart.csproj" />
-    </ItemGroup>-->
-
     <ItemGroup>
         <PackageReference Include="Codecov" Version="1.13.0" />
         <PackageReference Include="coverlet.msbuild" Version="3.2.0">
@@ -76,7 +72,6 @@
         </PackageReference>
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
-        <PackageReference Include="RestEase" Version="1.6.4" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.4.0" />
