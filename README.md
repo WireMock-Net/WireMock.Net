@@ -52,6 +52,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | | | |
 | &nbsp;&nbsp;**WireMock.Net.Matchers.CSharpCode** | [![NuGet Badge WireMock.Net.Matchers.CSharpCode](https://img.shields.io/nuget/v/WireMock.Net.Matchers.CSharpCode)](https://www.nuget.org/packages/WireMock.Net.Matchers.CSharpCode) | [![MyGet Badge WireMock.Net.Matchers.CSharpCode](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.Matchers.CSharpCode?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Matchers.CSharpCode)
 | &nbsp;&nbsp;**WireMock.Net.OpenApiParser** | [![NuGet Badge WireMock.Net.OpenApiParser](https://img.shields.io/nuget/v/WireMock.Net.OpenApiParser)](https://www.nuget.org/packages/WireMock.Net.OpenApiParser) | [![MyGet Badge WireMock.Net.OpenApiParser](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.OpenApiParser?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.OpenApiParser)
+| &nbsp;&nbsp;**WireMock.Net.MimePart** | [![NuGet Badge WireMock.Net.MimePart](https://img.shields.io/nuget/v/WireMock.Net.MimePart)](https://www.nuget.org/packages/WireMock.Net.MimePart) | [![MyGet Badge WireMock.Net.MimePart](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.MimePart?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.MimePart)
 | | | |
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://img.shields.io/nuget/v/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
 | &nbsp;&nbsp;**WireMock.Org.RestClient** | [![NuGet Badge WireMock.Org.RestClient](https://img.shields.io/nuget/v/WireMock.Org.RestClient)](https://www.nuget.org/packages/WireMock.Org.RestClient) | [![MyGet Badge WireMock.Org.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Org.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Org.RestClient)
@@ -65,6 +66,7 @@ A breaking change is introduced which is related to System.Linq.Dynamic.Core Dyn
 - The `LinqMatcher` is not allowed.
 - The [Handlebars.Net.Helpers.DynamicLinq](https://www.nuget.org/packages/Handlebars.Net.Helpers.DynamicLinq) package is not included anymore.
 
+
 ### 1.8.0
 Some breaking changes are introduced in this version:
 
@@ -75,6 +77,11 @@ To still enable this feature, you need to set the `AllowedCustomHandlebarHelpers
 #### Handlebars.Net `Environment`-helper
 By default, the Handlebars.Net `Environment`-helper is not automatically allowed anymore because of potential security issues.
 To still enable this feature, you need to add the `Environment` category to the `AllowedHandlebarsHelpers` list-property in the `HandlebarsSettings` property in `WireMockServerSettings`.
+
+
+### 1.9.0
+MimePart support (which uses [MimeKitLite](https://mimekit.net/)) is not enabled anymore by default.
+You need to manually include the [WireMock.Net.MimePart](https://www.nuget.org/packages/WireMock.Net.MimePart) NuGet package.
 
 ---
 

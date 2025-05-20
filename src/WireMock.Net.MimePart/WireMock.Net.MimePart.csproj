@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>MultiPart Mime support for WireMock.Net</Description>
+        <Description>MultiPart Mime support for WireMock.Net using MimeKitLite</Description>
         <AssemblyTitle>WireMock.Net.MimePart</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net47;net48;net6.0;net8.0</TargetFrameworks>
@@ -14,10 +14,17 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+        <!--<SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>-->
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -31,15 +38,9 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
+    <!--<ItemGroup>
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
-    </ItemGroup>
-
-    <!--
-    <ItemGroup Condition="'$(Configuration)' == 'Release'">
-        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
-        <PackageReference Include="MimeKitLite" Version="4.12.0" PrivateAssets="All" />
-    </ItemGroup>
+    </ItemGroup>-->
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
@@ -49,7 +50,6 @@
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
         <PackageReference Include="MimeKitLite" Version="4.12.0" PrivateAssets="All" />
     </ItemGroup>
-    -->
 
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
