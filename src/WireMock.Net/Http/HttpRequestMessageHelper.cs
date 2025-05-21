@@ -35,7 +35,7 @@ internal static class HttpRequestMessageHelper
         }
 
         var bodyData = requestMessage.BodyData;
-        httpRequestMessage.Content = bodyData?.GetBodyType() switch
+        httpRequestMessage.Content = bodyData?.DetectedBodyType switch
         {
             BodyType.Bytes => ByteArrayContentHelper.Create(bodyData.BodyAsBytes!, contentType),
             BodyType.Json => StringContentHelper.Create(JsonConvert.SerializeObject(bodyData.BodyAsJson), contentType),

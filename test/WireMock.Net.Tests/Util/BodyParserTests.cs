@@ -1,12 +1,11 @@
 // Copyright © WireMock.Net
 
 using System;
-using NFluent;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NFluent;
 using WireMock.Types;
 using WireMock.Util;
 using Xunit;
@@ -67,7 +66,7 @@ public class BodyParserTests
     }
 
     [Theory]
-    [InlineData(new byte[] { 34, 97, 34 }, BodyType.Json)]
+    [InlineData(new byte[] { 123, 32, 34, 120, 34, 58, 32, 49, 50, 51, 32, 125 }, BodyType.Json)]
     [InlineData(new byte[] { 97 }, BodyType.String)]
     [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, BodyType.Bytes)]
     public async Task BodyParser_Parse_DetectedBodyType(byte[] content, BodyType detectedBodyType)
@@ -88,7 +87,7 @@ public class BodyParserTests
     }
 
     [Theory]
-    [InlineData(new byte[] { 34, 97, 34 }, BodyType.String)]
+    [InlineData(new byte[] { 123, 32, 34, 120, 34, 58, 32, 49, 50, 51, 32, 125 }, BodyType.String)]
     [InlineData(new byte[] { 97 }, BodyType.String)]
     [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, BodyType.Bytes)]
     public async Task BodyParser_Parse_DetectedBodyTypeNoJsonParsing(byte[] content, BodyType detectedBodyType)
@@ -112,26 +111,28 @@ public class BodyParserTests
     public async Task BodyParser_Parse_WithUTF8EncodingAndContentTypeMultipart_DetectedBodyTypeEqualsString()
     {
         // Arrange
-        string contentType = "multipart/form-data";
-        string body = @"
+        var contentType = "multipart/form-data";
+        var body =
+            """
 
------------------------------9051914041544843365972754266
-Content-Disposition: form-data; name=""text""
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="text"
 
-text default
------------------------------9051914041544843365972754266
-Content-Disposition: form-data; name=""file1""; filename=""a.txt""
-Content-Type: text/plain
+            text default
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="file1"; filename="a.txt"
+            Content-Type: text/plain
 
-Content of a txt
+            Content of a txt
 
------------------------------9051914041544843365972754266
-Content-Disposition: form-data; name=""file2""; filename=""a.html""
-Content-Type: text/html
+            -----------------------------9051914041544843365972754266
+            Content-Disposition: form-data; name="file2"; filename="a.html"
+            Content-Type: text/html
 
-<!DOCTYPE html><title>Content of a.html.</title>
+            <!DOCTYPE html><title>Content of a.html.</title>
 
------------------------------9051914041544843365972754266--";
+            -----------------------------9051914041544843365972754266--
+            """;
 
         var bodyParserSettings = new BodyParserSettings
         {
