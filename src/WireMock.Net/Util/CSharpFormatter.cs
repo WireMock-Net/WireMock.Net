@@ -97,7 +97,7 @@ internal static class CSharpFormatter
     });
     #endregion
 
-    public static string ConvertToAnonymousObjectDefinition(object jsonBody, int ind = 1)
+    public static string ConvertToAnonymousObjectDefinition(object jsonBody, int ind = 2)
     {
         var serializedBody = JsonConvert.SerializeObject(jsonBody);
 
