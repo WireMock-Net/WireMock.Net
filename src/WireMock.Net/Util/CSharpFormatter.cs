@@ -97,13 +97,14 @@ internal static class CSharpFormatter
     });
     #endregion
 
-    public static object ConvertToAnonymousObjectDefinition(object jsonBody, int ind = 2)
+    public static string ConvertToAnonymousObjectDefinition(object jsonBody, int ind = 1)
     {
         var serializedBody = JsonConvert.SerializeObject(jsonBody);
+
         using var jsonReader = new JsonTextReader(new StringReader(serializedBody));
         jsonReader.DateParseHandling = DateParseHandling.None;
-        var deserializedBody = JToken.Load(jsonReader);
 
+        var deserializedBody = JToken.Load(jsonReader);
         return ConvertJsonToAnonymousObjectDefinition(deserializedBody, ind);
     }
 
