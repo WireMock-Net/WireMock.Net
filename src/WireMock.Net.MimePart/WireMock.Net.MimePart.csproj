@@ -36,6 +36,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Stef.Validation" Version="0.1.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,7 +53,8 @@
     </ItemGroup>-->
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Shared\WireMock.Net.Shared.csproj" />
     </ItemGroup>
 
 </Project>

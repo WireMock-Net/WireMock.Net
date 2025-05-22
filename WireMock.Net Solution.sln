@@ -132,6 +132,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.OpenApiParser"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.MimePart", "src\WireMock.Net.MimePart\WireMock.Net.MimePart.csproj", "{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireMock.Net.Shared", "src\WireMock.Net.Shared\WireMock.Net.Shared.csproj", "{D3804228-91F4-4502-9595-39584E5A0177}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -314,6 +316,10 @@ Global
 		{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8B4A93E-46EF-4237-88FE-15FDAB7635D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A0177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A0177}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A0177}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3804228-91F4-4502-9595-39584E5A0177}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -365,6 +371,7 @@ Global
 		{7753670F-7C7F-44BF-8BC7-08325588E60C} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{E5B03EEF-822C-4295-952B-4479AD30082B} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 		{F8B4A93E-46EF-4237-88FE-15FDAB7635D4} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
+		{D3804228-91F4-4502-9595-39584E5A0177} = {8F890C6F-9ACC-438D-928A-AD61CDA862F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC539027-9852-430C-B19F-FD035D018458}

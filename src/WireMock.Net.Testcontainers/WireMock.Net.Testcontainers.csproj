@@ -23,7 +23,7 @@
       <Compile Include="..\WireMock.Net\Util\EnhancedFileSystemWatcher.cs" Link="Utils\EnhancedFileSystemWatcher.cs" />
       <Compile Include="..\WireMock.Net\Util\PortUtils.cs" Link="Util\PortUtils.cs" />
       <Compile Include="..\WireMock.Net\Constants\WireMockConstants.cs" Link="Constants\WireMockConstants.cs" />
-      <Compile Include="..\WireMock.Net\Constants\RegexConstants.cs" Link="Constants\RegexConstants.cs" />
+      <Compile Include="..\WireMock.Net.Shared\Constants\RegexConstants.cs" Link="Constants\RegexConstants.cs" />
     </ItemGroup>
 
     <ItemGroup>

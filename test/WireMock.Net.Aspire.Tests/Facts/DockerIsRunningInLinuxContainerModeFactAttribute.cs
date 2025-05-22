@@ -2,11 +2,11 @@
 
 namespace WireMock.Net.Aspire.Tests.Facts;
 
-public sealed class DockerIsRunningInLinuxContainerModeFact : FactAttribute
+public sealed class DockerIsRunningInLinuxContainerModeFactAttribute : FactAttribute
 {
     private const string SkipReason = "Docker is not running in Linux container mode. Skipping test.";
 
-    public DockerIsRunningInLinuxContainerModeFact()
+    public DockerIsRunningInLinuxContainerModeFactAttribute()
     {
         if (!DockerUtils.IsDockerRunningLinuxContainerMode.Value)
         {

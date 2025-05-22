@@ -78,11 +78,6 @@ To still enable this feature, you need to set the `AllowedCustomHandlebarHelpers
 By default, the Handlebars.Net `Environment`-helper is not automatically allowed anymore because of potential security issues.
 To still enable this feature, you need to add the `Environment` category to the `AllowedHandlebarsHelpers` list-property in the `HandlebarsSettings` property in `WireMockServerSettings`.
 
-
-### 1.9.0
-MimePart support (which uses [MimeKitLite](https://mimekit.net/)) is not enabled anymore by default.
-You need to manually include the [WireMock.Net.MimePart](https://www.nuget.org/packages/WireMock.Net.MimePart) NuGet package.
-
 ---
 
 ## :memo: Development
