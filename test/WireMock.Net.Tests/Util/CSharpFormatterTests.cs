@@ -17,7 +17,7 @@ public class CSharpFormatterTests
         var expectedOutput = "new\r\n    {\r\n        Key1 = \"value1\",\r\n        Key2 = 42,\r\n        F = 1.2\r\n    }";
 
         // Act
-        var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody);
+        var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody, 1);
 
         // Assert
         result.Should().Be(expectedOutput);
@@ -31,7 +31,7 @@ public class CSharpFormatterTests
         var expectedOutput = "new []\r\n    {\r\n        new\r\n        {\r\n            test = \"a\"\r\n        },\r\n        new\r\n        {\r\n            test = \"b\"\r\n        }\r\n    }";
 
         // Act
-        var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody);
+        var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody, 1);
 
         // Assert
         result.Should().Be(expectedOutput);
