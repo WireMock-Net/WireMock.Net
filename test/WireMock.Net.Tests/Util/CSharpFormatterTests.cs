@@ -10,11 +10,25 @@ namespace WireMock.Net.Tests.Util;
 public class CSharpFormatterTests
 {
     [Fact]
-    public void ConvertToAnonymousObjectDefinition_ShouldReturn_ValidValue_WhenJsonBodyIsValidJsonString()
+    public void ConvertToAnonymousObjectDefinition_ShouldReturn_ValidValue_WhenJsonBodyIsValidJsonAsObjectString()
     {
         // Arrange
         var jsonBody = new { Key1 = "value1", Key2 = 42, F = 1.2 };
-        var expectedOutput = "new\r\n        {\r\n            Key1 = \"value1\",\r\n            Key2 = 42,\r\n            F = 1.2\r\n        }";
+        var expectedOutput = "new\r\n    {\r\n        Key1 = \"value1\",\r\n        Key2 = 42,\r\n        F = 1.2\r\n    }";
+
+        // Act
+        var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody);
+
+        // Assert
+        result.Should().Be(expectedOutput);
+    }
+
+    [Fact]
+    public void ConvertToAnonymousObjectDefinition_ShouldReturn_ValidValue_WhenJsonBodyIsValidJsonAsArrayString()
+    {
+        // Arrange
+        var jsonBody = new[] { new { test = "a" }, new { test = "b" } };
+        var expectedOutput = "new []\r\n    {\r\n        new\r\n        {\r\n            test = \"a\"\r\n        },\r\n        new\r\n        {\r\n            test = \"b\"\r\n        }\r\n    }";
 
         // Act
         var result = CSharpFormatter.ConvertToAnonymousObjectDefinition(jsonBody);
