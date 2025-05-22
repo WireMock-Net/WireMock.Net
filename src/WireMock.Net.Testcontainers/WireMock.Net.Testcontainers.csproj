@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Description>A fluent testcontainer builder for the Docker version of WireMock.Net</Description>
@@ -7,11 +7,14 @@
         <PackageTags>wiremock;docker;testcontainer;testcontainers</PackageTags>
         <ProjectGuid>{12B016A5-9D8B-4EFE-96C2-CA51BE43367D}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
+        <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -19,10 +22,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="..\WireMock.Net\Http\HttpClientFactory2.cs" Link="Http\HttpClientFactory2.cs" />
-      <Compile Include="..\WireMock.Net\Util\EnhancedFileSystemWatcher.cs" Link="Utils\EnhancedFileSystemWatcher.cs" />
-      <Compile Include="..\WireMock.Net\Util\PortUtils.cs" Link="Util\PortUtils.cs" />
-      <Compile Include="..\WireMock.Net\Constants\WireMockConstants.cs" Link="Constants\WireMockConstants.cs" />
+      <Compile Include="..\WireMock.Net.Minimal\Http\HttpClientFactory2.cs" Link="Http\HttpClientFactory2.cs" />
+      <Compile Include="..\WireMock.Net.Minimal\Util\EnhancedFileSystemWatcher.cs" Link="Utils\EnhancedFileSystemWatcher.cs" />
+      <Compile Include="..\WireMock.Net.Minimal\Util\PortUtils.cs" Link="Util\PortUtils.cs" />
+      <Compile Include="..\WireMock.Net.Minimal\Constants\WireMockConstants.cs" Link="Constants\WireMockConstants.cs" />
       <Compile Include="..\WireMock.Net.Shared\Constants\RegexConstants.cs" Link="Constants\RegexConstants.cs" />
     </ItemGroup>
 

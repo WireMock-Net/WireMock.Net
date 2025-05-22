@@ -40,6 +40,7 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | | Official | Preview [:information_source:](https://github.com/wiremock/WireMock.Net/wiki/MyGet-preview-versions) |
 | - | - | - |
 | &nbsp;&nbsp;**WireMock.Net** | [![NuGet Badge WireMock.Net](https://img.shields.io/nuget/v/WireMock.Net)](https://www.nuget.org/packages/WireMock.Net) |  [![MyGet Badge WireMock.Net](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net)
+| &nbsp;&nbsp;**WireMock.Net.Minimal** 🔺| [![NuGet Badge WireMock.Net.Minimal](https://img.shields.io/nuget/v/WireMock.Net.Minimal)](https://www.nuget.org/packages/WireMock.Net) |  [![MyGet Badge WireMock.Net](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.Minimal?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Minimal)
 | &nbsp;&nbsp;**WireMock.Net.StandAlone** | [![NuGet Badge WireMock.Net](https://img.shields.io/nuget/v/WireMock.Net.StandAlone)](https://www.nuget.org/packages/WireMock.Net.StandAlone) |  [![MyGet Badge WireMock.Net.StandAlone](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.StandAlone?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.StandAlone)
 | &nbsp;&nbsp;**WireMock.Net.Testcontainers** | [![NuGet Badge WireMock.Net.Testcontainers](https://img.shields.io/nuget/v/WireMock.Net.Testcontainers)](https://www.nuget.org/packages/WireMock.Net.Testcontainers) | [![MyGet Badge WireMock.Net.Testcontainers](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.Testcontainers?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Testcontainers)
 | &nbsp;&nbsp;**WireMock.Net.Aspire** | [![NuGet Badge WireMock.Net.Aspire](https://img.shields.io/nuget/v/WireMock.Net.Aspire)](https://www.nuget.org/packages/WireMock.Net.Aspire) | [![MyGet Badge WireMock.Net.Aspire](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.Aspire?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.Aspire)
@@ -56,6 +57,10 @@ For more info, see also this WIKI page: [What is WireMock.Net](https://github.co
 | | | |
 | &nbsp;&nbsp;**WireMock.Net.RestClient** | [![NuGet Badge WireMock.Net.RestClient](https://img.shields.io/nuget/v/WireMock.Net.RestClient)](https://www.nuget.org/packages/WireMock.Net.RestClient) | [![MyGet Badge WireMock.Net.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Net.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Net.RestClient)
 | &nbsp;&nbsp;**WireMock.Org.RestClient** | [![NuGet Badge WireMock.Org.RestClient](https://img.shields.io/nuget/v/WireMock.Org.RestClient)](https://www.nuget.org/packages/WireMock.Org.RestClient) | [![MyGet Badge WireMock.Org.RestClient](https://img.shields.io/myget/wiremock-net/vpre/WireMock.Org.RestClient?includePreReleases=true&label=MyGet)](https://www.myget.org/feed/wiremock-net/package/nuget/WireMock.Org.RestClient)
+
+<br />
+
+🔺 **WireMock.Net.Minimal** does not include: **WireMock.Net.MimePart**
 
 ---
 
