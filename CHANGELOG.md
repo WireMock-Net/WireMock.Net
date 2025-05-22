@@ -1,6 +1,14 @@
+# 1.8.7 (22 May 2025)
+- [#1297](https://github.com/wiremock/WireMock.Net/pull/1297) - Fix BodyParser to correctly check for json [bug] contributed by [StefH](https://github.com/StefH)
+- [#1299](https://github.com/wiremock/WireMock.Net/pull/1299) - Use TinyMapper.Signed [bug] contributed by [StefH](https://github.com/StefH)
+- [#1301](https://github.com/wiremock/WireMock.Net/pull/1301) - Fix errors when converting response bodies with top-level JSON arrays to C# code [bug] contributed by [asaf92](https://github.com/asaf92)
+- [#973](https://github.com/wiremock/WireMock.Net/issues/973) - TinyMapper error [bug]
+- [#1272](https://github.com/wiremock/WireMock.Net/issues/1272) - WithMappingFromOpenApiFile fails with exception when example item present in text-plain response in OAS contract
+- [#1295](https://github.com/wiremock/WireMock.Net/issues/1295) - Content-Type `multipart/form-data` header not proxied [bug]
+- [#1298](https://github.com/wiremock/WireMock.Net/issues/1298) - TinyMapper error redux [bug]
+
 # 1.8.6 (15 May 2025)
 - [#1296](https://github.com/wiremock/WireMock.Net/pull/1296) - Content-Type multipart/form-data header should also be proxied [bug] contributed by [StefH](https://github.com/StefH)
-- [#1295](https://github.com/wiremock/WireMock.Net/issues/1295) - Content-Type `multipart/form-data` header not proxied [bug]
 
 # 1.8.5 (14 May 2025)
 - [#1290](https://github.com/wiremock/WireMock.Net/pull/1290) - Use ILRepack to include Microsoft.OpenApi as internal [feature] contributed by [StefH](https://github.com/StefH)
