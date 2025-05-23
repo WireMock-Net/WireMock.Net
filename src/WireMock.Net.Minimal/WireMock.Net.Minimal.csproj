@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Description>Lightweight Http Mocking Server for .Net, inspired by WireMock from the Java landscape.</Description>
+        <Description>Minimal version from the lightweight Http Mocking Server for .NET</Description>
         <AssemblyTitle>WireMock.Net.Minimal</AssemblyTitle>
         <Authors>Stef Heyenrath</Authors>
         <TargetFrameworks>net451;net452;net46;net461;netstandard1.3;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
@@ -128,7 +128,6 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3' and '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net452' and '$(TargetFramework)' != 'net46' and '$(TargetFramework)' != 'net461'">
         <PackageReference Include="GraphQL.NewtonsoftJson" Version="8.2.1" />
         <PackageReference Include="ProtoBufJsonConverter" Version="0.10.0" />
-        <ProjectReference Include="../WireMock.Net.MimePart/WireMock.Net.MimePart.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
@@ -178,7 +177,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net.Shared\WireMock.Net.Shared.csproj" />
-        <!--<ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />-->
         <ProjectReference Include="..\WireMock.Org.Abstractions\WireMock.Org.Abstractions.csproj" />
     </ItemGroup>
 

@@ -339,8 +339,8 @@ namespace WireMock.Net.ConsoleApplication
             });
             System.Console.WriteLine("WireMockServer listening at {0}", string.Join(",", server.Urls));
 
-            //server.SetBasicAuthentication("a", "b");
-            server.SetAzureADAuthentication(Environment.GetEnvironmentVariable("WIREMOCK_AAD_TENANT")!, "api://e083d51a-01a6-446c-8ad5-0c5c7f002208");
+            server.SetBasicAuthentication("a", "b");
+            //server.SetAzureADAuthentication(Environment.GetEnvironmentVariable("WIREMOCK_AAD_TENANT")!, "api://e083d51a-01a6-446c-8ad5-0c5c7f002208");
 
             //var http = new HttpClient();
             //var response = await http.GetAsync($"{_wireMockServer.Url}/pricing");

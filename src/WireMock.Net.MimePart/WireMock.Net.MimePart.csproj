@@ -16,15 +16,16 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
         <SignAssembly>true</SignAssembly>
+        <DelaySign>true</DelaySign>
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     </PropertyGroup>
 
-    <!--<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../WireMock.Net/WireMock.Net.snk</AssemblyOriginatorKeyFile>
         <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    </PropertyGroup>-->
+    </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug - Sonar'">
         <CodeAnalysisRuleSet>../WireMock.Net/WireMock.Net.ruleset</CodeAnalysisRuleSet>
@@ -42,21 +43,20 @@
         <PackageReference Include="Stef.Validation" Version="0.1.1" />
     </ItemGroup>
 
-    <ItemGroup>
+    <!--<ItemGroup>
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
-    </ItemGroup>
+    </ItemGroup>-->
 
-    <!--<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
         <PackageReference Include="MimeKitLite" Version="4.12.0" PrivateAssets="All" />
-    </ItemGroup>-->
+    </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\WireMock.Net.Shared\WireMock.Net.Shared.csproj" />
     </ItemGroup>
 
