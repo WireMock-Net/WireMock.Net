@@ -25,13 +25,13 @@ internal class CSharpCodeMatcher : ICSharpCodeMatcher
     private const string TemplateForIsMatchWithDynamic = "public class CodeHelper {{ public bool IsMatch(dynamic it) {{ {0} }} }}";
 
     private readonly string[] _usings =
-    {
+    [
         "System",
         "System.Linq",
         "System.Collections.Generic",
         "Microsoft.CSharp",
         "Newtonsoft.Json.Linq"
-    };
+    ];
 
     /// <inheritdoc />
     public MatchBehaviour MatchBehaviour { get; }

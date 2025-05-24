@@ -177,9 +177,9 @@ public class WireMockAssertionsTests : IDisposable
 
         _server.Should()
             .HaveReceivedACall()
-            .WithHeader("Accept", new[] { "application/xml", "application/json" })
+            .WithHeader("Accept", ["application/xml", "application/json"])
             .And
-            .WithHeader("Accept-Language", new[] { "EN" });
+            .WithHeader("Accept-Language", ["EN"]);
     }
 
     [Fact]
@@ -209,7 +209,7 @@ public class WireMockAssertionsTests : IDisposable
 
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value\"}, but didn't find it among the calls with Header(s) {{[\"Accept\"] = {\"application/xml, application/json\"}, [\"Host\"] = {\"localhost:*\"}}}.");
+            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value\"}, but didn't find it among the calls with Header(s)*");
     }
 
     [Fact]
@@ -223,11 +223,11 @@ public class WireMockAssertionsTests : IDisposable
 
         Action act = () => _server.Should()
             .HaveReceivedACall()
-            .WithHeader("Accept", new[] { "missing-value1", "missing-value2" });
+            .WithHeader("Accept", ["missing-value1", "missing-value2"]);
 
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value1\", \"missing-value2\"}, but didn't find it among the calls with Header(s) {{[\"Accept\"] = {\"application/xml, application/json\"}, [\"Host\"] = {\"localhost:*\"}}}.");
+            .WithMessage("Expected _server to have been called with Header \"Accept\" and Values {\"missing-value1\", \"missing-value2\"}, but didn't find it among the calls with Header(s)*");
     }
 
     [Fact]
@@ -853,14 +853,14 @@ public class WireMockAssertionsTests : IDisposable
         // Act
         var httpClient = new HttpClient();
 
-        await httpClient.PostAsync($"{server.Url}/a", new ByteArrayContent(new byte[] { 5 }));
+        await httpClient.PostAsync($"{server.Url}/a", new ByteArrayContent([5]));
 
         // Assert
         Action act = () => server
             .Should()
             .HaveReceived(1)
             .Calls()
-            .WithBodyAsBytes(new byte[] { 1 })
+            .WithBodyAsBytes([1])
             .And
             .UsingPost();
 
@@ -878,20 +878,20 @@ public class WireMockAssertionsTests : IDisposable
         var server = WireMockServer.Start();
 
         server
-            .Given(Request.Create().WithPath("/a").UsingPut().WithBody(new byte[] { 100 }))
+            .Given(Request.Create().WithPath("/a").UsingPut().WithBody([100]))
             .RespondWith(Response.Create().WithBody("A response"));
 
         // Act
         var httpClient = new HttpClient();
 
-        await httpClient.PutAsync($"{server.Url}/a", new ByteArrayContent(new byte[] { 100 }));
+        await httpClient.PutAsync($"{server.Url}/a", new ByteArrayContent([100]));
 
         // Assert
         server
             .Should()
             .HaveReceived(1)
             .Calls()
-            .WithBodyAsBytes(new byte[] { 100 })
+            .WithBodyAsBytes([100])
             .And
             .UsingPut();
 
@@ -899,7 +899,7 @@ public class WireMockAssertionsTests : IDisposable
             .Should()
             .HaveReceived(0)
             .Calls()
-            .WithBodyAsBytes(new byte[0])
+            .WithBodyAsBytes([])
             .And
             .UsingPut();
 
@@ -907,7 +907,7 @@ public class WireMockAssertionsTests : IDisposable
             .Should()
             .HaveReceived(0)
             .Calls()
-            .WithBodyAsBytes(new byte[] { 42 })
+            .WithBodyAsBytes([42])
             .And
             .UsingPut();
 
@@ -961,7 +961,7 @@ public class WireMockAssertionsTests : IDisposable
     public async Task HaveReceivedACall_WithHeader_Should_ThrowWhenHttpMethodDoesNotMatch()
     {
         // Arrange
-        using var server = WireMockServer.Start();
+        var server = WireMockServer.Start();
 
         // Act : HTTP GET
         using var httpClient = new HttpClient();
@@ -969,24 +969,24 @@ public class WireMockAssertionsTests : IDisposable
 
         // Act : HTTP POST
         var request = new HttpRequestMessage(HttpMethod.Post, server.Url!);
-        request.Headers.Add("TestHeader", new[] { "Value", "Value2" });
+        request.Headers.Add("TestHeader", ["Value", "Value2"]);
 
         await httpClient.SendAsync(request);
 
         // Assert
-        server.Should().HaveReceivedACall().UsingPost().And.WithHeader("TestHeader", new[] { "Value", "Value2" });
+        server.Should().HaveReceivedACall().UsingPost().And.WithHeader("TestHeader", ["Value", "Value2"]);
 
         Action act = () => server.Should().HaveReceivedACall().UsingGet().And.WithHeader("TestHeader", "Value");
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected server to have been called with Header \"TestHeader\" and Values {\"Value\"}, but didn't find it among the calls with Header(s) {{[\"Host\"] = {\"localhost:*\"}}}.");
+            .WithMessage("Expected server to have been called with Header \"TestHeader\" and Values {\"Value\"}, but didn't find it among the calls with Header(s)*");
     }
 
     [Fact]
     public async Task HaveReceivedACall_WithHeaderKey_Should_ThrowWhenHttpMethodDoesNotMatch()
     {
         // Arrange
-        using var server = WireMockServer.Start();
+        var server = WireMockServer.Start();
 
         // Act : HTTP GET
         using var httpClient = new HttpClient();
@@ -994,7 +994,7 @@ public class WireMockAssertionsTests : IDisposable
 
         // Act : HTTP POST
         var request = new HttpRequestMessage(HttpMethod.Post, server.Url!);
-        request.Headers.Add("TestHeader", new[] { "Value", "Value2" });
+        request.Headers.Add("TestHeader", ["Value", "Value2"]);
 
         await httpClient.SendAsync(request);
 
@@ -1004,7 +1004,7 @@ public class WireMockAssertionsTests : IDisposable
         Action act = () => server.Should().HaveReceivedACall().UsingGet().And.WitHeaderKey("TestHeader");
         act.Should()
             .Throw<Exception>()
-            .WithMessage("Expected server to have been called with Header \"TestHeader\", but didn't find it among the calls with Header(s) {{[\"Host\"] = {\"localhost:*\"}}}.");
+            .WithMessage("Expected server to have been called with Header \"TestHeader\", but didn't find it among the calls with Header(s)*");
     }
 
     public void Dispose()

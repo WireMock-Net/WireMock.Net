@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
-        <TargetFrameworks>net452;net461;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net452;net461;net6.0;net8.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <DebugType>full</DebugType>
@@ -51,7 +51,6 @@
     </ItemGroup>-->
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.FluentAssertions\WireMock.Net.FluentAssertions.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.Matchers.CSharpCode\WireMock.Net.Matchers.CSharpCode.csproj" />
         <ProjectReference Include="..\..\src\WireMock.Net.RestClient\WireMock.Net.RestClient.csproj" />
@@ -73,7 +72,6 @@
         </PackageReference>
         <PackageReference Include="Moq" Version="4.17.2" />
         <PackageReference Include="System.Threading" Version="4.3.0" />
-        <PackageReference Include="RestEase" Version="1.6.4" />
         <PackageReference Include="NFluent" Version="2.8.0" />
         <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
         <PackageReference Include="AnyOf" Version="0.4.0" />
