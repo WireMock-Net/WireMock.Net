@@ -39,6 +39,7 @@ internal static class WireMockMiddlewareOptionsHelper
             options.X509StoreName = settings.CertificateSettings!.X509StoreName;
             options.X509StoreLocation = settings.CertificateSettings.X509StoreLocation;
             options.X509ThumbprintOrSubjectName = settings.CertificateSettings.X509StoreThumbprintOrSubjectName;
+            options.X509CertificateRawData = settings.CertificateSettings.X509CertificateRawData;
             options.X509CertificateFilePath = settings.CertificateSettings.X509CertificateFilePath;
             options.X509CertificatePassword = settings.CertificateSettings.X509CertificatePassword;
         }

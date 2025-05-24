@@ -81,13 +81,17 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
     /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificateFilePath"/>
     public string? X509CertificateFilePath { get; set; }
 
+    /// <inheritdoc />
+    public byte[]? X509CertificateRawData { get; set; }
+
     /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificatePassword"/>
     public string? X509CertificatePassword { get; set; }
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.CustomCertificateDefined"/>
     public bool CustomCertificateDefined =>
         !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
-        !string.IsNullOrEmpty(X509CertificateFilePath);
+        !string.IsNullOrEmpty(X509CertificateFilePath) ||
+        X509CertificateRawData?.Length > 0;
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.SaveUnmatchedRequests"/>
     public bool? SaveUnmatchedRequests { get; set; }
