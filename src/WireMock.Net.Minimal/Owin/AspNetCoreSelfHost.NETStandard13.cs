@@ -28,19 +28,9 @@ internal partial class AspNetCoreSelfHost
             {
                 options.UseHttps(new HttpsConnectionFilterOptions
                 {
-                    ServerCertificate = wireMockMiddlewareOptions.CustomCertificateDefined
-                        ? CertificateLoader.LoadCertificate(
-                            wireMockMiddlewareOptions.X509StoreName,
-                            wireMockMiddlewareOptions.X509StoreLocation,
-                            wireMockMiddlewareOptions.X509ThumbprintOrSubjectName,
-                            wireMockMiddlewareOptions.X509CertificateFilePath,
-                            wireMockMiddlewareOptions.X509CertificatePassword,
-                            urlDetail.Host)
-                        : PublicCertificateHelper.GetX509Certificate2(),
+                    ServerCertificate = wireMockMiddlewareOptions.CustomCertificateDefined ? CertificateLoader.LoadCertificate(wireMockMiddlewareOptions, urlDetail.Host) : PublicCertificateHelper.GetX509Certificate2(),
                     ClientCertificateMode = (ClientCertificateMode) wireMockMiddlewareOptions.ClientCertificateMode,
-                    ClientCertificateValidation = wireMockMiddlewareOptions.AcceptAnyClientCertificate
-                        ? (_, _, _) => true
-                        : null,
+                    ClientCertificateValidation = wireMockMiddlewareOptions.AcceptAnyClientCertificate ? (_, _, _) => true : null
                 });
             }
         }

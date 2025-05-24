@@ -70,6 +70,11 @@ internal interface IWireMockMiddlewareOptions
 
     string? X509CertificateFilePath { get; set; }
 
+    /// <summary>
+    /// A byte array containing data from an X.509 certificate.
+    /// </summary>
+    byte[]? X509CertificateRawData { get; set; }
+
     string? X509CertificatePassword { get; set; }
 
     bool CustomCertificateDefined { get; }

@@ -9,36 +9,44 @@ namespace WireMock.Settings;
 ///
 /// X509StoreName and X509StoreLocation should be defined
 /// OR
-/// X509CertificateFilePath and X509CertificatePassword should be defined
+/// X509CertificateFilePath should be defined
+/// OR
+/// X509CertificateRawData should be defined
 /// </summary>
 public class WireMockCertificateSettings
 {
     /// <summary>
-    /// X509 StoreName (AddressBook, AuthRoot, CertificateAuthority, My, Root, TrustedPeople or TrustedPublisher)
+    /// X.509 certificate StoreName (AddressBook, AuthRoot, CertificateAuthority, My, Root, TrustedPeople or TrustedPublisher)
     /// </summary>
     [PublicAPI]
     public string? X509StoreName { get; set; }
 
     /// <summary>
-    /// X509 StoreLocation (CurrentUser or LocalMachine)
+    /// X.509 certificate StoreLocation (CurrentUser or LocalMachine)
     /// </summary>
     [PublicAPI]
     public string? X509StoreLocation { get; set; }
 
     /// <summary>
-    /// X509 Thumbprint or SubjectName (if not defined, the 'host' is used)
+    /// X.509 certificate Thumbprint or SubjectName (if not defined, the 'host' is used)
     /// </summary>
     [PublicAPI]
     public string? X509StoreThumbprintOrSubjectName { get; set; }
 
     /// <summary>
-    /// X509Certificate FilePath
+    /// X.509 certificate FilePath
     /// </summary>
     [PublicAPI]
     public string? X509CertificateFilePath { get; set; }
 
     /// <summary>
-    /// X509Certificate Password
+    /// A byte array containing data from an X.509 certificate.
+    /// </summary>
+    [PublicAPI]
+    public byte[]? X509CertificateRawData { get; set; }
+
+    /// <summary>
+    /// X.509 certificate Password
     /// </summary>
     [PublicAPI]
     public string? X509CertificatePassword { get; set; }
@@ -46,10 +54,13 @@ public class WireMockCertificateSettings
     /// <summary>
     /// X509StoreName and X509StoreLocation should be defined
     /// OR
-    /// X509CertificateFilePath and X509CertificatePassword should be defined
+    /// X509CertificateFilePath should be defined
+    /// OR
+    /// X509CertificateRawData should be defined
     /// </summary>
     [PublicAPI]
     public bool IsDefined =>
         !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
-        !string.IsNullOrEmpty(X509CertificateFilePath);
+        !string.IsNullOrEmpty(X509CertificateFilePath) ||
+        X509CertificateRawData?.Length > 0;
 }
