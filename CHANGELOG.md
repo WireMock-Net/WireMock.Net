@@ -1,3 +1,6 @@
+# 1.8.8 (24 May 2025)
+- [#1300](https://github.com/wiremock/WireMock.Net/pull/1300) - Create WireMock.Net.MimePart project [feature] contributed by [StefH](https://github.com/StefH)
+
 # 1.8.7 (22 May 2025)
 - [#1297](https://github.com/wiremock/WireMock.Net/pull/1297) - Fix BodyParser to correctly check for json [bug] contributed by [StefH](https://github.com/StefH)
 - [#1299](https://github.com/wiremock/WireMock.Net/pull/1299) - Use TinyMapper.Signed [bug] contributed by [StefH](https://github.com/StefH)
