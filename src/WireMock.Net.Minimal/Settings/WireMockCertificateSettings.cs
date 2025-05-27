@@ -12,8 +12,6 @@ namespace WireMock.Settings;
 /// OR
 /// X509CertificateFilePath should be defined
 /// OR
-/// X509CertificateRawData should be defined
-/// OR
 /// X509Certificate should be defined
 /// </summary>
 public class WireMockCertificateSettings
@@ -43,12 +41,6 @@ public class WireMockCertificateSettings
     public string? X509CertificateFilePath { get; set; }
 
     /// <summary>
-    /// A byte array containing data from an X.509 certificate.
-    /// </summary>
-    [PublicAPI]
-    public byte[]? X509CertificateRawData { get; set; }
-
-    /// <summary>
     /// A X.509 certificate instance.
     /// </summary>
     [PublicAPI]
@@ -65,14 +57,11 @@ public class WireMockCertificateSettings
     /// OR
     /// X509CertificateFilePath should be defined
     /// OR
-    /// X509CertificateRawData should be defined
-    /// OR
     /// X509Certificate should be defined
     /// </summary>
     [PublicAPI]
     public bool IsDefined =>
         !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
         !string.IsNullOrEmpty(X509CertificateFilePath) ||
-        X509CertificateRawData?.Length > 0 ||
         X509Certificate != null;
 }
