@@ -238,6 +238,8 @@ public class WireMockServerSettings
     /// X509CertificateFilePath should be defined
     /// OR
     /// X509CertificateRawData should be defined
+    /// OR
+    /// X509Certificate should be defined
     /// </summary>
     [PublicAPI]
     public WireMockCertificateSettings? CertificateSettings { get; set; }

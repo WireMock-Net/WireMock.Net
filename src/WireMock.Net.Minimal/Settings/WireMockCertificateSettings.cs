@@ -1,5 +1,6 @@
 // Copyright © WireMock.Net
 
+using System.Security.Cryptography.X509Certificates;
 using JetBrains.Annotations;
 
 namespace WireMock.Settings;
@@ -12,6 +13,8 @@ namespace WireMock.Settings;
 /// X509CertificateFilePath should be defined
 /// OR
 /// X509CertificateRawData should be defined
+/// OR
+/// X509Certificate should be defined
 /// </summary>
 public class WireMockCertificateSettings
 {
@@ -46,6 +49,12 @@ public class WireMockCertificateSettings
     public byte[]? X509CertificateRawData { get; set; }
 
     /// <summary>
+    /// A X.509 certificate instance.
+    /// </summary>
+    [PublicAPI]
+    public X509Certificate2? X509Certificate { get; set; }
+
+    /// <summary>
     /// X.509 certificate Password
     /// </summary>
     [PublicAPI]
@@ -57,10 +66,13 @@ public class WireMockCertificateSettings
     /// X509CertificateFilePath should be defined
     /// OR
     /// X509CertificateRawData should be defined
+    /// OR
+    /// X509Certificate should be defined
     /// </summary>
     [PublicAPI]
     public bool IsDefined =>
         !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
         !string.IsNullOrEmpty(X509CertificateFilePath) ||
-        X509CertificateRawData?.Length > 0;
+        X509CertificateRawData?.Length > 0 ||
+        X509Certificate != null;
 }

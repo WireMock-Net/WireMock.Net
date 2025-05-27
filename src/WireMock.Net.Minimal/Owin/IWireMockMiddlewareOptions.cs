@@ -7,6 +7,10 @@ using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Util;
+using System.Security.Cryptography.X509Certificates;
+
+using JetBrains.Annotations;
+
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -74,6 +78,11 @@ internal interface IWireMockMiddlewareOptions
     /// A byte array containing data from an X.509 certificate.
     /// </summary>
     byte[]? X509CertificateRawData { get; set; }
+
+    /// <summary>
+    /// A X.509 certificate instance.
+    /// </summary>
+    public X509Certificate2? X509Certificate { get; set; }
 
     string? X509CertificatePassword { get; set; }
 

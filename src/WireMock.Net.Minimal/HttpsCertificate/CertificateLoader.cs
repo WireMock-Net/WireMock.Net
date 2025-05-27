@@ -93,7 +93,12 @@ internal static class CertificateLoader
                 new X509Certificate2(options.X509CertificateRawData);
         }
 
-        throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath OR X509CertificateRawData are mandatory. Note that X509CertificatePassword is optional.");
+        if (options.X509Certificate != null)
+        {
+            return options.X509Certificate;
+        }
+
+        throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath OR X509CertificateRawData OR X509Certificate are mandatory. Note that X509CertificatePassword is optional.");
     }
 
     /// <summary>
