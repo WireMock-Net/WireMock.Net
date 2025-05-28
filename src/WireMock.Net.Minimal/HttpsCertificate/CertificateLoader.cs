@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using WireMock.Owin;
 
 namespace WireMock.HttpsCertificate;
 
@@ -13,19 +14,13 @@ internal static class CertificateLoader
     /// <summary>
     /// Used by the WireMock.Net server
     /// </summary>
-    public static X509Certificate2 LoadCertificate(
-        string? storeName,
-        string? storeLocation,
-        string? thumbprintOrSubjectName,
-        string? filePath,
-        string? passwordOrKey,
-        string host)
+    public static X509Certificate2 LoadCertificate(IWireMockMiddlewareOptions options, string host)
     {
-        if (!string.IsNullOrEmpty(storeName) && !string.IsNullOrEmpty(storeLocation))
+        if (!string.IsNullOrEmpty(options.X509StoreName) && !string.IsNullOrEmpty(options.X509StoreLocation))
         {
-            var thumbprintOrSubjectNameOrHost = thumbprintOrSubjectName ?? host;
+            var thumbprintOrSubjectNameOrHost = options.X509ThumbprintOrSubjectName ?? host;
 
-            var certStore = new X509Store((StoreName)Enum.Parse(typeof(StoreName), storeName), (StoreLocation)Enum.Parse(typeof(StoreLocation), storeLocation));
+            var certStore = new X509Store((StoreName)Enum.Parse(typeof(StoreName), options.X509StoreName!), (StoreLocation)Enum.Parse(typeof(StoreLocation), options.X509StoreLocation!));
             try
             {
                 certStore.Open(OpenFlags.ReadOnly);
@@ -39,7 +34,7 @@ internal static class CertificateLoader
                     if (matchingCertificates.Count == 0)
                     {
                         // No certificates matched the search criteria.
-                        throw new FileNotFoundException($"No Certificate found with in store '{storeName}', location '{storeLocation}' for Thumbprint or SubjectName '{thumbprintOrSubjectNameOrHost}'.");
+                        throw new FileNotFoundException($"No Certificate found with in store '{options.X509StoreName}', location '{options.X509StoreLocation}' for Thumbprint or SubjectName '{thumbprintOrSubjectNameOrHost}'.");
                     }
                 }
 
@@ -56,27 +51,28 @@ internal static class CertificateLoader
             }
         }
 
-        if (!string.IsNullOrEmpty(filePath))
+        if (!string.IsNullOrEmpty(options.X509CertificateFilePath))
         {
-            if (filePath!.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
+            if (options.X509CertificateFilePath.EndsWith(ExtensionPem, StringComparison.OrdinalIgnoreCase))
             {
                 // PEM logic based on: https://www.scottbrady91.com/c-sharp/pem-loading-in-dotnet-core-and-dotnet
 #if NET5_0_OR_GREATER
-                if (!string.IsNullOrEmpty(passwordOrKey))
+                if (!string.IsNullOrEmpty(options.X509CertificatePassword))
                 {
-                    var certPem = File.ReadAllText(filePath);
-                    var cert = X509Certificate2.CreateFromPem(certPem, passwordOrKey);
+                    var certPem = File.ReadAllText(options.X509CertificateFilePath);
+                    var cert = X509Certificate2.CreateFromPem(certPem, options.X509CertificatePassword);
                     const string defaultPasswordPem = "WireMock.Net";
+
                     return new X509Certificate2(cert.Export(X509ContentType.Pfx, defaultPasswordPem), defaultPasswordPem);
                 }
-                return X509Certificate2.CreateFromPemFile(filePath);
+                return X509Certificate2.CreateFromPemFile(options.X509CertificateFilePath);
 
 #elif NETCOREAPP3_1
-                var cert = new X509Certificate2(filePath);
-                if (!string.IsNullOrEmpty(passwordOrKey))
+                var cert = new X509Certificate2(options.X509CertificateFilePath);
+                if (!string.IsNullOrEmpty(options.X509CertificatePassword))
                 {
                     var key = System.Security.Cryptography.ECDsa.Create()!;
-                    key.ImportECPrivateKey(System.Text.Encoding.UTF8.GetBytes(passwordOrKey), out _);
+                    key.ImportECPrivateKey(System.Text.Encoding.UTF8.GetBytes(options.X509CertificatePassword), out _);
                     return cert.CopyWithPrivateKey(key);
                 }
                 return cert;
@@ -85,10 +81,17 @@ internal static class CertificateLoader
 #endif
             }
 
-            return !string.IsNullOrEmpty(passwordOrKey) ? new X509Certificate2(filePath, passwordOrKey) : new X509Certificate2(filePath);
+            return !string.IsNullOrEmpty(options.X509CertificatePassword) ?
+                new X509Certificate2(options.X509CertificateFilePath, options.X509CertificatePassword) :
+                new X509Certificate2(options.X509CertificateFilePath);
         }
 
-        throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath are mandatory. Note that X509CertificatePassword is optional.");
+        if (options.X509Certificate != null)
+        {
+            return options.X509Certificate;
+        }
+
+        throw new InvalidOperationException("X509StoreName and X509StoreLocation OR X509CertificateFilePath OR X509Certificate are mandatory. Note that X509CertificatePassword is optional.");
     }
 
     /// <summary>

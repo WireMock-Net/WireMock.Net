@@ -7,6 +7,8 @@ using WireMock.Logging;
 using WireMock.Matchers;
 using WireMock.Types;
 using WireMock.Util;
+using System.Security.Cryptography.X509Certificates;
+
 #if !USE_ASPNETCORE
 using Owin;
 #else
@@ -81,13 +83,17 @@ internal class WireMockMiddlewareOptions : IWireMockMiddlewareOptions
     /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificateFilePath"/>
     public string? X509CertificateFilePath { get; set; }
 
+    /// <inheritdoc />
+    public X509Certificate2? X509Certificate { get; set; }
+
     /// <inheritdoc cref="IWireMockMiddlewareOptions.X509CertificatePassword"/>
     public string? X509CertificatePassword { get; set; }
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.CustomCertificateDefined"/>
     public bool CustomCertificateDefined =>
         !string.IsNullOrEmpty(X509StoreName) && !string.IsNullOrEmpty(X509StoreLocation) ||
-        !string.IsNullOrEmpty(X509CertificateFilePath);
+        !string.IsNullOrEmpty(X509CertificateFilePath) ||
+        X509Certificate != null;
 
     /// <inheritdoc cref="IWireMockMiddlewareOptions.SaveUnmatchedRequests"/>
     public bool? SaveUnmatchedRequests { get; set; }

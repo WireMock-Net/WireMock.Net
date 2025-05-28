@@ -235,7 +235,9 @@ public class WireMockServerSettings
     ///
     /// X509StoreName and X509StoreLocation should be defined
     /// OR
-    /// X509CertificateFilePath and X509CertificatePassword should be defined
+    /// X509CertificateFilePath should be defined
+    /// OR
+    /// X509Certificate should be defined
     /// </summary>
     [PublicAPI]
     public WireMockCertificateSettings? CertificateSettings { get; set; }
