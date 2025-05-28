@@ -1,3 +1,7 @@
+# 1.8.9 (28 May 2025)
+- [#1303](https://github.com/wiremock/WireMock.Net/pull/1303) - Add option to provide X509Certificate [feature] contributed by [StefH](https://github.com/StefH)
+- [#1302](https://github.com/wiremock/WireMock.Net/issues/1302) - Support In-Memory SSL Certificate [feature]
+
 # 1.8.8 (24 May 2025)
 - [#1300](https://github.com/wiremock/WireMock.Net/pull/1300) - Create WireMock.Net.MimePart project [feature] contributed by [StefH](https://github.com/StefH)
 
