@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using VerifyTests;
 using VerifyXunit;
+using WireMock.Admin.Mappings;
 using WireMock.Client;
 using WireMock.Client.Extensions;
 using WireMock.Net.Tests.VerifyExtensions;
@@ -41,6 +42,7 @@ public class AdminApiMappingBuilderTests
             .WithRequest(req => req
                 .UsingPost()
                 .WithPath("/bla1")
+                .WithHeader("Authorization", "*", false)
                 .WithBody(body => body
                     .WithMatcher(matcher => matcher
                         .WithName("JsonPartialMatcher")
