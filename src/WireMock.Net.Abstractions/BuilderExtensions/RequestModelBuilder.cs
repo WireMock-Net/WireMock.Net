@@ -138,4 +138,27 @@ public partial class RequestModelBuilder
             return builder.Build();
         });
     }
+
+    /// <summary>
+    /// WithHeader: matching based on name, pattern and matchBehaviour.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="pattern">The pattern.</param>
+    /// <param name="rejectOnMatch">The match behaviour. Default value is <c>false</c>.</param>
+    /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
+    public RequestModelBuilder WithHeader(string name, string pattern, bool rejectOnMatch = false)
+    {
+        return WithHeaders(headersBuilder => headersBuilder
+            .Add(headerBuilder => headerBuilder
+                .WithName(name)
+                .WithMatchers(matchersBuilder => matchersBuilder
+                    .Add(matcherBuilder => matcherBuilder
+                        .WithName("WildcardMatcher")
+                        .WithPattern(pattern)
+                        .WithRejectOnMatch(rejectOnMatch)
+                    )
+                )
+            )
+        );
+    }
 }

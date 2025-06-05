@@ -15,6 +15,19 @@
     Methods: [
       POST
     ],
+    Headers: [
+      {
+        Name: Authorization,
+        Matchers: [
+          {
+            Name: WildcardMatcher,
+            Pattern: *,
+            IgnoreCase: false,
+            RejectOnMatch: true
+          }
+        ]
+      }
+    ],
     Body: {
       Matcher: {
         Name: JsonPartialMatcher,
