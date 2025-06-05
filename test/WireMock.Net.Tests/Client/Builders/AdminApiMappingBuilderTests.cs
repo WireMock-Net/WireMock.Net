@@ -42,7 +42,7 @@ public class AdminApiMappingBuilderTests
             .WithRequest(req => req
                 .UsingPost()
                 .WithPath("/bla1")
-                .WithHeader("Authorization", "*", false)
+                .WithHeader("Authorization", "*", true)
                 .WithBody(body => body
                     .WithMatcher(matcher => matcher
                         .WithName("JsonPartialMatcher")
