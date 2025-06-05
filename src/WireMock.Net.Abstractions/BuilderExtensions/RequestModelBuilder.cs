@@ -144,9 +144,9 @@ public partial class RequestModelBuilder
     /// </summary>
     /// <param name="name">The name.</param>
     /// <param name="pattern">The pattern.</param>
-    /// <param name="acceptOnMatch">The match behaviour.</param>
+    /// <param name="rejectOnMatch">The match behaviour. Default value is <c>false</c>.</param>
     /// <returns>The <see cref="RequestModelBuilder"/>.</returns>
-    public RequestModelBuilder WithHeader(string name, string pattern, bool acceptOnMatch = true)
+    public RequestModelBuilder WithHeader(string name, string pattern, bool rejectOnMatch = false)
     {
         return WithHeaders(headersBuilder => headersBuilder
             .Add(headerBuilder => headerBuilder
@@ -155,7 +155,7 @@ public partial class RequestModelBuilder
                     .Add(matcherBuilder => matcherBuilder
                         .WithName("WildcardMatcher")
                         .WithPattern(pattern)
-                        .WithRejectOnMatch(!acceptOnMatch)
+                        .WithRejectOnMatch(rejectOnMatch)
                     )
                 )
             )
