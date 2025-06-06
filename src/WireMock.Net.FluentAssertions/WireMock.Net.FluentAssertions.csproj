@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\WireMock.Net\WireMock.Net.csproj" />
+        <ProjectReference Include="..\WireMock.Net.Minimal\WireMock.Net.Minimal.csproj" />
     </ItemGroup>
 
 </Project>
