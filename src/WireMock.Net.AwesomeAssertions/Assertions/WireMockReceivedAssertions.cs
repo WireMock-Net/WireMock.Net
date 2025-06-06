@@ -1,6 +1,6 @@
 // Copyright © WireMock.Net
 
-using FluentAssertions.Primitives;
+using AwesomeAssertions.Primitives;
 using WireMock.Server;
 
 // ReSharper disable once CheckNamespace
