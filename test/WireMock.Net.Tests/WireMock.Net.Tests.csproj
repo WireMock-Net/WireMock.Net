@@ -102,7 +102,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'net452'">
-        <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+        <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
         <PackageReference Include="JsonConverter.System.Text.Json" Version="0.7.0" />
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
         <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
