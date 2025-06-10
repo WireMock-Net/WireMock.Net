@@ -1,4 +1,4 @@
-# WireMock.Net
+# ![Project Icon](./resources/logo_32x32.png) WireMock.Net
 A C# .NET version based on [mock4net](https://github.com/alexvictoor/mock4net) which mimics the functionality from the JAVA based [WireMock](http://wiremock.org).
 
 For more info, see also this WIKI page: [What is WireMock.Net](https://github.com/wiremock/WireMock.Net/wiki/What-Is-WireMock.Net).
