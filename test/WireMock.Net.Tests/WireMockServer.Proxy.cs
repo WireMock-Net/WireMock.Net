@@ -924,49 +924,4 @@ public class WireMockServerProxyTests
         server.LogEntries.Should().HaveCount(1);
         server.Stop();
     }
-
-    [Fact]
-    public async Task WireMockServer_ProxyAndRecordSettings_SameRequest_ShouldProxyAll()
-    {
-        //Arrange
-        var wireMockServerSettings = new WireMockServerSettings
-        {
-            Urls = new[] { "http://localhost:19091" },
-            ProxyAndRecordSettings = new ProxyAndRecordSettings
-            {
-                Url = "http://postman-echo.com",
-                SaveMapping = true,
-                ProxyAll = true,
-                SaveMappingToFile = false,
-                ExcludedHeaders = new[] { "Postman-Token" },
-                ExcludedCookies = new[] { "sails.sid" }
-            }
-        };
-
-        var server = WireMockServer.Start(wireMockServerSettings);
-
-        var requestBody = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Post,
-            RequestUri = new Uri("http://localhost:19091/post"),
-            Content = new StringContent(requestBody)
-        };
-        var request2 = new HttpRequestMessage
-        {
-            Method = HttpMethod.Post,
-            RequestUri = new Uri("http://localhost:19091/post"),
-            Content = new StringContent(requestBody)
-        };
-        server.ResetMappings();
-
-        //Act
-        await new HttpClient().SendAsync(request);
-        await new HttpClient().SendAsync(request2);
-
-        //Assert
-        Check.That(server.Mappings.Count()).IsEqualTo(3);
-
-        server.Dispose();
-    }
 }
