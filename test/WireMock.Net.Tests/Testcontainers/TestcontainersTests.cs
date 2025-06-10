@@ -123,7 +123,11 @@ public partial class TestcontainersTests
         }
         finally
         {
-            await wireMockContainer.StopAsync();
+            // Stop the container
+            if(wireMockContainer is not null)
+            {
+                await wireMockContainer.StopAsync();
+            }
         }
     }
 }
