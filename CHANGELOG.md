@@ -1,3 +1,10 @@
+# 1.8.10 (10 June 2025)
+- [#1306](https://github.com/wiremock/WireMock.Net/pull/1306) - Update RequestModelBuilder (add WithHeader) [feature] contributed by [StefH](https://github.com/StefH)
+- [#1308](https://github.com/wiremock/WireMock.Net/pull/1308) - For some projects, change dependency to WireMock.Net.Minimal [feature] contributed by [StefH](https://github.com/StefH)
+- [#1309](https://github.com/wiremock/WireMock.Net/pull/1309) - Update AwesomeAssertions to version 9 [feature] contributed by [StefH](https://github.com/StefH)
+- [#1305](https://github.com/wiremock/WireMock.Net/issues/1305) - AdminApiMappingBuilder do not expose WithHeader for Request [feature]
+- [#1307](https://github.com/wiremock/WireMock.Net/issues/1307) - Update WireMock.Net.AwesomeAssertions to use latest version from AwesomeAssertions [feature]
+
 # 1.8.9 (28 May 2025)
 - [#1303](https://github.com/wiremock/WireMock.Net/pull/1303) - Add option to provide X509Certificate [feature] contributed by [StefH](https://github.com/StefH)
 - [#1302](https://github.com/wiremock/WireMock.Net/issues/1302) - Support In-Memory SSL Certificate [feature]
