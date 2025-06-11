@@ -25,8 +25,6 @@ public partial class TestcontainersTests
         var adminUsername = $"username_{Guid.NewGuid()}";
         var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainer = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .WithCommand("--UseHttp2")
             .WithCommand("--Urls", "http://*:80 grpc://*:9090")
@@ -80,8 +78,6 @@ public partial class TestcontainersTests
         var adminUsername = $"username_{Guid.NewGuid()}";
         var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainer = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .AddUrl("http://*:8080")
             .AddUrl("grpc://*:9090")
@@ -156,8 +152,6 @@ public partial class TestcontainersTests
     private static async Task<WireMockContainer> Given_WireMockContainerIsStartedForHttpAndGrpcAsync()
     {
         var wireMockContainer = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .AddUrl("grpc://*:9090")
             .Build();
 
@@ -169,8 +163,6 @@ public partial class TestcontainersTests
     private static async Task<WireMockContainer> Given_WireMockContainerWithProtoDefinitionAtServerLevelIsStartedForHttpAndGrpcAsync()
     {
         var wireMockContainer = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .AddUrl("grpc://*:9090")
             .AddProtoDefinition("my-greeter", ReadFile("greet.proto"))
             .Build();
