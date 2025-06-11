@@ -1,12 +1,11 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 
@@ -42,6 +41,78 @@ public partial class WireMockServerTests
 
         // Assert
         response.Should().Contain("Hello, Stef!");
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithTransformer_WithJsonBodyAsArray_ShouldWork()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+        server
+            .WhenRequest(req => req
+                .WithPath("/withbody")
+                .UsingPost()
+            )
+            .ThenRespondWith(rsp => rsp
+                .WithSuccess()
+                .WithBodyAsJson(new[]
+                    {
+                        new
+                        {
+                            test = "test",
+                            secret = true
+                        },
+                        new
+                        {
+                            test = "123",
+                            secret = false
+                        }
+                    }
+                )
+                .WithTransformer()
+            );
+
+        // Act
+        var response = await GetResponseAsync(server, "/withbody");
+
+        // Assert
+        response.Should().Be("""[{"test":"test","secret":true},{"test":"123","secret":false}]""");
+    }
+
+    [Fact]
+    public async Task WireMockServer_WithTransformer_WithJsonBodyAsList_ShouldWork()
+    {
+        // Arrange
+        using var server = WireMockServer.Start();
+        server
+            .WhenRequest(req => req
+                .WithPath("/withbody")
+                .UsingPost()
+            )
+            .ThenRespondWith(rsp => rsp
+                .WithSuccess()
+                .WithBodyAsJson(
+                    new List<object>
+                    {
+                        new
+                        {
+                            test = "test",
+                            secret = true
+                        },
+                        new
+                        {
+                            test = "123",
+                            secret = false
+                        }
+                    })
+                .WithTransformer()
+            );
+
+        // Act
+        var response = await GetResponseAsync(server, "/withbody");
+
+        // Assert
+        response.Should().Be("Hello, Stef!");
     }
 
     [Fact]
@@ -88,8 +159,7 @@ public partial class WireMockServerTests
 
     private static async Task<string> GetResponseAsync(WireMockServer server, string relativePath)
     {
-        using HttpClient httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(server.Urls[0]);
+        using var httpClient = server.CreateClient();
 
         using var requestContent = new StringContent(RequestXml);
         using var responseMsg = await httpClient.PostAsync(relativePath, requestContent);
