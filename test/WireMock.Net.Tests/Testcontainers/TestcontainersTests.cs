@@ -11,10 +11,11 @@ using WireMock.Net.Testcontainers;
 using WireMock.Net.Testcontainers.Utils;
 using WireMock.Net.Tests.Facts;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WireMock.Net.Tests.Testcontainers;
 
-public partial class TestcontainersTests
+public partial class TestcontainersTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
     public async Task WireMockContainer_Build_And_StartAsync_and_StopAsync()
@@ -28,7 +29,8 @@ public partial class TestcontainersTests
             .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .Build();
 
-        await StartTestAndStopAsync(wireMockContainer);
+        await StartTestAsync(wireMockContainer);
+        await StopAsync(wireMockContainer);
     }
 
     // https://github.com/testcontainers/testcontainers-dotnet/issues/1322
@@ -48,7 +50,8 @@ public partial class TestcontainersTests
             .WithCleanUp(true)
             .Build();
 
-        await StartTestAndStopAsync(wireMockContainer);
+        await StartTestAsync(wireMockContainer);
+        await StopAsync(wireMockContainer);
     }
 
     [Fact]
@@ -74,7 +77,8 @@ public partial class TestcontainersTests
 
         var wireMockContainer = wireMockContainerBuilder.Build();
 
-        await StartTestAndStopAsync(wireMockContainer);
+        await StartTestAsync(wireMockContainer);
+        await StopAsync(wireMockContainer);
     }
 
     [Fact]
@@ -100,32 +104,35 @@ public partial class TestcontainersTests
 
         var wireMockContainer = wireMockContainerBuilder.Build();
 
-        await StartTestAndStopAsync(wireMockContainer);
+        await StartTestAsync(wireMockContainer);
+        await StopAsync(wireMockContainer);
     }
 
-    private static async Task StartTestAndStopAsync(WireMockContainer wireMockContainer)
+    private static async Task StartTestAsync(WireMockContainer wireMockContainer)
+    {
+        // Start
+        await wireMockContainer.StartAsync().ConfigureAwait(false);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var url = wireMockContainer.GetPublicUrl();
+            url.Should().NotBeNullOrWhiteSpace();
+
+            var adminClient = wireMockContainer.CreateWireMockAdminClient();
+
+            var settings = await adminClient.GetSettingsAsync();
+            settings.Should().NotBeNull();
+        }
+    }
+
+    private async Task StopAsync(WireMockContainer wireMockContainer)
     {
         try
         {
-            // Start
-            await wireMockContainer.StartAsync().ConfigureAwait(false);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                var url = wireMockContainer.GetPublicUrl();
-                url.Should().NotBeNullOrWhiteSpace();
-
-                var adminClient = wireMockContainer.CreateWireMockAdminClient();
-
-                var settings = await adminClient.GetSettingsAsync();
-                settings.Should().NotBeNull();
-            }
-
-            // Stop
             await wireMockContainer.StopAsync();
         }
-        catch
+        catch (Exception ex)
         {
             // Sometimes we get this exception, so for now ignore it.
             /*
@@ -136,6 +143,8 @@ public partial class TestcontainersTests
                   at DotNet.Testcontainers.Containers.DockerContainer.UnsafeStopAsync(CancellationToken ct) in /_/src/Testcontainers/Containers/DockerContainer.cs:line 567
                 at DotNet.Testcontainers.Containers.DockerContainer.StopAsync(CancellationToken ct) in /_/src/Testcontainers/Containers/DockerContainer.cs:line 319
             */
+
+            testOutputHelper.WriteLine($"Exception during StopAsync: {ex}");
         }
     }
 }
