@@ -112,7 +112,7 @@ public partial class WireMockServerTests
         var response = await GetResponseAsync(server, "/withbody");
 
         // Assert
-        response.Should().Be("Hello, Stef!");
+        response.Should().Be("""[{"test":"test","secret":true},{"test":"123","secret":false}]""");
     }
 
     [Fact]

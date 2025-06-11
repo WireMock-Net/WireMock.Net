@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HandlebarsDotNet.Helpers.Models;
@@ -170,8 +171,8 @@ internal class Transformer : ITransformer
                 WalkNode(transformerContext, options, jToken, model);
                 break;
 
-            case Array bodyAsArray:
-                jToken = JArray.FromObject(bodyAsArray, _jsonSerializer);
+            case var bodyAsEnumerable when bodyAsEnumerable is IEnumerable and not string:
+                jToken = JArray.FromObject(bodyAsEnumerable, _jsonSerializer);
                 WalkNode(transformerContext, options, jToken, model);
                 break;
 
