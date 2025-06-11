@@ -69,7 +69,7 @@ public partial class TestcontainersTests
         }
         finally
         {
-            await wireMockContainer.StopAsync();
+            await StopAsync(wireMockContainer);
         }
     }
 
@@ -121,7 +121,7 @@ public partial class TestcontainersTests
         }
         finally
         {
-            await wireMockContainer.StopAsync();
+            await StopAsync(wireMockContainer);
         }
     }
 
@@ -136,7 +136,7 @@ public partial class TestcontainersTests
 
         Then_ReplyMessage_Should_BeCorrect(reply);
 
-        await wireMockContainer.StopAsync();
+        await StopAsync(wireMockContainer);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public partial class TestcontainersTests
 
         Then_ReplyMessage_Should_BeCorrect(reply);
 
-        await wireMockContainer.StopAsync();
+        await StopAsync(wireMockContainer);
     }
 
     private static async Task<WireMockContainer> Given_WireMockContainerIsStartedForHttpAndGrpcAsync()
