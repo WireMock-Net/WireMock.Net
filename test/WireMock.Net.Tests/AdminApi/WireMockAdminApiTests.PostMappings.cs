@@ -62,13 +62,15 @@ public partial class WireMockAdminApiTests
         {
             Request = new RequestModel { Path = "/1" },
             Response = new ResponseModel { Body = "txt 1" },
-            Title = "test 1"
+            Title = "test 1",
+            Description = "description 1"
         };
         var model2 = new MappingModel
         {
             Request = new RequestModel { Path = "/2" },
             Response = new ResponseModel { Body = "txt 2" },
-            Title = "test 2"
+            Title = "test 2",
+            Description = "description 2"
         };
         var result = await api.PostMappingsAsync(new[] { model1, model2 }).ConfigureAwait(false);
 
@@ -77,6 +79,8 @@ public partial class WireMockAdminApiTests
         Check.That(result.Status).IsNotNull();
         Check.That(result.Guid).IsNull();
         Check.That(server.Mappings.Where(m => !m.IsAdminInterface)).HasSize(2);
+        Check.That(server.Mappings.Single(x => x.Title == "test 1").Description).IsEqualTo("description 1");
+        Check.That(server.Mappings.Single(x => x.Title == "test 2").Description).IsEqualTo("description 2");
 
         server.Stop();
     }
