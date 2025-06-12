@@ -24,8 +24,6 @@ public partial class TestcontainersTests(ITestOutputHelper testOutputHelper)
         var adminUsername = $"username_{Guid.NewGuid()}";
         var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainer = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword)
             .Build();
 
@@ -40,14 +38,11 @@ public partial class TestcontainersTests(ITestOutputHelper testOutputHelper)
         // Act
         var dummyNetwork = new NetworkBuilder()
             .WithName("Dummy Network for TestcontainersTests")
-            .WithCleanUp(true)
             .Build();
 
         var wireMockContainer = new WireMockContainerBuilder()
             .WithNetwork(dummyNetwork)
             .WithWatchStaticMappings(true)
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .Build();
 
         await StartTestAsync(wireMockContainer);
@@ -61,8 +56,6 @@ public partial class TestcontainersTests(ITestOutputHelper testOutputHelper)
         var adminUsername = $"username_{Guid.NewGuid()}";
         var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainerBuilder = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
         var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;
@@ -88,8 +81,6 @@ public partial class TestcontainersTests(ITestOutputHelper testOutputHelper)
         var adminUsername = $"username_{Guid.NewGuid()}";
         var adminPassword = $"password_{Guid.NewGuid()}";
         var wireMockContainerBuilder = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true)
             .WithAdminUserNameAndPassword(adminUsername, adminPassword);
 
         var imageOS = await TestcontainersUtils.GetImageOSAsync.Value;

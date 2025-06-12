@@ -159,9 +159,7 @@ internal class Program
     private static async Task TestWindowsCopyAsync()
     {
         var builder = new WireMockContainerBuilder()
-            .WithWatchStaticMappings(true)
-            .WithAutoRemove(true)
-            .WithCleanUp(true);
+            .WithWatchStaticMappings(true);
 
         var container = builder.Build();
 
@@ -186,8 +184,6 @@ internal class Program
         var mappings = await adminClient.GetMappingsAsync();
         Console.WriteLine("mappings = " + JsonConvert.SerializeObject(mappings, Formatting.Indented));
 
-        await Task.Delay(1_000);
-
         await container.StopAsync();
     }
 
@@ -205,9 +201,7 @@ internal class Program
             .WithNetwork(dummyNetwork)
             .WithAdminUserNameAndPassword("x", "y")
             .WithMappings(mappingsPath)
-            .WithWatchStaticMappings(true)
-            // .WithAutoRemove(true)
-            .WithCleanUp(true);
+            .WithWatchStaticMappings(true);
 
         if (image != null)
         {
