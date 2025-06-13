@@ -51,7 +51,7 @@ internal static class TypeLoader
     {
         var key = typeof(TInterface).FullName!;
 
-        var pluginType = Assemblies.GetOrAdd(key, _ =>
+        return Assemblies.GetOrAdd(key, _ =>
         {
             if (TryFindTypeInDlls<TInterface>(null, out var foundType))
             {
@@ -60,7 +60,6 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements interface '{key}'.");
         });
-        return pluginType;
     }
 
     private static Type GetPluginTypeByFullName<TInterface>(string implementationTypeFullName) where TInterface : class
@@ -68,7 +67,7 @@ internal static class TypeLoader
         var @interface = typeof(TInterface).FullName;
         var key = $"{@interface}_{implementationTypeFullName}";
 
-        var pluginType = Assemblies.GetOrAdd(key, _ =>
+        return Assemblies.GetOrAdd(key, _ =>
         {
             if (TryFindTypeInDlls<TInterface>(implementationTypeFullName, out var foundType))
             {
@@ -77,7 +76,6 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements Interface '{@interface}' and has FullName '{implementationTypeFullName}'.");
         });
-        return pluginType;
     }
 
     private static bool TryFindTypeInDlls<TInterface>(string? implementationTypeFullName, [NotNullWhen(true)] out Type? pluginType) where TInterface : class
