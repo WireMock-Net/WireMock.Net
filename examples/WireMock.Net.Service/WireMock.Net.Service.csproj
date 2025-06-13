@@ -114,18 +114,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WireMock.Net.Abstractions\WireMock.Net.Abstractions.csproj">
-      <Project>{b6269aac-170a-4346-8b9a-579ded3d9a94}</Project>
-      <Name>WireMock.Net.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj">
-      <Project>{d3804228-91f4-4502-9595-39584e5a01ad}</Project>
-      <Name>WireMock.Net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="log4net">
       <Version>3.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="WireMock.Net">
+      <Version>1.8.11</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

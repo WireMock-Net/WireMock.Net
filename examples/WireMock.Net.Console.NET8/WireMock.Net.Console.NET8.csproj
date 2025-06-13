@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\WireMock.Net.Console.Net452.Classic\MainApp.cs" Link="MainApp.cs" />
-    <Compile Include="..\WireMock.Net.Console.Net452.Classic\CustomFileSystemFileHandler.cs" Link="CustomFileSystemFileHandler.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="__admin\mappings\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
