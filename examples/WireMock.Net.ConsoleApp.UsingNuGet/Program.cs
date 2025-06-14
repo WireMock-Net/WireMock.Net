@@ -7,6 +7,8 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
+Directory.SetCurrentDirectory(Path.GetTempPath());
+
 using var server = WireMockServer.Start();
 
 var textPlainContent = "This is some plain text";

@@ -80,7 +80,19 @@ internal static class TypeLoader
 
     private static bool TryFindTypeInDlls<TInterface>(string? implementationTypeFullName, [NotNullWhen(true)] out Type? pluginType) where TInterface : class
     {
-        foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll"))
+#if NETSTANDARD1_3
+        // System.Diagnostics.Process is not available in netstandard1.3
+        var processDirectory = AppContext.BaseDirectory;
+#else
+        var processDirectory = Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName);
+#endif
+        if (processDirectory == null)
+        {
+            pluginType = null;
+            return false;
+        }
+
+        foreach (var file in Directory.GetFiles(processDirectory, "*.dll"))
         {
             try
             {
