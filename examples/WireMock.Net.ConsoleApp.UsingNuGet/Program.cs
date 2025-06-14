@@ -6,7 +6,6 @@ using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using MimeKit;
 
 using var server = WireMockServer.Start();
 
@@ -48,20 +47,23 @@ server
         .WithTransformer()
     );
 
-//server
-//    .Given(Request.Create()
-//        .UsingPost()
-//        .WithPath("/multipart2")
-//        .WithMultiPart(matchers)
-//    )
-//    .RespondWith(Response.Create()
-//        .WithBody(r =>
-//        {
-//            var mimeMessage = (MimeMessage)r.BodyAsMimeMessage!;
-//            return "TextBody: " + mimeMessage .TextBody;
-//        })
-//        .WithTransformer()
-//    );
+server
+    .Given(Request.Create()
+        .UsingPost()
+        .WithPath("/multipart2")
+        .WithMultiPart(matchers)
+    )
+    .RespondWith(Response.Create()
+        .WithBody(request =>
+        {
+            if (request.BodyAsMimeMessage == null)
+            {
+                throw new InvalidProgramException("Not expected");
+            }
+            return "OK";
+        })
+        .WithTransformer()
+    );
 
 var formDataContent = new MultipartFormDataContent
 {
