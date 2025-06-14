@@ -58,15 +58,22 @@ public class TypeLoaderTests
     [Fact]
     public void LoadNewInstance()
     {
-        // Arrange
-        Directory.SetCurrentDirectory(Path.GetTempPath());
+        var current = Directory.GetCurrentDirectory();
+        try
+        {
+            Directory.SetCurrentDirectory(Path.GetTempPath());
 
-        // Act
-        AnyOf<string, StringPattern> pattern = "x";
-        var result = TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
+            // Act
+            AnyOf<string, StringPattern> pattern = "x";
+            var result = TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
 
-        // Assert
-        result.Should().NotBeNull();
+            // Assert
+            result.Should().NotBeNull();
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(current);
+        }
     }
 
     [Fact]
