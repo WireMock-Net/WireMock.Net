@@ -76,6 +76,11 @@ public partial class WireMockServer
             respondProvider = respondProvider.WithTitle(mappingModel.Title!);
         }
 
+        if (!string.IsNullOrEmpty(mappingModel.Description))
+        {
+            respondProvider = respondProvider.WithDescription(mappingModel.Description!);
+        }
+
         if (mappingModel.Priority != null)
         {
             respondProvider = respondProvider.AtPriority(mappingModel.Priority.Value);
