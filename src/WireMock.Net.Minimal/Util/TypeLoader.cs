@@ -81,34 +81,35 @@ internal static class TypeLoader
     private static bool TryFindTypeInDlls<TInterface>(string? implementationTypeFullName, [NotNullWhen(true)] out Type? pluginType) where TInterface : class
     {
 #if NETSTANDARD1_3
-        // System.Diagnostics.Process is not available in netstandard1.3
-        var processDirectory = AppContext.BaseDirectory;
+        var directoriesToSearch = new[] { AppContext.BaseDirectory };
 #else
         var processDirectory = Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName);
+        var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var directoriesToSearch = new[] { processDirectory, assemblyDirectory }
+            .Where(d => !string.IsNullOrEmpty(d))
+            .Distinct()
+            .ToArray();
 #endif
-        if (processDirectory == null)
+        foreach (var directory in directoriesToSearch)
         {
-            pluginType = null;
-            return false;
-        }
-
-        foreach (var file in Directory.GetFiles(processDirectory, "*.dll"))
-        {
-            try
+            foreach (var file in Directory.GetFiles(directory!, "*.dll"))
             {
-                var assembly = Assembly.Load(new AssemblyName
+                try
                 {
-                    Name = Path.GetFileNameWithoutExtension(file)
-                });
+                    var assembly = Assembly.Load(new AssemblyName
+                    {
+                        Name = Path.GetFileNameWithoutExtension(file)
+                    });
 
-                if (TryGetImplementationTypeByInterfaceAndOptionalFullName<TInterface>(assembly, implementationTypeFullName, out pluginType))
-                {
-                    return true;
+                    if (TryGetImplementationTypeByInterfaceAndOptionalFullName<TInterface>(assembly, implementationTypeFullName, out pluginType))
+                    {
+                        return true;
+                    }
                 }
-            }
-            catch
-            {
-                // no-op: just try next .dll
+                catch
+                {
+                    // no-op: just try next .dll
+                }
             }
         }
 
