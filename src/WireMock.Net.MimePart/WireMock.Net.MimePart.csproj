@@ -47,7 +47,6 @@
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
     </ItemGroup>-->
 
-    <!-- https://github.com/wiremock/WireMock.Net/issues/1319 -->
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <PackageReference Include="MimeKitLite" Version="4.12.0" />
     </ItemGroup>
@@ -56,7 +55,7 @@
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
         <PackageReference Include="MimeKitLite" Version="4.12.0" PrivateAssets="All" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\WireMock.Net.Shared\WireMock.Net.Shared.csproj" />
     </ItemGroup>
