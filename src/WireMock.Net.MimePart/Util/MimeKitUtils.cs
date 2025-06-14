@@ -28,7 +28,7 @@ internal class MimeKitUtils : IMimeKitUtils
 
         if (requestMessage.BodyData != null &&
             requestMessage.Headers?.TryGetValue(HttpKnownHeaderNames.ContentType, out var contentTypeHeader) == true &&
-            StartsWithMultiPart(contentTypeHeader) // Only parse when "multipart/mixed"
+            StartsWithMultiPart(contentTypeHeader)
         )
         {
             var bytes = requestMessage.BodyData?.DetectedBodyType switch

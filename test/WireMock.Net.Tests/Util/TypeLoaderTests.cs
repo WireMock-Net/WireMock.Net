@@ -1,6 +1,7 @@
 // Copyright © WireMock.Net
 
 using System;
+using System.IO;
 using AnyOfTypes;
 using FluentAssertions;
 using WireMock.Matchers;
@@ -57,12 +58,22 @@ public class TypeLoaderTests
     [Fact]
     public void LoadNewInstance()
     {
-        // Act
-        AnyOf<string, StringPattern> pattern = "x";
-        var result = TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
+        var current = Directory.GetCurrentDirectory();
+        try
+        {
+            Directory.SetCurrentDirectory(Path.GetTempPath());
 
-        // Assert
-        result.Should().NotBeNull();
+            // Act
+            AnyOf<string, StringPattern> pattern = "x";
+            var result = TypeLoader.LoadNewInstance<ICSharpCodeMatcher>(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, pattern);
+
+            // Assert
+            result.Should().NotBeNull();
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(current);
+        }
     }
 
     [Fact]

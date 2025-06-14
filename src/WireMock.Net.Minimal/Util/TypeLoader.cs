@@ -51,7 +51,7 @@ internal static class TypeLoader
     {
         var key = typeof(TInterface).FullName!;
 
-        var pluginType = Assemblies.GetOrAdd(key, _ =>
+        return Assemblies.GetOrAdd(key, _ =>
         {
             if (TryFindTypeInDlls<TInterface>(null, out var foundType))
             {
@@ -60,7 +60,6 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements interface '{key}'.");
         });
-        return pluginType;
     }
 
     private static Type GetPluginTypeByFullName<TInterface>(string implementationTypeFullName) where TInterface : class
@@ -68,7 +67,7 @@ internal static class TypeLoader
         var @interface = typeof(TInterface).FullName;
         var key = $"{@interface}_{implementationTypeFullName}";
 
-        var pluginType = Assemblies.GetOrAdd(key, _ =>
+        return Assemblies.GetOrAdd(key, _ =>
         {
             if (TryFindTypeInDlls<TInterface>(implementationTypeFullName, out var foundType))
             {
@@ -77,28 +76,40 @@ internal static class TypeLoader
 
             throw new DllNotFoundException($"No dll found which implements Interface '{@interface}' and has FullName '{implementationTypeFullName}'.");
         });
-        return pluginType;
     }
 
     private static bool TryFindTypeInDlls<TInterface>(string? implementationTypeFullName, [NotNullWhen(true)] out Type? pluginType) where TInterface : class
     {
-        foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll"))
+#if NETSTANDARD1_3
+        var directoriesToSearch = new[] { AppContext.BaseDirectory };
+#else
+        var processDirectory = Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName);
+        var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var directoriesToSearch = new[] { processDirectory, assemblyDirectory }
+            .Where(d => !string.IsNullOrEmpty(d))
+            .Distinct()
+            .ToArray();
+#endif
+        foreach (var directory in directoriesToSearch)
         {
-            try
+            foreach (var file in Directory.GetFiles(directory!, "*.dll"))
             {
-                var assembly = Assembly.Load(new AssemblyName
+                try
                 {
-                    Name = Path.GetFileNameWithoutExtension(file)
-                });
+                    var assembly = Assembly.Load(new AssemblyName
+                    {
+                        Name = Path.GetFileNameWithoutExtension(file)
+                    });
 
-                if (TryGetImplementationTypeByInterfaceAndOptionalFullName<TInterface>(assembly, implementationTypeFullName, out pluginType))
-                {
-                    return true;
+                    if (TryGetImplementationTypeByInterfaceAndOptionalFullName<TInterface>(assembly, implementationTypeFullName, out pluginType))
+                    {
+                        return true;
+                    }
                 }
-            }
-            catch
-            {
-                // no-op: just try next .dll
+                catch
+                {
+                    // no-op: just try next .dll
+                }
             }
         }
 
