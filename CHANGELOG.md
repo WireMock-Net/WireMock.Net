@@ -1,3 +1,8 @@
+# 1.8.12 (15 June 2025)
+- [#1317](https://github.com/wiremock/WireMock.Net/pull/1317) - Set description when converting MappingModel to IRespondWithAProvider [feature] contributed by [BodrickLight](https://github.com/BodrickLight)
+- [#1320](https://github.com/wiremock/WireMock.Net/pull/1320) - Fix TypeLoader [bug] contributed by [StefH](https://github.com/StefH)
+- [#1319](https://github.com/wiremock/WireMock.Net/issues/1319) - Why is IRequestMessage.BodyAsMimeMessage null in new versions (&gt; 1.8.7) [bug]
+
 # 1.8.11 (11 June 2025)
 - [#1311](https://github.com/wiremock/WireMock.Net/pull/1311) - Bump Testcontainers version to 4.5.0 [feature] contributed by [scrocquesel](https://github.com/scrocquesel)
 - [#1313](https://github.com/wiremock/WireMock.Net/pull/1313) - Update RandomDataGenerator.Net to 1.0.19 [feature] contributed by [StefH](https://github.com/StefH)
