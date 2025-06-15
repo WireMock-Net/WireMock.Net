@@ -65,7 +65,7 @@
         <PackageReference Include="JmesPath.Net" Version="1.0.330" />
         <PackageReference Include="AnyOf" Version="0.4.0" />
         <PackageReference Include="TinyMapper.Signed" Version="4.0.0" />
-        <PackageReference Include="PolySharp" Version="1.15.0">
+        <PackageReference Include="Nullable" Version="1.3.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

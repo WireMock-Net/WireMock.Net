@@ -110,6 +110,13 @@ jobs:
       version: '8.0.x'
 
   - task: DotNetCoreCLI@2
+    displayName: 'WireMock.Net.Tests.UsingNuGet'
+    inputs:
+      command: 'test'
+      projects: './test/WireMock.Net.Tests.UsingNuGet/WireMock.Net.Tests.UsingNuGet.csproj'
+      arguments: '--configuration Release'
+
+  - task: DotNetCoreCLI@2
     displayName: 'WireMock.Net.Tests with Coverage'
     inputs:
       command: 'test'
