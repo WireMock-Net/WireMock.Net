@@ -273,7 +273,7 @@ namespace WireMock.Net.Tests
             Check.That(server.Scenarios.Any()).IsFalse();
 
             // Act and Assert
-            string url = "http://localhost:" + server.Ports[0];
+            var url = server.Url!;
             string getResponse1 = new HttpClient().GetStringAsync(url + "/todo/items").Result;
             Check.That(getResponse1).Equals("Buy milk");
 

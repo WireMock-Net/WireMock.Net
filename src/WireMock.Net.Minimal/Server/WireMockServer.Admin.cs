@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Xml.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -66,6 +67,7 @@ public partial class WireMockServer
         public RegexMatcher MappingsCodeGuidPathMatcher => new($"^{_prefixEscaped}\\/mappings\\/code\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
         public RegexMatcher RequestsGuidPathMatcher => new($"^{_prefixEscaped}\\/requests\\/([0-9A-Fa-f]{{8}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{4}}[-][0-9A-Fa-f]{{12}})$");
         public RegexMatcher ScenariosNameMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+$");
+        public RegexMatcher ScenariosNameWithStateMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+\\/state$");
         public RegexMatcher ScenariosNameWithResetMatcher => new($"^{_prefixEscaped}\\/scenarios\\/.+\\/reset$");
         public RegexMatcher FilesFilenamePathMatcher => new($"^{_prefixEscaped}\\/files\\/.+$");
         public RegexMatcher ProtoDefinitionsIdPathMatcher => new($"^{_prefixEscaped}\\/protodefinitions\\/.+$");
@@ -137,6 +139,9 @@ public partial class WireMockServer
         // __admin/scenarios/reset
         Given(Request.Create().WithPath(_adminPaths.Scenarios + "/reset").UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosReset));
         Given(Request.Create().WithPath(_adminPaths.ScenariosNameWithResetMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenarioReset));
+
+        // __admin/scenarios/{scenario}/state
+        Given(Request.Create().WithPath(_adminPaths.ScenariosNameWithStateMatcher).UsingPut()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(ScenariosSetState));
 
         // __admin/files/{filename}
         Given(Request.Create().WithPath(_adminPaths.FilesFilenamePathMatcher).UsingPost()).AtPriority(WireMockConstants.AdminPriority).RespondWith(new DynamicResponseProvider(FilePost));
@@ -703,6 +708,21 @@ public partial class WireMockServer
 
         return ResetScenario(name) ?
             ResponseMessageBuilder.Create(200, "Scenario reset") :
+            ResponseMessageBuilder.Create(HttpStatusCode.NotFound, $"No scenario found by name '{name}'.");
+    }
+
+    private IResponseMessage ScenariosSetState(IRequestMessage requestMessage)
+    {
+        var name = requestMessage.Path.Split('/').Reverse().Skip(1).First();
+        if (!_options.Scenarios.ContainsKey(name))
+        {
+            ResponseMessageBuilder.Create(HttpStatusCode.NotFound, $"No scenario found by name '{name}'.");
+        }
+
+        var update = DeserializeObject<ScenarioStateUpdateModel>(requestMessage);
+        
+        return SetScenarioState(name, update.State) ?
+            ResponseMessageBuilder.Create(200, $"Scenario state set to '{update.State}'") :
             ResponseMessageBuilder.Create(HttpStatusCode.NotFound, $"No scenario found by name '{name}'.");
     }
     #endregion
