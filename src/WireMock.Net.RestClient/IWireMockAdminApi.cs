@@ -278,7 +278,7 @@ public interface IWireMockAdminApi
     Task<StatusModel> ResetScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Delete (reset) all scenarios
+    /// Update the state for a scenario.
     /// </summary>
     /// <param name="name">Scenario name.</param>
     /// <param name="updateModel">Scenario state update model.</param>
