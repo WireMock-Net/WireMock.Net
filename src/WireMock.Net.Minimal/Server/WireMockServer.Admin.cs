@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Xml.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -720,7 +719,7 @@ public partial class WireMockServer
         }
 
         var update = DeserializeObject<ScenarioStateUpdateModel>(requestMessage);
-        
+
         return SetScenarioState(name, update.State) ?
             ResponseMessageBuilder.Create(200, $"Scenario state set to '{update.State}'") :
             ResponseMessageBuilder.Create(HttpStatusCode.NotFound, $"No scenario found by name '{name}'.");

@@ -581,8 +581,7 @@ public partial class WireMockServer : IWireMockServer
 
         if (state == null)
         {
-            scenario.Started = false;
-            scenario.Finished = false;
+            ResetScenario(name);
         }
 
         return true;
