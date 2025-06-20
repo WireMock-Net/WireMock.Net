@@ -256,7 +256,7 @@ public interface IWireMockAdminApi
     /// Delete (reset) all scenarios
     /// </summary>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
-    [Post("scenarios")]
+    [Post("scenarios/reset")]
     Task<StatusModel> ResetScenariosAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -269,7 +269,7 @@ public interface IWireMockAdminApi
     Task<StatusModel> DeleteScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Delete (reset) all scenarios
+    /// Delete (reset) a specific scenario
     /// </summary>
     /// <param name="name">Scenario name.</param>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
