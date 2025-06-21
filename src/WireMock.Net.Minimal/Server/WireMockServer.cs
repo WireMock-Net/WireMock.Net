@@ -571,18 +571,23 @@ public partial class WireMockServer : IWireMockServer
     [PublicAPI]
     public bool SetScenarioState(string name, string? state)
     {
-        if (!_options.Scenarios.ContainsKey(name))
-        {
-            return false;
-        }
-
-        var scenario = _options.Scenarios[name];
-        scenario.NextState = state;
-
         if (state == null)
         {
-            ResetScenario(name);
+            return ResetScenario(name);
         }
+
+        _options.Scenarios.AddOrUpdate(
+            name,
+            _ => new ScenarioState
+            {
+                NextState = state
+            },
+            (_, current) =>
+            {
+                current.NextState = state;
+                return current;
+            }
+        );
 
         return true;
     }

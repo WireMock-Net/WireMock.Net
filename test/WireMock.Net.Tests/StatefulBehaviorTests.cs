@@ -293,8 +293,9 @@ public class StatefulBehaviorTests
     [Fact]
     public async Task Scenarios_TodoList_Example()
     {
-        // Assign
+        // Arrange
         var server = WireMockServer.Start();
+        var client = server.CreateClient();
 
         server
             .Given(Request.Create().WithPath("/todo/items").UsingGet())
@@ -318,8 +319,7 @@ public class StatefulBehaviorTests
         Check.That(server.Scenarios.Any()).IsFalse();
 
         // Act and Assert
-        var url = server.Url!;
-        string getResponse1 = new HttpClient().GetStringAsync(url + "/todo/items").Result;
+        var getResponse1 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
         Check.That(getResponse1).Equals("Buy milk");
 
         Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
@@ -327,7 +327,7 @@ public class StatefulBehaviorTests
         Check.That(server.Scenarios["To do list"].Started).IsTrue();
         Check.That(server.Scenarios["To do list"].Finished).IsFalse();
 
-        var postResponse = await new HttpClient().PostAsync(url + "/todo/items", new StringContent("Cancel newspaper subscription")).ConfigureAwait(false);
+        var postResponse = await client.PostAsync("/todo/items", new StringContent("Cancel newspaper subscription")).ConfigureAwait(false);
         Check.That(postResponse.StatusCode).Equals(HttpStatusCode.Created);
 
         Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
@@ -335,7 +335,7 @@ public class StatefulBehaviorTests
         Check.That(server.Scenarios["To do list"].Started).IsTrue();
         Check.That(server.Scenarios["To do list"].Finished).IsFalse();
 
-        string getResponse2 = await new HttpClient().GetStringAsync(url + "/todo/items").ConfigureAwait(false);
+        string getResponse2 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
         Check.That(getResponse2).Equals("Buy milk;Cancel newspaper subscription");
 
         Check.That(server.Scenarios["To do list"].Name).IsEqualTo("To do list");
@@ -344,6 +344,64 @@ public class StatefulBehaviorTests
         Check.That(server.Scenarios["To do list"].Finished).IsTrue();
 
         server.Stop();
+    }
+
+    [Fact]
+    public async Task Scenarios_TodoList_WithSetState()
+    {
+        // Arrange
+        var scenario = "To do list";
+        using var server = WireMockServer.Start();
+        var client = server.CreateClient();
+
+        server
+            .Given(Request.Create().WithPath("/todo/items").UsingGet())
+            .InScenario(scenario)
+            .WhenStateIs("Buy milk")
+            .RespondWith(Response.Create().WithBody("Buy milk"));
+
+        server
+            .Given(Request.Create().WithPath("/todo/items").UsingGet())
+            .InScenario(scenario)
+            .WhenStateIs("Cancel newspaper")
+            .RespondWith(Response.Create().WithBody("Buy milk;Cancel newspaper subscription"));
+
+        // Act and Assert
+        server.SetScenarioState(scenario, "Buy milk");
+        var getResponse1 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
+        getResponse1.Should().Be("Buy milk");
+
+        server.SetScenarioState(scenario, "Cancel newspaper");
+        var getResponse2 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
+        getResponse2.Should().Be("Buy milk;Cancel newspaper subscription");
+    }
+
+    [Fact]
+    public void Scenarios_TodoList_WithSetStateToNull_ShouldThrowException()
+    {
+        // Arrange
+        var scenario = "To do list";
+        using var server = WireMockServer.Start();
+        var client = server.CreateClient();
+
+        server
+            .Given(Request.Create().WithPath("/todo/items").UsingGet())
+            .InScenario(scenario)
+            .WhenStateIs("Buy milk")
+            .RespondWith(Response.Create().WithBody("Buy milk"));
+
+        server
+            .Given(Request.Create().WithPath("/todo/items").UsingGet())
+            .InScenario(scenario)
+            .WhenStateIs("Cancel newspaper")
+            .RespondWith(Response.Create().WithBody("Buy milk;Cancel newspaper subscription"));
+
+        // Act
+        server.SetScenarioState(scenario, null);
+        var action = async () => await client.GetStringAsync("/todo/items");
+
+        // Assert
+        action.Should().ThrowAsync<HttpRequestException>();
     }
 
     [Fact]
