@@ -17,6 +17,7 @@ using RestEase;
 using VerifyTests;
 using VerifyXunit;
 using WireMock.Admin.Mappings;
+using WireMock.Admin.Scenarios;
 using WireMock.Admin.Settings;
 using WireMock.Client;
 using WireMock.Client.Extensions;
@@ -741,6 +742,57 @@ public partial class WireMockAdminApiTests
         // Act
         var status = await api.ResetScenarioAsync(name).ConfigureAwait(false);
         status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_UpdateNonExistingScenarioState()
+    {
+        // Arrange
+        using var server = WireMockServer.StartWithAdminInterface();
+
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        var update = new ScenarioStateUpdateModel
+        {
+            State = null
+        };
+        var status = await api.PutScenarioStateAsync("x", update).ConfigureAwait(false);
+        status.Status.Should().Be("No scenario found by name 'x'.");
+    }
+
+    [Fact]
+    public async Task IWireMockAdminApi_UpdateScenarioState()
+    {
+        // Arrange
+        using var server = WireMockServer.StartWithAdminInterface();
+        server
+            .Given(Request.Create()
+                .WithPath("/state1")
+                .UsingGet())
+            .InScenario("s1")
+            .WillSetStateTo("Test state 1")
+            .RespondWith(Response.Create()
+                .WithBody("No state msg 1"));
+
+        server
+            .Given(Request.Create()
+                .WithPath("/foostate1")
+                .UsingGet())
+            .InScenario("s1")
+            .WhenStateIs("Test state 1")
+            .RespondWith(Response.Create()
+                .WithBody("Test state msg 1"));
+
+        var api = RestClient.For<IWireMockAdminApi>(server.Urls[0]);
+
+        // Act
+        var update = new ScenarioStateUpdateModel
+        {
+            State = null
+        };
+        var status = await api.PutScenarioStateAsync("s1", update).ConfigureAwait(false);
+        status.Status.Should().Be("Scenario state set to ''");
     }
 
     [Fact]

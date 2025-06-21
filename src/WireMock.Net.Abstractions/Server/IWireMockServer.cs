@@ -162,6 +162,11 @@ public interface IWireMockServer : IDisposable
     bool ResetScenario(string name);
 
     /// <summary>
+    /// Sets a scenario to a state.
+    /// </summary>
+    bool SetScenarioState(string name, string? state);
+
+    /// <summary>
     /// Resets the LogEntries.
     /// </summary>
     void ResetLogEntries();

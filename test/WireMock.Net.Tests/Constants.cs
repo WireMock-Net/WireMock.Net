@@ -6,5 +6,5 @@ internal static class Constants
 {
     internal const int NumStaticMappings = 10;
 
-    internal const int NumAdminMappings = 36;
+    internal const int NumAdminMappings = 37;
 }

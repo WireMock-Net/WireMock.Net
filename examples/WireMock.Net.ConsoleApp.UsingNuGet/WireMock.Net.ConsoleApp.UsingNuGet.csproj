@@ -11,6 +11,10 @@
     <ProjectReference Include="..\..\src\WireMock.Net\WireMock.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="10.12.0.118525" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <PackageReference Include="WireMock.Net" Version="1.8.11" />
   </ItemGroup>-->

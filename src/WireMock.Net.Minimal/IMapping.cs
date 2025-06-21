@@ -86,7 +86,7 @@ public interface IMapping
     WireMockServerSettings Settings { get; }
 
     /// <summary>
-    /// Is State started ?
+    /// Indicates if the state is started or manually set to a value.
     /// </summary>
     bool IsStartState { get; }
 
