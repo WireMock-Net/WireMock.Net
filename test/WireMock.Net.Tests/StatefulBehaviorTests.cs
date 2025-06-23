@@ -368,10 +368,15 @@ public class StatefulBehaviorTests
 
         // Act and Assert
         server.SetScenarioState(scenario, "Buy milk");
+        server.Scenarios[scenario].Should().BeEquivalentTo(new { Name = scenario, NextState = "Buy milk" });
+        
         var getResponse1 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
         getResponse1.Should().Be("Buy milk");
 
         server.SetScenarioState(scenario, "Cancel newspaper");
+        server.Scenarios[scenario].Name.Should().Be(scenario);
+        server.Scenarios[scenario].Should().BeEquivalentTo(new { Name = scenario, NextState = "Cancel newspaper" });
+
         var getResponse2 = await client.GetStringAsync("/todo/items").ConfigureAwait(false);
         getResponse2.Should().Be("Buy milk;Cancel newspaper subscription");
     }

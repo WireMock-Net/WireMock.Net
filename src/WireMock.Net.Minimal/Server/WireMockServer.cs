@@ -580,6 +580,7 @@ public partial class WireMockServer : IWireMockServer
             name,
             _ => new ScenarioState
             {
+                Name = name,
                 NextState = state
             },
             (_, current) =>
