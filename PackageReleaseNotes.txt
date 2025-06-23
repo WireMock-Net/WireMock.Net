@@ -1,6 +1,5 @@
-# 1.8.12 (15 June 2025)
-- #1317 Set description when converting MappingModel to IRespondWithAProvider [feature]
-- #1320 Fix TypeLoader [bug]
-- #1319 Why is IRequestMessage.BodyAsMimeMessage null in new versions (&gt; 1.8.7) [bug]
+# 1.8.13 (23 June 2025)
+- #1322 Add Scenario set State method [feature]
+- #1321 Feature: Setting individual scenario state via Admin API [feature]
 
 The full release notes can be found here: https://github.com/wiremock/WireMock.Net/blob/master/CHANGELOG.md

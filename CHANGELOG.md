@@ -1,3 +1,7 @@
+# 1.8.13 (23 June 2025)
+- [#1322](https://github.com/wiremock/WireMock.Net/pull/1322) - Add Scenario set State method [feature] contributed by [StefH](https://github.com/StefH)
+- [#1321](https://github.com/wiremock/WireMock.Net/issues/1321) - Feature: Setting individual scenario state via Admin API [feature]
+
 # 1.8.12 (15 June 2025)
 - [#1317](https://github.com/wiremock/WireMock.Net/pull/1317) - Set description when converting MappingModel to IRespondWithAProvider [feature] contributed by [BodrickLight](https://github.com/BodrickLight)
 - [#1320](https://github.com/wiremock/WireMock.Net/pull/1320) - Fix TypeLoader [bug] contributed by [StefH](https://github.com/StefH)
