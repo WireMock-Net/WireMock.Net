@@ -567,6 +567,32 @@ public partial class WireMockServer : IWireMockServer
         return _options.Scenarios.ContainsKey(name) && _options.Scenarios.TryRemove(name, out _);
     }
 
+    /// <inheritdoc />
+    [PublicAPI]
+    public bool SetScenarioState(string name, string? state)
+    {
+        if (state == null)
+        {
+            return ResetScenario(name);
+        }
+
+        _options.Scenarios.AddOrUpdate(
+            name,
+            _ => new ScenarioState
+            {
+                Name = name,
+                NextState = state
+            },
+            (_, current) =>
+            {
+                current.NextState = state;
+                return current;
+            }
+        );
+
+        return true;
+    }
+
     /// <inheritdoc cref="IWireMockServer.WithMapping(MappingModel[])" />
     [PublicAPI]
     public IWireMockServer WithMapping(params MappingModel[] mappings)

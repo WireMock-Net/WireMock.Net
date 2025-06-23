@@ -256,7 +256,7 @@ public interface IWireMockAdminApi
     /// Delete (reset) all scenarios
     /// </summary>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
-    [Post("scenarios")]
+    [Post("scenarios/reset")]
     Task<StatusModel> ResetScenariosAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -269,13 +269,23 @@ public interface IWireMockAdminApi
     Task<StatusModel> DeleteScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Delete (reset) all scenarios
+    /// Delete (reset) a specific scenario
     /// </summary>
     /// <param name="name">Scenario name.</param>
     /// <param name="cancellationToken">The optional cancellationToken.</param>
     [Post("scenarios/{name}/reset")]
     [AllowAnyStatusCode]
     Task<StatusModel> ResetScenarioAsync([Path] string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Update the state for a scenario.
+    /// </summary>
+    /// <param name="name">Scenario name.</param>
+    /// <param name="updateModel">Scenario state update model.</param>
+    /// <param name="cancellationToken">The optional cancellationToken.</param>
+    [Put("scenarios/{name}/state")]
+    [AllowAnyStatusCode]
+    Task<StatusModel> PutScenarioStateAsync([Path] string name, [Body] ScenarioStateUpdateModel updateModel, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Create a new File
