@@ -132,3 +132,8 @@ For more details see also [Docker](https://github.com/wiremock/WireMock.Net-dock
 
 #### HTTPS / SSL
 More details on using HTTPS (SSL) can be found here [Wiki : HTTPS](https://github.com/wiremock/WireMock.Net/wiki/Using-HTTPS-(SSL))
+
+---
+
+## Powered by
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
